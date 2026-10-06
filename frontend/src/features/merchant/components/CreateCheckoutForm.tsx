@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { AMOUNT_PLACEHOLDER, CURRENCY, TRANSFER_NOTE_MAX_LENGTH } from '@/features/wallet/constants/wallet.constants'
-import { ORDER_REFERENCE_MAX_LENGTH } from '../constants/merchant.constants'
+import { ORDER_REFERENCE_MAX_LENGTH, URL_MAX_LENGTH } from '../constants/merchant.constants'
 import { useCreateCheckoutForm } from '../hooks/useCreateCheckoutForm'
 import type { CheckoutSession } from '../types/merchant.types'
 
@@ -24,13 +24,35 @@ export function CreateCheckoutForm({ onCreated }: CreateCheckoutFormProps) {
     <form onSubmit={onSubmit} noValidate className="grid gap-4">
       <FieldGroup>
         <FormField control={form.control} name="orderReference" label={t('payments.order')} description={t('payments.orderHint')}>
-          {(props) => <Input {...props} dir="ltr" autoComplete="off" maxLength={ORDER_REFERENCE_MAX_LENGTH} placeholder={t('payments.orderPlaceholder')} />}
+          {(props) => (
+            <Input
+              {...props}
+              dir="ltr"
+              autoComplete="off"
+              maxLength={ORDER_REFERENCE_MAX_LENGTH}
+              placeholder={t('payments.orderPlaceholder')}
+            />
+          )}
         </FormField>
         <FormField control={form.control} name="amount" label={t('payments.amountIn', { currency: CURRENCY })}>
           {(props) => <Input {...props} dir="ltr" inputMode="decimal" autoComplete="off" placeholder={AMOUNT_PLACEHOLDER} />}
         </FormField>
         <FormField control={form.control} name="description" label={t('payments.descriptionLabel')}>
-          {(props) => <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} placeholder={t('payments.descriptionPlaceholder')} />}
+          {(props) => (
+            <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} placeholder={t('payments.descriptionPlaceholder')} />
+          )}
+        </FormField>
+        <FormField control={form.control} name="returnUrl" label={t('payments.returnUrl')} description={t('payments.returnUrlHint')}>
+          {(props) => (
+            <Input
+              {...props}
+              type="url"
+              dir="ltr"
+              autoComplete="off"
+              maxLength={URL_MAX_LENGTH}
+              placeholder={t('payments.returnUrlPlaceholder')}
+            />
+          )}
         </FormField>
         <FormErrorMessage errorKey={errorKey} />
       </FieldGroup>

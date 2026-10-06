@@ -37,7 +37,9 @@
     "STATEMENT_DOWNLOADED": "Statement downloaded",
     "PROFILE_UPDATED": "Profile updated",
     "PROFILE_PICTURE_UPDATED": "Profile picture updated",
-    "PROFILE_PICTURE_REMOVED": "Profile picture removed"
+    "PROFILE_PICTURE_REMOVED": "Profile picture removed",
+    "WEBHOOK_UPDATED": "Payment callback updated",
+    "WEBHOOK_REMOVED": "Payment callback removed"
   },
   "targets": {
     "USER": "User",

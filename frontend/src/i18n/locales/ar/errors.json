@@ -12,6 +12,7 @@
   "PROFILE_PICTURE_NOT_FOUND": "لم يتم رفع صورة شخصية.",
   "API_KEY_NOT_FOUND": "لم يتم العثور على مفتاح API.",
   "API_KEY_LIMIT_REACHED": "لديك 5 مفاتيح API فعّالة. ألغِ أحدها أولاً.",
+  "WEBHOOK_URL_NOT_ALLOWED": "يجب أن يكون عنوان الإشعار عنوان https عاماً.",
   "CHECKOUT_NOT_FOUND": "لم يتم العثور على هذه الدفعة.",
   "CHECKOUT_NOT_PENDING": "هذه الدفعة لم تعد بانتظار الدفع.",
   "CHECKOUT_EXPIRED": "انتهت صلاحية رابط الدفع.",
