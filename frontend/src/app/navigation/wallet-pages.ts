@@ -1,5 +1,6 @@
 import {
   CircleUserIcon,
+  CodeIcon,
   CreditCardIcon,
   HandCoinsIcon,
   KeyRoundIcon,
@@ -43,6 +44,14 @@ export const WALLET_PAGES: readonly AppPage[] = [
     roles: ['MERCHANT'],
     showInSidebar: true,
     lazy: async () => ({ Component: (await import('@/features/merchant/pages/MerchantApiKeysPage')).MerchantApiKeysPage }),
+  },
+  {
+    id: 'merchantDevelopers',
+    path: ROUTES.merchantDevelopers,
+    icon: CodeIcon,
+    roles: ['MERCHANT'],
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/developers/pages/DeveloperGuidePage')).DeveloperGuidePage }),
   },
   {
     id: 'checkout',

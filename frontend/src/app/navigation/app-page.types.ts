@@ -9,6 +9,7 @@ type AppPageId =
   | 'merchant'
   | 'merchantPayments'
   | 'merchantApiKeys'
+  | 'merchantDevelopers'
   | 'checkout'
   | 'admin'
   | 'kycReviews'
