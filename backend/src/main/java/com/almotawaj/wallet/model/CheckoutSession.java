@@ -42,6 +42,9 @@ public class CheckoutSession {
     @Column(updatable = false, length = ValidationLimits.TRANSACTION_DESCRIPTION_MAX)
     private String description;
 
+    @Column(updatable = false, length = ValidationLimits.URL_MAX)
+    private String returnUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private CheckoutStatus status = CheckoutStatus.PENDING;

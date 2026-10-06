@@ -2,6 +2,8 @@ package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayMessages;
+import com.almotawaj.wallet.event.CheckoutStatusChangedEvent;
 import com.almotawaj.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
@@ -42,9 +44,9 @@ public class CheckoutRefundService {
     public CheckoutSessionResponse refund(UUID merchantId, UUID sessionId) {
         CheckoutSession session = sessionRepository.findByIdForUpdate(sessionId)
                 .filter(found -> found.getMerchant().getId().equals(merchantId))
-                .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
+                .orElseThrow(() -> new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
         if (session.getStatus() != CheckoutStatus.PAID) {
-            throw new BusinessRuleException(ErrorMessages.CHECKOUT_NOT_PAID, ErrorCodes.CHECKOUT_NOT_PAID);
+            throw new BusinessRuleException(GatewayMessages.CHECKOUT_NOT_PAID, ErrorCodes.CHECKOUT_NOT_PAID);
         }
         WalletLocker.LockedPair locked = walletLocker.lockPair(walletId(merchantId), walletId(session.getPayer().getId()));
         Wallet merchantWallet = locked.source();
@@ -65,6 +67,7 @@ public class CheckoutRefundService {
                 session.getOrderReference());
         eventPublisher.publishEvent(new MoneyReceivedEvent(session.getPayer().getId(), amount, merchantDetails.name(),
                 refunded.getReference()));
+        eventPublisher.publishEvent(new CheckoutStatusChangedEvent(sessionId));
         return mapper.toResponse(session);
     }
 

@@ -56,6 +56,7 @@ public final class ApiPaths {
     public static final String WALLET_PAYMENT_REQUESTS = WALLET + PAYMENT_REQUESTS;
     public static final String MERCHANT_API_KEYS = "/api/merchant/api-keys";
     public static final String API_KEY_BY_ID = "/{keyId}";
+    public static final String MERCHANT_WEBHOOK = "/api/merchant/webhook";
     public static final String MERCHANT_CHECKOUT_SESSIONS = "/api/merchant/checkout-sessions";
     public static final String GATEWAY = "/api/gateway";
     public static final String GATEWAY_CHECKOUT_SESSIONS = GATEWAY + "/checkout-sessions";

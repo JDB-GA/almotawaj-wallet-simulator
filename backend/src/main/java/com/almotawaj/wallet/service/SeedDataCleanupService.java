@@ -8,6 +8,7 @@ import com.almotawaj.wallet.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.repository.KycApplicationRepository;
 import com.almotawaj.wallet.repository.KycDocumentRepository;
 import com.almotawaj.wallet.repository.MerchantApiKeyRepository;
+import com.almotawaj.wallet.repository.MerchantWebhookRepository;
 import com.almotawaj.wallet.repository.OtpChallengeRepository;
 import com.almotawaj.wallet.repository.PaymentRequestRepository;
 import com.almotawaj.wallet.repository.UserRepository;
@@ -35,6 +36,7 @@ public class SeedDataCleanupService {
     private final PaymentRequestRepository paymentRequestRepository;
     private final CheckoutSessionRepository checkoutSessionRepository;
     private final MerchantApiKeyRepository apiKeyRepository;
+    private final MerchantWebhookRepository webhookRepository;
     private final AuditLogRepository auditLogRepository;
     private final FileStorageService fileStorageService;
 
@@ -55,6 +57,7 @@ public class SeedDataCleanupService {
         paymentRequestRepository.deleteAllByUserIdIn(userIds);
         checkoutSessionRepository.deleteAllByUserIdIn(userIds);
         apiKeyRepository.deleteAllByMerchantIdIn(userIds);
+        webhookRepository.deleteAllByMerchantIdIn(userIds);
         transactionRepository.deleteAllByWalletUserIdIn(userIds);
         walletRepository.deleteAllByUserIdIn(userIds);
         documentRepository.deleteAllByApplicationUserIdIn(userIds);

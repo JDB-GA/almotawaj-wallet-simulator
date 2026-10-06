@@ -1,8 +1,9 @@
 package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.config.constants.ErrorCodes;
-import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.config.constants.GatewayConstants;
+import com.almotawaj.wallet.event.CheckoutStatusChangedEvent;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationExistException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
@@ -17,6 +18,7 @@ import com.almotawaj.wallet.model.response.PageResponse;
 import com.almotawaj.wallet.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,7 @@ public class CheckoutSessionService {
     private final CheckoutSessionMapper mapper;
     private final AuditService auditService;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public PageResponse<CheckoutSessionResponse> list(UUID merchantId, CheckoutStatus status, Pageable pageable) {
@@ -51,7 +54,7 @@ public class CheckoutSessionService {
     @Transactional
     public CheckoutSessionResponse create(UUID merchantId, CreateCheckoutSessionRequest request) {
         if (sessionRepository.existsByMerchantIdAndOrderReference(merchantId, request.orderReference())) {
-            throw new InformationExistException(ErrorMessages.ORDER_ALREADY_EXISTS, ErrorCodes.ORDER_ALREADY_EXISTS);
+            throw new InformationExistException(GatewayMessages.ORDER_ALREADY_EXISTS, ErrorCodes.ORDER_ALREADY_EXISTS);
         }
         String description = request.description() == null || request.description().isBlank() ? null : request.description().strip();
         CheckoutSession session = new CheckoutSession();
@@ -59,6 +62,7 @@ public class CheckoutSessionService {
         session.setOrderReference(request.orderReference());
         session.setAmount(request.amount());
         session.setDescription(description);
+        session.setReturnUrl(request.returnUrl());
         session.setExpiresAt(clock.instant().plus(GatewayConstants.SESSION_LIFETIME));
         CheckoutSession saved = sessionRepository.saveAndFlush(session);
         auditService.record(merchantId, AuditAction.CHECKOUT_CREATED, AuditTargetType.CHECKOUT_SESSION, saved.getId(),
@@ -72,15 +76,16 @@ public class CheckoutSessionService {
                 .filter(found -> found.getMerchant().getId().equals(merchantId))
                 .orElseThrow(this::notFound);
         if (session.statusAt(clock.instant()) != CheckoutStatus.PENDING) {
-            throw new BusinessRuleException(ErrorMessages.CHECKOUT_NOT_PENDING, ErrorCodes.CHECKOUT_NOT_PENDING);
+            throw new BusinessRuleException(GatewayMessages.CHECKOUT_NOT_PENDING, ErrorCodes.CHECKOUT_NOT_PENDING);
         }
         session.setStatus(CheckoutStatus.CANCELLED);
+        eventPublisher.publishEvent(new CheckoutStatusChangedEvent(sessionId));
         auditService.record(merchantId, AuditAction.CHECKOUT_CANCELLED, AuditTargetType.CHECKOUT_SESSION, sessionId,
                 session.getOrderReference());
         return mapper.toResponse(session);
     }
 
     private InformationNotFoundException notFound() {
-        return new InformationNotFoundException(ErrorMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND);
+        return new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND);
     }
 }

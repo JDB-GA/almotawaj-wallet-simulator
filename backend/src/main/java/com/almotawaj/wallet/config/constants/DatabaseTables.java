@@ -12,6 +12,7 @@ public final class DatabaseTables {
     public static final String PAYMENT_REQUESTS = "payment_requests";
     public static final String MERCHANT_API_KEYS = "merchant_api_keys";
     public static final String CHECKOUT_SESSIONS = "checkout_sessions";
+    public static final String MERCHANT_WEBHOOKS = "merchant_webhooks";
 
     private DatabaseTables() {
     }

@@ -15,6 +15,17 @@ public final class GatewayDocs {
     public static final String KEY_REVOKED = "Key revoked";
     public static final String KEY_NOT_FOUND = "Key not found (API_KEY_NOT_FOUND)";
 
+    public static final String WEBHOOK_TAG = "Merchant Callback";
+    public static final String WEBHOOK_TAG_DESCRIPTION = "The URL that is called when one of the merchant's checkout sessions changes status (merchant only)";
+    public static final String WEBHOOK_GET = "Get my callback URL";
+    public static final String WEBHOOK_GET_DESCRIPTION = "Returns the URL and the signing secret, or nulls when none is set.";
+    public static final String WEBHOOK_OK = "Callback settings";
+    public static final String WEBHOOK_SET = "Set my callback URL";
+    public static final String WEBHOOK_SET_DESCRIPTION = "A JSON POST is sent to this URL when a session becomes PAID, CANCELLED, EXPIRED or REFUNDED. Each call carries an HMAC-SHA256 signature of the body in X-Wallet-Signature and is tried up to 3 times. The URL must be a public https address.";
+    public static final String WEBHOOK_UNPROCESSABLE = "The URL is not a public https address (WEBHOOK_URL_NOT_ALLOWED)";
+    public static final String WEBHOOK_DELETE = "Remove my callback URL";
+    public static final String WEBHOOK_DELETED = "Callback removed";
+
     public static final String PAYMENTS_TAG = "Merchant Payments";
     public static final String PAYMENTS_TAG_DESCRIPTION = "Checkout sessions managed from the merchant dashboard (merchant only)";
     public static final String GATEWAY_TAG = "Payment Gateway";
@@ -26,7 +37,7 @@ public final class GatewayDocs {
     public static final String LIST_DESCRIPTION = "Checkout sessions with the masked payer. Filter by status. Paged and sortable (default createdAt,desc).";
     public static final String LIST_OK = "Page of checkout sessions";
     public static final String CREATE = "Create a checkout session";
-    public static final String CREATE_DESCRIPTION = "Creates a PENDING session that expires after 30 minutes and returns the `checkoutUrl` to send the customer to. An order reference can be used once per merchant.";
+    public static final String CREATE_DESCRIPTION = "Creates a PENDING session that expires after 30 minutes and returns the `checkoutUrl` to send the customer to. After paying, the customer is sent to the optional `returnUrl` with `sessionId` and `orderReference` added. An order reference can be used once per merchant.";
     public static final String CREATED = "Session created";
     public static final String ORDER_EXISTS = "A session already exists for this order reference (ORDER_ALREADY_EXISTS)";
     public static final String GET = "Get a checkout session";

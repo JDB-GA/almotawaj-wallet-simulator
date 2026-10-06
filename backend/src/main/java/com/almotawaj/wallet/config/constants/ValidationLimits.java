@@ -27,6 +27,7 @@ public final class ValidationLimits {
     public static final int API_KEY_PREFIX_LENGTH = 12;
     public static final int API_KEY_HASH_LENGTH = 64;
     public static final int ORDER_REFERENCE_MAX = 64;
+    public static final int URL_MAX = 500;
     public static final int MONEY_PRECISION = 19;
     public static final int MONEY_SCALE = 3;
     public static final int MONEY_INTEGER_DIGITS = 16;

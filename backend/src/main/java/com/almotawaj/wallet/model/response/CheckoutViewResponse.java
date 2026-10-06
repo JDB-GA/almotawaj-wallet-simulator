@@ -13,6 +13,7 @@ public record CheckoutViewResponse(
         BigDecimal amount,
         String description,
         CheckoutStatus status,
+        String returnUrl,
         Instant expiresAt
 ) {
 }

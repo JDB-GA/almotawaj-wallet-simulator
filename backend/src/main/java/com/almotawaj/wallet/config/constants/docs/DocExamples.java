@@ -24,6 +24,8 @@ public final class DocExamples {
     public static final String TRANSFER_NOTE = "Dinner split";
     public static final String AMOUNT = "150.500";
     public static final String BUSINESS_NAME = "Almotawaj Coffee";
+    public static final String RETURN_URL = "https://shop.example.com/orders/1042/complete";
+    public static final String WEBHOOK_URL = "https://shop.example.com/webhooks/wallet";
     public static final String API_KEY_NAME = "Online store";
     public static final String ORDER_REFERENCE = "ORDER-1042";
     public static final String ORDER_DESCRIPTION = "2 x Arabic coffee beans";

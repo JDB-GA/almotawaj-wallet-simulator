@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 public class TagOrderCustomizer implements OpenApiCustomizer {
     private static final List<String> ORDER = List.of(AuthDocs.TAG, ProfileDocs.TAG, KycDocs.TAG, WalletDocs.TAG, TransferDocs.TAG,
-            PaymentRequestDocs.TAG, GatewayDocs.CHECKOUT_TAG, GatewayDocs.API_KEYS_TAG, GatewayDocs.PAYMENTS_TAG,
+            PaymentRequestDocs.TAG, GatewayDocs.CHECKOUT_TAG, GatewayDocs.API_KEYS_TAG, GatewayDocs.WEBHOOK_TAG, GatewayDocs.PAYMENTS_TAG,
             GatewayDocs.GATEWAY_TAG, KycReviewDocs.TAG, UserAdminDocs.TAG, UserAdminDocs.PERMISSIONS_TAG,
             AdminStatisticsDocs.TAG, SystemDocs.AUDIT_TAG, SystemDocs.SEED_TAG);
 
