@@ -74,6 +74,9 @@ Lists accept `page`, `size` (max 100) and `sort` (e.g. `sort=createdAt,desc`) an
 | GET    | `/api/merchant/api-keys`                                | List my API keys                 | Merchant      |
 | POST   | `/api/merchant/api-keys`                                | Create an API key (shown once)   | Merchant      |
 | DELETE | `/api/merchant/api-keys/{keyId}`                        | Revoke an API key                | Merchant      |
+| GET    | `/api/merchant/webhook`                                 | Get my callback URL and secret   | Merchant      |
+| PUT    | `/api/merchant/webhook`                                 | Set my callback URL              | Merchant      |
+| DELETE | `/api/merchant/webhook`                                 | Remove my callback URL           | Merchant      |
 | GET    | `/api/merchant/checkout-sessions`                       | List my payments                 | Merchant      |
 | POST   | `/api/merchant/checkout-sessions`                       | Create a payment link            | Merchant      |
 | POST   | `/api/merchant/checkout-sessions/{sessionId}/cancel`    | Cancel a pending payment         | Merchant      |
@@ -99,7 +102,8 @@ Sensitive endpoints allow 10 requests per minute for each client address and end
 | Limited | Endpoints |
 | --- | --- |
 | Every request | register, login, verify email and resend, forgot/reset/change password, top-ups, transfers, recipient lookup and suggestions, PDF receipts and statements, seeding and demo data clean-up |
-| Writes only | payment requests (create, pay, decline, cancel), API keys, merchant payments, gateway calls, checkout payments and profile changes |
+| Writes only | payment requests (create, pay, decline, cancel), API keys, callback settings, merchant payments, checkout payments and profile changes |
+| 120 per minute per merchant | every gateway call made with an API key |
 
 ## Payment gateway
 
@@ -114,11 +118,23 @@ A merchant accepts wallet payments in four steps:
 curl -X POST https://api.almotawaj.com/api/gateway/checkout-sessions \
   -H "X-API-Key: almt_..." \
   -H "Content-Type: application/json" \
-  -d '{"orderReference":"ORDER-1042","amount":12.500,"description":"2 x Arabic coffee beans"}'
+  -d '{"orderReference":"ORDER-1042","amount":12.500,"description":"2 x Arabic coffee beans","returnUrl":"https://shop.example.com/orders/1042/complete"}'
 ```
 
-3. The response contains `checkoutUrl`. The merchant sends the customer there; the customer signs in and pays from their wallet.
-4. The merchant confirms the result with `GET /api/gateway/checkout-sessions/{sessionId}` before fulfilling the order.
+3. The response contains `checkoutUrl`. The merchant sends the customer there; the customer signs in and pays from their wallet. After paying, the customer is sent to `returnUrl` with `sessionId` and `orderReference` added to it.
+4. The merchant confirms the result before fulfilling the order, either with `GET /api/gateway/checkout-sessions/{sessionId}` or from the signed callback below.
+
+### Callbacks
+
+A merchant sets one callback URL (`PUT /api/merchant/webhook`, or the API keys page). When a session becomes `PAID`, `CANCELLED`, `EXPIRED` or `REFUNDED` the API sends a JSON `POST` to it:
+
+```json
+{"event":"checkout.paid","sessionId":"…","orderReference":"ORDER-1042","amount":12.500,"status":"PAID","occurredAt":"2026-10-06T16:45:31Z"}
+```
+
+- `X-Wallet-Event` carries the event name and `X-Wallet-Signature` the hex HMAC-SHA256 of the exact body, keyed with the merchant's signing secret.
+- A callback is tried up to 3 times until the merchant answers with a 2xx status within 5 seconds.
+- The URL must be a public https address. Private, loopback and link-local addresses are refused both when the URL is saved and before each call, and redirects are not followed. `webhook-allow-private-hosts=true` lifts this for local development only.
 
 | Status | Meaning | Next |
 | --- | --- | --- |

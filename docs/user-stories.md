@@ -144,6 +144,13 @@ Format: *As a [user], I want to [action], so that [reason].* Stories marked (pla
 - [ ] I see the merchant, the order and the amount and confirm before paying; if I am signed out I return to the payment after signing in.
 - [ ] I need enough balance and can pay at most 10,000.000 BHD per day.
 
+**US-34 – Return and callback.** As a merchant, I want my customer sent back to my site after paying and my server told about the payment, so that the order completes without anyone refreshing a page.
+- [ ] A session can carry a return address; the checkout page redirects there after payment.
+- [ ] I set one callback URL; each status change is posted to it with a signature I can verify.
+- [ ] Callbacks are retried up to 3 times and can only go to public https addresses.
+
+**US-35 – Developer guide.** As a merchant's developer, I want a guide with real request and response examples, so that I can integrate without asking for help.
+
 **US-32 – Manage payments.** As a merchant, I want to see my payments and refund or cancel them, so that I can run my store from the dashboard.
 - [ ] Filter by status; see who paid (masked) and when.
 - [ ] Refunding sends the full amount back to the customer once.
