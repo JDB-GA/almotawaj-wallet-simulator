@@ -14,7 +14,8 @@
     "description": "Shown to your customers on payments and transfers instead of your email.",
     "name": "Business name",
     "save": "Save",
-    "saved": "Business name saved"
+    "saved": "Business name saved",
+    "placeholder": "Almotawaj Coffee"
   },
   "details": {
     "title": "Account details",

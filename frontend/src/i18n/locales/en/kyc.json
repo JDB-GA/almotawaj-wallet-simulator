@@ -27,7 +27,11 @@
     "cprExpiryDate": "CPR expiry date",
     "passportFile": "Passport",
     "passportExpiryDate": "Passport expiry date",
-    "photo": "Personal photo"
+    "photo": "Personal photo",
+    "blockPlaceholder": "338",
+    "roadPlaceholder": "3803",
+    "buildingPlaceholder": "1207",
+    "flatPlaceholder": "12"
   },
   "hints": {
     "pdf": "PDF only, up to {{maxFileSizeMb}} MB",

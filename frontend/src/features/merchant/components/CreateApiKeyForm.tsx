@@ -22,7 +22,7 @@ export function CreateApiKeyForm({ onCreated }: CreateApiKeyFormProps) {
     <form onSubmit={onSubmit} noValidate className="grid gap-4">
       <FieldGroup>
         <FormField control={form.control} name="name" label={t('keys.name')} description={t('keys.nameHint')}>
-          {(props) => <Input {...props} autoComplete="off" maxLength={API_KEY_NAME_MAX_LENGTH} />}
+          {(props) => <Input {...props} autoComplete="off" maxLength={API_KEY_NAME_MAX_LENGTH} placeholder={t('keys.namePlaceholder')} />}
         </FormField>
         <FormErrorMessage errorKey={errorKey} />
       </FieldGroup>

@@ -35,7 +35,7 @@ export function SendMoneyFields({ control, options }: SendMoneyFieldsProps) {
         {(props) => <Input {...props} dir="ltr" inputMode="decimal" autoComplete="off" placeholder={AMOUNT_PLACEHOLDER} />}
       </FormField>
       <FormField control={control} name="note" label={t('transfer.note')}>
-        {(props) => <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} />}
+        {(props) => <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} placeholder={t('transfer.notePlaceholder')} />}
       </FormField>
     </>
   )

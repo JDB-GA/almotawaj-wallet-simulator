@@ -32,10 +32,10 @@ export function UserContactCard({ user, disabled }: UserContactCardProps) {
           <fieldset disabled={disabled || isPending}>
             <FieldGroup>
               <FormField control={form.control} name="email" label={t('contact.email')}>
-                {(props) => <Input {...props} type="email" dir="ltr" autoComplete="off" />}
+                {(props) => <Input {...props} type="email" dir="ltr" autoComplete="off" placeholder={t('contact.emailPlaceholder')} />}
               </FormField>
               <FormField control={form.control} name="mobileNumber" label={t('contact.mobileNumber')}>
-                {(props) => <MobileNumberInput {...props} />}
+                {(props) => <MobileNumberInput {...props} placeholder={t('contact.mobilePlaceholder')} />}
               </FormField>
               <FormErrorMessage errorKey={errorKey} />
               <Button type="submit" className="self-end" disabled={!form.formState.isDirty} aria-busy={isPending}>

@@ -73,7 +73,9 @@
     "limits": "Balance {{balance}} · up to {{max}} per transfer · {{remaining}} left today",
     "submit": "Send",
     "success": "Money sent",
-    "loadError": "Could not load your transfer limits."
+    "loadError": "Could not load your transfer limits.",
+    "notePlaceholder": "What is it for?",
+    "recipientPlaceholder": "name@example.com, 33123456 or BH…"
   },
   "filters": {
     "search": "Search transactions",

@@ -26,10 +26,10 @@ export function ResetPasswordForm() {
           {(props) => <OtpCodeInput {...props} disabled={isPending} />}
         </FormField>
         <FormField control={form.control} name="newPassword" label={t('reset.newPassword')}>
-          {(props) => <PasswordInput {...props} autoComplete="new-password" />}
+          {(props) => <PasswordInput {...props} autoComplete="new-password" placeholder={t('fields.newPasswordPlaceholder')} />}
         </FormField>
         <FormField control={form.control} name="confirmPassword" label={t('fields.confirmPassword')}>
-          {(props) => <PasswordInput {...props} autoComplete="new-password" />}
+          {(props) => <PasswordInput {...props} autoComplete="new-password" placeholder={t('fields.confirmPasswordPlaceholder')} />}
         </FormField>
         <FormErrorMessage errorKey={errorKey} />
         <SubmitButton isPending={isPending}>{t('reset.submit')}</SubmitButton>

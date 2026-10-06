@@ -1,4 +1,5 @@
 import type { Ref } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Input } from '@/components/ui/input'
 import { RECIPIENT_MAX_LENGTH } from '../constants/wallet.constants'
 import { useListboxNavigation } from '../hooks/useListboxNavigation'
@@ -17,6 +18,7 @@ interface RecipientComboboxProps {
 }
 
 export function RecipientCombobox({ id, value, onChange, onBlur, ...inputProps }: RecipientComboboxProps) {
+  const { t } = useTranslation('wallet')
   const suggestions = useRecipientSuggestions(value)
   const listboxId = `${id}-suggestions`
   const { isOpen, activeIndex, setOpen, setActiveIndex, select, onKeyDown } = useListboxNavigation(
@@ -38,6 +40,7 @@ export function RecipientCombobox({ id, value, onChange, onBlur, ...inputProps }
         autoComplete="off"
         spellCheck={false}
         maxLength={RECIPIENT_MAX_LENGTH}
+        placeholder={t('transfer.recipientPlaceholder')}
         aria-autocomplete="list"
         aria-expanded={isOpen}
         aria-controls={listboxId}

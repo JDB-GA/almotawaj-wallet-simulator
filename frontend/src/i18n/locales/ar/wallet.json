@@ -73,7 +73,9 @@
     "limits": "الرصيد {{balance}} · حتى {{max}} للتحويل الواحد · متبقٍ اليوم {{remaining}}",
     "submit": "إرسال",
     "success": "تم إرسال الأموال",
-    "loadError": "تعذّر تحميل حدود التحويل."
+    "loadError": "تعذّر تحميل حدود التحويل.",
+    "notePlaceholder": "ما سبب التحويل؟",
+    "recipientPlaceholder": "name@example.com أو 33123456 أو BH…"
   },
   "filters": {
     "search": "البحث في المعاملات",
