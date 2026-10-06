@@ -14,8 +14,6 @@
   },
   "admin": {
     "cleanData": {
-      "title": "Clean demo data",
-      "description": "Removes only the demo accounts with their wallets, transactions, payment requests and verification records. Other accounts keep their data.",
       "action": "Clean demo data",
       "confirmTitle": "Clean all demo data?",
       "confirmDescription": "This permanently removes the demo accounts and everything that belongs to them. You will be signed out.",

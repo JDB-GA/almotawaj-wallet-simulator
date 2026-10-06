@@ -10,14 +10,14 @@ export function SystemTransactionsCard() {
   const { query, hasFilters, update, setPage, reset } = useTransactionsFilters()
 
   return (
-    <Card>
-      <CardHeader className="flex flex-col gap-4">
+    <Card className="lg:min-h-0 lg:flex-1">
+      <CardHeader className="flex shrink-0 flex-col gap-4">
         <CardTitle>
           <h2>{t('transactions.title')}</h2>
         </CardTitle>
         <TransactionsFilters query={query} hasFilters={hasFilters} onChange={update} onReset={reset} />
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 lg:min-h-0 lg:flex-1">
         <TransactionStatisticsCards query={query} />
         <SystemTransactionsList query={query} hasFilters={hasFilters} onPageChange={setPage} />
       </CardContent>

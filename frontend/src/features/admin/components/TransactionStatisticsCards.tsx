@@ -17,7 +17,7 @@ export function TransactionStatisticsCards({ query }: TransactionStatisticsCards
   const money = (amount: number | undefined) => (amount === undefined ? undefined : <bdi dir="ltr">{formatMoney(amount, language)}</bdi>)
 
   return (
-    <section aria-label={t('transactions.summary')} className="grid grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4">
+    <section aria-label={t('transactions.summary')} className="grid shrink-0 grid-cols-[repeat(auto-fit,minmax(13rem,1fr))] gap-4">
       <StatisticCard label={t('transactions.count')} icon={ReceiptTextIcon} value={data?.totalTransactions.toLocaleString(language)} />
       <StatisticCard label={t('transactions.credited')} icon={ArrowDownLeftIcon} value={money(data?.totalCredited)} />
       <StatisticCard label={t('transactions.debited')} icon={ArrowUpRightIcon} value={money(data?.totalDebited)} />
