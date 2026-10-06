@@ -15,10 +15,10 @@ export const checkoutSessionApi = {
   list: (status: CheckoutStatusFilter, page: number, signal?: AbortSignal): Promise<CheckoutSessionPage> =>
     requestJson(`${MERCHANT_ENDPOINTS.sessions}?${toSearchParams(status, page)}`, checkoutSessionPageSchema, { signal }),
 
-  create: ({ description, ...payload }: CreateCheckoutValues): Promise<CheckoutSession> =>
+  create: ({ description, returnUrl, ...payload }: CreateCheckoutValues): Promise<CheckoutSession> =>
     requestJson(MERCHANT_ENDPOINTS.sessions, checkoutSessionSchema, {
       method: 'POST',
-      body: { ...payload, description: description || null },
+      body: { ...payload, description: description || null, returnUrl: returnUrl || null },
     }),
 
   cancel: (sessionId: string): Promise<CheckoutSession> =>

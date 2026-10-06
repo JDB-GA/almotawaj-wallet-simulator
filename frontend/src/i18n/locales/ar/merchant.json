@@ -69,7 +69,10 @@
     "emptyDescription": "تظهر هنا المدفوعات التي تنشئها من هذه الصفحة أو عبر الـ API.",
     "loadError": "تعذر تحميل المدفوعات.",
     "orderPlaceholder": "ORDER-1042",
-    "descriptionPlaceholder": "ما الذي يدفع العميل مقابله"
+    "descriptionPlaceholder": "ما الذي يدفع العميل مقابله",
+    "returnUrl": "عنوان العودة (اختياري)",
+    "returnUrlHint": "الصفحة التي يُعاد إليها العميل بعد الدفع، مثل صفحة تأكيد الطلب.",
+    "returnUrlPlaceholder": "https://shop.example.com/orders/1042"
   },
   "checkout": {
     "description": "راجع التفاصيل قبل الدفع من محفظتك.",
@@ -83,6 +86,22 @@
     "paid": "تم الدفع",
     "backToWallet": "العودة إلى المحفظة",
     "notFound": "رابط الدفع غير صالح.",
-    "loadError": "تعذر تحميل هذه الدفعة."
+    "loadError": "تعذر تحميل هذه الدفعة.",
+    "returnTo": "العودة إلى {{site}}",
+    "returning": "جارٍ إعادتك إلى {{site}}…"
+  },
+  "webhook": {
+    "title": "إشعار الدفع",
+    "description": "نستدعي هذا العنوان على خادمك كلما دُفعت إحدى مدفوعاتك أو أُلغيت أو انتهت صلاحيتها أو استُردت.",
+    "url": "عنوان الإشعار",
+    "urlHint": "يجب أن يكون عنوان https عاماً.",
+    "urlPlaceholder": "https://shop.example.com/webhooks/wallet",
+    "secret": "مفتاح التوقيع",
+    "secretHint": "استخدمه للتأكد من أن الإشعار صادر منا فعلاً. إزالة العنوان وإضافته من جديد ينشئ مفتاحاً جديداً.",
+    "save": "حفظ",
+    "saved": "تم حفظ عنوان الإشعار",
+    "remove": "إزالة العنوان",
+    "removed": "تمت إزالة عنوان الإشعار",
+    "loadError": "تعذر تحميل إعدادات الإشعار."
   }
 }

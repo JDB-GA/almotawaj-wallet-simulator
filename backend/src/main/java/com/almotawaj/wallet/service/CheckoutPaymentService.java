@@ -2,6 +2,8 @@ package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayMessages;
+import com.almotawaj.wallet.event.CheckoutStatusChangedEvent;
 import com.almotawaj.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
@@ -44,7 +46,7 @@ public class CheckoutPaymentService {
     @Transactional
     public CheckoutViewResponse pay(UUID payerId, UUID sessionId) {
         CheckoutSession session = sessionRepository.findByIdForUpdate(sessionId).orElseThrow(() ->
-                new InformationNotFoundException(ErrorMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
+                new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
         Instant now = clock.instant();
         ensurePayable(session, now);
         User merchant = session.getMerchant();
@@ -68,19 +70,20 @@ public class CheckoutPaymentService {
 
         auditService.record(payerId, AuditAction.CHECKOUT_PAID, AuditTargetType.CHECKOUT_SESSION, sessionId, session.getOrderReference());
         eventPublisher.publishEvent(new MoneyReceivedEvent(merchant.getId(), amount, payerDetails.name(), received.getReference()));
+        eventPublisher.publishEvent(new CheckoutStatusChangedEvent(sessionId));
         return mapper.toView(session);
     }
 
     private void ensurePayable(CheckoutSession session, Instant now) {
         CheckoutStatus status = session.statusAt(now);
         if (status == CheckoutStatus.EXPIRED) {
-            throw new BusinessRuleException(ErrorMessages.CHECKOUT_EXPIRED, ErrorCodes.CHECKOUT_EXPIRED);
+            throw new BusinessRuleException(GatewayMessages.CHECKOUT_EXPIRED, ErrorCodes.CHECKOUT_EXPIRED);
         }
         if (status != CheckoutStatus.PENDING) {
-            throw new BusinessRuleException(ErrorMessages.CHECKOUT_NOT_PENDING, ErrorCodes.CHECKOUT_NOT_PENDING);
+            throw new BusinessRuleException(GatewayMessages.CHECKOUT_NOT_PENDING, ErrorCodes.CHECKOUT_NOT_PENDING);
         }
         if (!accessPolicy.canReceive(session.getMerchant())) {
-            throw new BusinessRuleException(ErrorMessages.MERCHANT_UNAVAILABLE, ErrorCodes.MERCHANT_UNAVAILABLE);
+            throw new BusinessRuleException(GatewayMessages.MERCHANT_UNAVAILABLE, ErrorCodes.MERCHANT_UNAVAILABLE);
         }
     }
 }

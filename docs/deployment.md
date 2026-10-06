@@ -22,6 +22,7 @@
 | `APP_URL`                      | `https://wallet.almotawaj.com` (email links)                                           |
 | `STORAGE_ROOT`                 | optional, default `/data/uploads`                                                      |
 | `SEED_TOKEN` / `SEED_PASSWORD` | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
+| `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | leave unset in production; `true` only allows callbacks to local addresses in development |
 | `RAILPACK_JDK_VERSION`         | `17`                                                                                   |
 
 Email is sent through Resend's HTTPS API because Railway blocks outbound SMTP on non-Pro plans.

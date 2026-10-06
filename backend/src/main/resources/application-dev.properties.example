@@ -21,3 +21,4 @@ storage-root=uploads
 app-url=http://localhost:5173
 seed-token=
 seed-password=
+webhook-allow-private-hosts=true

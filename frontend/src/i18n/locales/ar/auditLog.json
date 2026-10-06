@@ -37,7 +37,9 @@
     "STATEMENT_DOWNLOADED": "تنزيل كشف حساب",
     "PROFILE_UPDATED": "تحديث الملف الشخصي",
     "PROFILE_PICTURE_UPDATED": "تحديث الصورة الشخصية",
-    "PROFILE_PICTURE_REMOVED": "إزالة الصورة الشخصية"
+    "PROFILE_PICTURE_REMOVED": "إزالة الصورة الشخصية",
+    "WEBHOOK_UPDATED": "تحديث إشعار الدفع",
+    "WEBHOOK_REMOVED": "إزالة إشعار الدفع"
   },
   "targets": {
     "USER": "مستخدم",

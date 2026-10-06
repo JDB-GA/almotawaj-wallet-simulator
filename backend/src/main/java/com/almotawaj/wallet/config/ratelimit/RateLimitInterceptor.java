@@ -23,8 +23,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
-        String key = request.getRequestURI() + RateLimitConstants.KEY_SEPARATOR + request.getRemoteAddr();
-        ConsumptionProbe probe = buckets.get(key, ignored -> newBucket()).tryConsumeAndReturnRemaining(1);
+        ConsumptionProbe probe = buckets.get(keyOf(request), ignored -> newBucket()).tryConsumeAndReturnRemaining(1);
 
         if (!probe.isConsumed()) {
             throw new RateLimitExceededException(Duration.ofNanos(probe.getNanosToWaitForRefill()));
@@ -32,11 +31,17 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    protected String keyOf(HttpServletRequest request) {
+        return request.getRequestURI() + RateLimitConstants.KEY_SEPARATOR + request.getRemoteAddr();
+    }
+
+    protected long capacity() {
+        return RateLimitConstants.CAPACITY;
+    }
+
     private Bucket newBucket() {
         return Bucket.builder()
-                .addLimit(limit -> limit
-                        .capacity(RateLimitConstants.CAPACITY)
-                        .refillIntervally(RateLimitConstants.CAPACITY, RateLimitConstants.WINDOW))
+                .addLimit(limit -> limit.capacity(capacity()).refillIntervally(capacity(), RateLimitConstants.WINDOW))
                 .build();
     }
 }

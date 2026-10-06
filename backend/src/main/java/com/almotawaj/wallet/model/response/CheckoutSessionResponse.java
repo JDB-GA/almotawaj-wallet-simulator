@@ -14,6 +14,7 @@ public record CheckoutSessionResponse(
         CheckoutStatus status,
         String payerName,
         String checkoutUrl,
+        String returnUrl,
         Instant expiresAt,
         Instant paidAt,
         Instant refundedAt,

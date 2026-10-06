@@ -2,6 +2,7 @@ package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.config.constants.GatewayConstants;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.security.ApiKeyHasher;
@@ -46,7 +47,7 @@ public class MerchantApiKeyService {
         userRepository.findByIdForUpdate(merchantId)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.USER_NOT_FOUND));
         if (apiKeyRepository.countByMerchantIdAndRevokedAtIsNull(merchantId) >= GatewayConstants.MAX_ACTIVE_API_KEYS) {
-            throw new BusinessRuleException(ErrorMessages.API_KEY_LIMIT_REACHED, ErrorCodes.API_KEY_LIMIT_REACHED);
+            throw new BusinessRuleException(GatewayMessages.API_KEY_LIMIT_REACHED, ErrorCodes.API_KEY_LIMIT_REACHED);
         }
         String secret = hasher.generate();
         MerchantApiKey key = new MerchantApiKey();
@@ -62,7 +63,7 @@ public class MerchantApiKeyService {
     @Transactional
     public void revoke(UUID merchantId, UUID keyId) {
         MerchantApiKey key = apiKeyRepository.findByIdAndMerchantId(keyId, merchantId)
-                .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.API_KEY_NOT_FOUND, ErrorCodes.API_KEY_NOT_FOUND));
+                .orElseThrow(() -> new InformationNotFoundException(GatewayMessages.API_KEY_NOT_FOUND, ErrorCodes.API_KEY_NOT_FOUND));
         if (key.getRevokedAt() == null) {
             key.setRevokedAt(clock.instant());
             auditService.record(merchantId, AuditAction.API_KEY_REVOKED, AuditTargetType.API_KEY, keyId, key.getName());

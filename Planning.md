@@ -40,13 +40,13 @@ Every feature is built as one vertical slice, backend first, on its own branch:
 | 2026-10-03 | Deployment to Railway and Vercel on `almotawaj.com`, email via Resend API, security headers |
 | 2026-10-04 | KYC submission (backend and client UI), file storage, permission model |
 | 2026-10-05 | KYC review, permissions, user management, create user by invitation, forgot/reset/change password, document preview, seeding, Swagger docs, test profile, audit log API and screen; wallets with generated IBANs, simulated incoming transfers with daily limits, wallet-to-wallet transfers with recipient autocomplete, transaction search and filters |
-| 2026-10-06 | Seeded data clean-up, live notifications over SSE, transactions page and details panel, request money; audit trail for sign-in, wallet and payment request activity with localized details, statistics permission with user counts and system transactions, user transactions for admins, JavaDoc on the main services, documentation split into guides; payment gateway with merchant API keys, checkout sessions, hosted checkout page, refunds and expiry; PDF receipts and statements in English and Arabic; wallet redesign, admin dashboard with statistics, profile with picture and business name |
+| 2026-10-06 | Seeded data clean-up, live notifications over SSE, transactions page and details panel, request money; audit trail for sign-in, wallet and payment request activity with localized details, statistics permission with user counts and system transactions, user transactions for admins, JavaDoc on the main services, documentation split into guides; payment gateway with merchant API keys, checkout sessions, hosted checkout page, refunds and expiry; PDF receipts and statements in English and Arabic; wallet redesign, admin dashboard with statistics, profile with picture and business name; gateway return addresses, signed callbacks, per-merchant rate limit and an in-app developer guide |
 
 ## Requirement coverage
 
 | # | Requirement | Status |
 | --- | --- | --- |
-| 1 | Five+ entities, relationships, ERD | Done – users, user_permissions, otp_challenges, kyc_applications, kyc_documents, audit_logs, wallets, wallet_transactions, payment_requests, merchant_api_keys, checkout_sessions |
+| 1 | Five+ entities, relationships, ERD | Done – users, user_permissions, otp_challenges, kyc_applications, kyc_documents, audit_logs, wallets, wallet_transactions, payment_requests, merchant_api_keys, merchant_webhooks, checkout_sessions |
 | 2 | Spring profiles (dev/test), no hard-coded secrets | Done – `dev`, `test` (H2), `prod` (environment variables) |
 | 3–4 | REST CRUD, correct status codes | Done |
 | 5–6 | Validation, global exception handling | Done |

@@ -12,6 +12,7 @@ export const checkoutSessionSchema = z.object({
   status: checkoutStatusSchema,
   payerName: z.string().nullable(),
   checkoutUrl: z.url(),
+  returnUrl: z.url().nullable(),
   expiresAt: z.iso.datetime({ offset: true }),
   paidAt: z.iso.datetime({ offset: true }).nullable(),
   refundedAt: z.iso.datetime({ offset: true }).nullable(),

@@ -3,6 +3,7 @@ import { PageTitle } from '@/components/PageTitle'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ApiKeysList } from '../components/ApiKeysList'
 import { CreateApiKeyDialog } from '../components/CreateApiKeyDialog'
+import { WebhookCard } from '../components/WebhookCard'
 import { API_KEY_HEADER } from '../constants/merchant.constants'
 
 export function MerchantApiKeysPage() {
@@ -25,6 +26,7 @@ export function MerchantApiKeysPage() {
           <ApiKeysList />
         </CardContent>
       </Card>
+      <WebhookCard />
     </div>
   )
 }

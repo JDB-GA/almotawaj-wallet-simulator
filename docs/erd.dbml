@@ -42,21 +42,6 @@ Enum permission {
   STATISTICS_VIEW
 }
 
-Enum checkout_status {
-  PENDING
-  PAID
-  CANCELLED
-  EXPIRED
-  REFUNDED
-}
-
-Enum payment_request_status {
-  PENDING
-  PAID
-  DECLINED
-  CANCELLED
-}
-
 Enum transaction_type {
   TOP_UP
   PAYMENT
@@ -70,6 +55,21 @@ Enum transaction_type {
 Enum transaction_direction {
   CREDIT
   DEBIT
+}
+
+Enum payment_request_status {
+  PENDING
+  PAID
+  DECLINED
+  CANCELLED
+}
+
+Enum checkout_status {
+  PENDING
+  PAID
+  CANCELLED
+  EXPIRED
+  REFUNDED
 }
 
 Table users {
@@ -128,7 +128,7 @@ Table kyc_applications {
   flat              varchar(10)
   area              varchar(100)            [not null]
   rejection_reason  varchar(500)
-  reviewed_by       uuid                    [ref: > users.id]
+  reviewed_by       uuid                    [ref: > users.id, note: 'Null until an admin decides']
   reviewed_at       timestamptz
   created_at        timestamptz             [not null]
   updated_at        timestamptz             [not null]
@@ -156,7 +156,7 @@ Table kyc_documents {
 
 Table audit_logs {
   id           uuid          [pk]
-  actor_id     uuid          [ref: > users.id, note: 'Who performed the action']
+  actor_id     uuid          [ref: > users.id, note: 'Who performed the action; null for the system']
   action       varchar(40)   [not null, note: 'AuditAction enum name']
   target_type  varchar(40)   [not null, note: 'USER, KYC_APPLICATION, PAYMENT_REQUEST, WALLET_TRANSACTION, API_KEY or CHECKOUT_SESSION']
   target_id    uuid          [not null]
@@ -181,20 +181,20 @@ Table wallets {
 }
 
 Table wallet_transactions {
-  id                 uuid                   [pk]
-  wallet_id          uuid                   [not null, ref: > wallets.id]
-  reference          varchar(24)            [not null, unique, note: 'TXN-yyyyMMdd-XXXXXXXX']
-  type               transaction_type       [not null]
-  direction          transaction_direction  [not null]
-  amount             numeric(19,3)          [not null]
-  balance_after      numeric(19,3)          [not null]
-  counterparty_name  varchar(70)            [not null]
-  counterparty_iban  varchar(34)
-  counterparty_bic   varchar(11)
-  counterparty_email   varchar(254)         [note: 'Masked']
-  counterparty_mobile  varchar(12)          [note: 'Masked']
-  description        varchar(140)
-  created_at         timestamptz            [not null]
+  id                   uuid                   [pk]
+  wallet_id            uuid                   [not null, ref: > wallets.id]
+  reference            varchar(24)            [not null, unique, note: 'TXN-yyyyMMdd-XXXXXXXX']
+  type                 transaction_type       [not null]
+  direction            transaction_direction  [not null]
+  amount               numeric(19,3)          [not null]
+  balance_after        numeric(19,3)          [not null]
+  counterparty_name    varchar(70)            [not null]
+  counterparty_iban    varchar(34)
+  counterparty_bic     varchar(11)
+  counterparty_email   varchar(254)           [note: 'Masked']
+  counterparty_mobile  varchar(12)            [note: 'Masked']
+  description          varchar(140)           [note: 'Note, bank name or order reference']
+  created_at           timestamptz            [not null]
 
   indexes {
     (wallet_id, created_at)
@@ -232,6 +232,14 @@ Table merchant_api_keys {
   }
 }
 
+Table merchant_webhooks {
+  id           uuid          [pk, note: 'The signing secret is derived from this id']
+  merchant_id  uuid          [not null, unique, ref: - users.id, note: 'One callback URL per merchant']
+  url          varchar(500)  [not null]
+  created_at   timestamptz   [not null]
+  updated_at   timestamptz   [not null]
+}
+
 Table checkout_sessions {
   id               uuid             [pk]
   merchant_id      uuid             [not null, ref: > users.id]
@@ -239,6 +247,7 @@ Table checkout_sessions {
   order_reference  varchar(64)      [not null, note: 'The merchant order id']
   amount           numeric(19,3)    [not null]
   description      varchar(140)
+  return_url       varchar(500)     [note: 'Where the customer is sent after paying']
   status           checkout_status  [not null, default: 'PENDING']
   expires_at       timestamptz      [not null]
   paid_at          timestamptz

@@ -16,6 +16,7 @@ public final class LogMessages {
     public static final String PASSWORD_CHANGED = "User {} changed their password";
     public static final String FILE_DELETE_FAILED = "Failed to delete stored file {}";
     public static final String SSE_DELIVERY_FAILED = "Dropped notification stream for user {}";
+    public static final String WEBHOOK_FAILED = "Callback for checkout session {} was not delivered after {} attempts";
     public static final String SEED_COMPLETED = "Basic database seeding completed";
     public static final String SEED_DATA_CLEANED = "Removed {} seeded accounts and their dependent data";
     public static final String SEED_TOKEN_REJECTED = "Rejected seed request with an invalid token";

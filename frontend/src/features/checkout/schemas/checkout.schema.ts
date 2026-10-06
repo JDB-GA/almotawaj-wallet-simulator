@@ -8,5 +8,6 @@ export const checkoutSchema = z.object({
   amount: z.number(),
   description: z.string().nullable(),
   status: checkoutStatusSchema,
+  returnUrl: z.url().nullable(),
   expiresAt: z.iso.datetime({ offset: true }),
 })

@@ -9,7 +9,7 @@ import { createCheckoutSchema } from '../schemas/create-checkout.schema'
 import type { CheckoutSession, CreateCheckoutInput, CreateCheckoutValues } from '../types/merchant.types'
 import { getCheckoutFieldErrors } from '../utils/get-checkout-field-errors'
 
-const DEFAULT_VALUES: CreateCheckoutInput = { orderReference: '', amount: '', description: '' }
+const DEFAULT_VALUES: CreateCheckoutInput = { orderReference: '', amount: '', description: '', returnUrl: '' }
 
 export function useCreateCheckoutForm(onCreated: (session: CheckoutSession) => void) {
   const queryClient = useQueryClient()

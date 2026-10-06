@@ -2,6 +2,7 @@ package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.config.constants.WalletLimits;
 import com.almotawaj.wallet.exception.BusinessRuleException;
@@ -50,7 +51,7 @@ public class DailyLimitPolicy {
 
     public void ensureCheckoutAllowed(UUID walletId, BigDecimal amount) {
         if (amount.compareTo(remaining(walletId, TransactionType.PAYMENT, CHECKOUT_LIMIT)) > 0) {
-            throw new BusinessRuleException(ErrorMessages.DAILY_CHECKOUT_LIMIT_EXCEEDED, ErrorCodes.DAILY_CHECKOUT_LIMIT_EXCEEDED);
+            throw new BusinessRuleException(GatewayMessages.DAILY_CHECKOUT_LIMIT_EXCEEDED, ErrorCodes.DAILY_CHECKOUT_LIMIT_EXCEEDED);
         }
     }
 

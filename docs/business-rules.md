@@ -47,3 +47,6 @@ Admins with `USER_MANAGE` manage clients and merchants only; only the super admi
 24. Sessions that are not paid in time are marked `EXPIRED` by a job that runs every minute.
 25. A wallet holder can download a receipt only for a transaction of their own wallet. A statement covers only their own wallet and lists at most the 500 newest matching transactions. Both downloads are written to the audit log.
 26. A client's name is their verified KYC name and cannot be edited. A merchant sets a business name (2–70 characters), which replaces their email wherever their name is shown to other users. Profile pictures must be real JPEG or PNG files up to 5 MB; uploading a new one deletes the old file.
+27. A checkout session may carry a return address; after paying, the customer is sent there with the session id and order reference. The return is a convenience only, so merchants must confirm the status through the API or the callback.
+28. A merchant has at most one callback URL. Every status change of their sessions is posted to it, signed with a secret that only that merchant can read. Callback URLs must be public https addresses.
+29. Gateway calls are limited to 120 per minute for each merchant account, whatever address they come from.

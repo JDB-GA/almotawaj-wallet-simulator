@@ -7,6 +7,7 @@ import com.almotawaj.wallet.model.response.CheckoutSessionResponse;
 import com.almotawaj.wallet.model.response.CheckoutViewResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Clock;
 
@@ -31,6 +32,7 @@ public class CheckoutSessionMapper {
                 session.statusAt(clock.instant()),
                 session.getPayer() == null ? null : names.maskedName(session.getPayer()),
                 appUrl + GatewayConstants.CHECKOUT_PAGE_PATH + session.getId(),
+                session.getReturnUrl(),
                 session.getExpiresAt(),
                 session.getPaidAt(),
                 session.getRefundedAt(),
@@ -45,6 +47,18 @@ public class CheckoutSessionMapper {
                 session.getAmount(),
                 session.getDescription(),
                 session.statusAt(clock.instant()),
+                returnUrlOf(session),
                 session.getExpiresAt());
+    }
+
+    private static String returnUrlOf(CheckoutSession session) {
+        if (session.getReturnUrl() == null) {
+            return null;
+        }
+        return UriComponentsBuilder.fromUriString(session.getReturnUrl())
+                .queryParam(GatewayConstants.RETURN_SESSION_PARAMETER, session.getId())
+                .queryParam(GatewayConstants.RETURN_ORDER_PARAMETER, session.getOrderReference())
+                .build()
+                .toUriString();
     }
 }

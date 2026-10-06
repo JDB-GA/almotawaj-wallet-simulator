@@ -1,7 +1,12 @@
 import { env } from '@/config/env'
-import { GATEWAY_PATH, GUIDE_HEADER, SAMPLE_API_KEY, SAMPLE_SESSION_ID } from '../constants/developers.constants'
+import { GATEWAY_PATH, GUIDE_HEADER, SAMPLE_API_KEY, SAMPLE_SESSION_ID, SIGNATURE_HEADER } from '../constants/developers.constants'
 
-const SAMPLE_BODY = { orderReference: 'ORDER-1042', amount: 12.5, description: '2 x Arabic coffee beans' }
+const SAMPLE_BODY = {
+  orderReference: 'ORDER-1042',
+  amount: 12.5,
+  description: '2 x Arabic coffee beans',
+  returnUrl: 'https://shop.example.com/orders/1042/complete',
+}
 
 const buildCodeSamples = (apiUrl: string, appUrl: string) => {
   const sessionsUrl = `${apiUrl}${GATEWAY_PATH}`
@@ -48,6 +53,37 @@ const buildCodeSamples = (apiUrl: string, appUrl: string) => {
     confirmResponse: JSON.stringify({ ...session, status: 'PAID', payerName: 'Sara A.', paidAt: '2026-10-06T16:45:31Z' }, null, 2),
     cancelCurl: `curl -X POST ${sessionUrl}/cancel \\\n  -H "${GUIDE_HEADER}: ${SAMPLE_API_KEY}"`,
     refundCurl: `curl -X POST ${sessionUrl}/refund \\\n  -H "${GUIDE_HEADER}: ${SAMPLE_API_KEY}"`,
+    returnExample: `${SAMPLE_BODY.returnUrl}?sessionId=${SAMPLE_SESSION_ID}&orderReference=${SAMPLE_BODY.orderReference}`,
+    callbackBody: JSON.stringify(
+      {
+        event: 'checkout.paid',
+        sessionId: SAMPLE_SESSION_ID,
+        orderReference: SAMPLE_BODY.orderReference,
+        amount: SAMPLE_BODY.amount,
+        status: 'PAID',
+        occurredAt: '2026-10-06T16:45:31Z',
+      },
+      null,
+      2,
+    ),
+    callbackVerify: [
+      "import { createHmac, timingSafeEqual } from 'node:crypto'",
+      '',
+      "app.post('/webhooks/wallet', express.raw({ type: 'application/json' }), (request, response) => {",
+      "  const expected = createHmac('sha256', process.env.WALLET_SIGNING_SECRET).update(request.body).digest('hex')",
+      `  const received = request.get('${SIGNATURE_HEADER}') ?? ''`,
+      '  const isValid = expected.length === received.length && timingSafeEqual(Buffer.from(expected), Buffer.from(received))',
+      '  if (!isValid) {',
+      '    return response.sendStatus(401)',
+      '  }',
+      '',
+      '  const event = JSON.parse(request.body)',
+      "  if (event.event === 'checkout.paid') {",
+      '    markOrderAsPaid(event.orderReference)',
+      '  }',
+      '  response.sendStatus(200)',
+      '})',
+    ].join('\n'),
     errorResponse: JSON.stringify(
       {
         title: 'Conflict',

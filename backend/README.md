@@ -26,6 +26,7 @@ Fill in `application-dev.properties` (it is gitignored – never commit it):
 | `app-url`                     | `http://localhost:5173` (used in email links)                 |
 | `storage-root`                | folder for uploaded files, default `uploads`                  |
 | `seed-token`, `seed-password` | optional, see [Seeding](#seeding)                             |
+| `webhook-allow-private-hosts` | `true` to let payment callbacks reach `localhost` while developing |
 
 ```bash
 ./mvnw spring-boot:run

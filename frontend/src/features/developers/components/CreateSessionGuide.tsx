@@ -24,6 +24,9 @@ export function CreateSessionGuide() {
       <h3 className="text-sm font-semibold">{t('create.responseTitle')}</h3>
       <CodeBlock title="201 Created" code={samples.createResponse} />
       <FieldsTable rows={responseRows} />
+      <h3 className="text-sm font-semibold">{t('create.returnTitle')}</h3>
+      <p className="text-sm text-muted-foreground">{t('create.returnDescription')}</p>
+      <CodeBlock title={t('create.returnExample')} code={samples.returnExample} />
     </GuideSection>
   )
 }

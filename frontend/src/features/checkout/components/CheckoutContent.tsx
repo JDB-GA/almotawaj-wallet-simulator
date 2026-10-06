@@ -12,6 +12,7 @@ import { isApiError } from '@/lib/api/api-error'
 import { HTTP_STATUS } from '@/lib/api/http.constants'
 import { useCheckout } from '../hooks/useCheckout'
 import { usePayCheckout } from '../hooks/usePayCheckout'
+import { useReturnToMerchant } from '../hooks/useReturnToMerchant'
 import { CheckoutSummary } from './CheckoutSummary'
 
 interface CheckoutContentProps {
@@ -23,6 +24,7 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   const { language } = useLanguage()
   const { data, isPending, isError, error, refetch } = useCheckout(sessionId)
   const pay = usePayCheckout(sessionId)
+  const merchantSite = useReturnToMerchant(data, pay.isSuccess)
 
   if (isPending) {
     return (
@@ -52,11 +54,24 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
     <>
       <CardContent>
         <CheckoutSummary checkout={data} />
+        {pay.isSuccess && merchantSite && (
+          <p className="mt-4 text-center text-sm text-muted-foreground" role="status">
+            {t('checkout.returning', { site: merchantSite.host })}
+          </p>
+        )}
       </CardContent>
       <CardFooter className="justify-end gap-2">
-        <Button asChild variant="outline">
-          <Link to={ROUTES.wallet}>{t('checkout.backToWallet')}</Link>
-        </Button>
+        {merchantSite?.url ? (
+          <Button asChild variant="outline">
+            <a href={merchantSite.url} rel="noreferrer">
+              {t('checkout.returnTo', { site: merchantSite.host })}
+            </a>
+          </Button>
+        ) : (
+          <Button asChild variant="outline">
+            <Link to={ROUTES.wallet}>{t('checkout.backToWallet')}</Link>
+          </Button>
+        )}
         {data.status === 'PENDING' && (
           <ConfirmActionDialog
             disabled={pay.isPending}
