@@ -32,7 +32,7 @@ src
 ├── app/          providers, router, route guards, layout, navigation (page registry)
 ├── components/   shared components (ui/ is shadcn)
 ├── config/       env and route constants
-├── features/     auth, kyc, kyc-review, user-management, audit-log, wallet, notifications, admin, merchant, checkout
+├── features/     auth, kyc, kyc-review, user-management, audit-log, wallet, notifications, admin, merchant, checkout, profile, developers
 ├── hooks/        shared hooks
 ├── i18n/         i18next setup and en/ar translations
 └── lib/          HTTP client, query client, file helpers
