@@ -18,16 +18,16 @@ export function KycAddressFields({ control }: KycAddressFieldsProps) {
       <FieldDescription>{t('form.addressDescription')}</FieldDescription>
       <FieldGroup className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
         <FormField control={control} name="block" label={t('fields.block')}>
-          {(props) => <Input {...props} dir="ltr" inputMode="numeric" maxLength={BLOCK_MAX_LENGTH} />}
+          {(props) => <Input {...props} dir="ltr" inputMode="numeric" maxLength={BLOCK_MAX_LENGTH} placeholder={t('fields.blockPlaceholder')} />}
         </FormField>
         <FormField control={control} name="road" label={t('fields.road')}>
-          {(props) => <Input {...props} dir="ltr" inputMode="numeric" maxLength={ROAD_MAX_LENGTH} />}
+          {(props) => <Input {...props} dir="ltr" inputMode="numeric" maxLength={ROAD_MAX_LENGTH} placeholder={t('fields.roadPlaceholder')} />}
         </FormField>
         <FormField control={control} name="building" label={t('fields.building')}>
-          {(props) => <Input {...props} dir="ltr" maxLength={BUILDING_MAX_LENGTH} />}
+          {(props) => <Input {...props} dir="ltr" maxLength={BUILDING_MAX_LENGTH} placeholder={t('fields.buildingPlaceholder')} />}
         </FormField>
         <FormField control={control} name="flat" label={t('fields.flat')}>
-          {(props) => <Input {...props} dir="ltr" maxLength={BUILDING_MAX_LENGTH} />}
+          {(props) => <Input {...props} dir="ltr" maxLength={BUILDING_MAX_LENGTH} placeholder={t('fields.flatPlaceholder')} />}
         </FormField>
       </FieldGroup>
       <FormField control={control} name="area" label={t('fields.area')}>

@@ -52,7 +52,9 @@
     "email": "البريد الإلكتروني",
     "mobileNumber": "رقم الجوال",
     "save": "حفظ التغييرات",
-    "saved": "تم تحديث بيانات التواصل"
+    "saved": "تم تحديث بيانات التواصل",
+    "emailPlaceholder": "user@example.com",
+    "mobilePlaceholder": "33123456"
   },
   "permissions": {
     "title": "الصلاحيات",

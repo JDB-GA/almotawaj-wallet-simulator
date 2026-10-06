@@ -35,7 +35,8 @@
     "revoked": "API key revoked",
     "emptyTitle": "No API keys yet",
     "emptyDescription": "Create a key to accept payments from your website.",
-    "loadError": "Could not load your API keys."
+    "loadError": "Could not load your API keys.",
+    "namePlaceholder": "Online store"
   },
   "payments": {
     "description": "Create a payment link for an order and send it to your customer. Links expire after 30 minutes.",
@@ -66,7 +67,9 @@
     "refunded": "Payment refunded",
     "emptyTitle": "No payments yet",
     "emptyDescription": "Payments you create here or through the API appear in this list.",
-    "loadError": "Could not load your payments."
+    "loadError": "Could not load your payments.",
+    "orderPlaceholder": "ORDER-1042",
+    "descriptionPlaceholder": "What the customer is paying for"
   },
   "checkout": {
     "description": "Check the details before you pay from your wallet.",

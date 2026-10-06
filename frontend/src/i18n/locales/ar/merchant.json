@@ -35,7 +35,8 @@
     "revoked": "تم إلغاء مفتاح API",
     "emptyTitle": "لا توجد مفاتيح API",
     "emptyDescription": "أنشئ مفتاحاً لقبول المدفوعات من موقعك.",
-    "loadError": "تعذر تحميل مفاتيح API."
+    "loadError": "تعذر تحميل مفاتيح API.",
+    "namePlaceholder": "المتجر الإلكتروني"
   },
   "payments": {
     "description": "أنشئ رابط دفع لطلب وأرسله إلى عميلك. تنتهي صلاحية الروابط بعد 30 دقيقة.",
@@ -66,7 +67,9 @@
     "refunded": "تم استرداد الدفعة",
     "emptyTitle": "لا توجد مدفوعات",
     "emptyDescription": "تظهر هنا المدفوعات التي تنشئها من هذه الصفحة أو عبر الـ API.",
-    "loadError": "تعذر تحميل المدفوعات."
+    "loadError": "تعذر تحميل المدفوعات.",
+    "orderPlaceholder": "ORDER-1042",
+    "descriptionPlaceholder": "ما الذي يدفع العميل مقابله"
   },
   "checkout": {
     "description": "راجع التفاصيل قبل الدفع من محفظتك.",

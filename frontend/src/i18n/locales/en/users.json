@@ -52,7 +52,9 @@
     "email": "Email",
     "mobileNumber": "Mobile number",
     "save": "Save changes",
-    "saved": "Contact details updated"
+    "saved": "Contact details updated",
+    "emailPlaceholder": "user@example.com",
+    "mobilePlaceholder": "33123456"
   },
   "permissions": {
     "title": "Permissions",

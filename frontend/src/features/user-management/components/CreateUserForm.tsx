@@ -27,10 +27,10 @@ export function CreateUserForm({ actor }: CreateUserFormProps) {
     <form onSubmit={onSubmit} noValidate>
       <FieldGroup>
         <FormField control={form.control} name="email" label={t('create.email')}>
-          {(props) => <Input {...props} type="email" dir="ltr" autoComplete="off" />}
+          {(props) => <Input {...props} type="email" dir="ltr" autoComplete="off" placeholder={t('contact.emailPlaceholder')} />}
         </FormField>
         <FormField control={form.control} name="mobileNumber" label={t('create.mobileNumber')}>
-          {(props) => <MobileNumberInput {...props} />}
+          {(props) => <MobileNumberInput {...props} placeholder={t('contact.mobilePlaceholder')} />}
         </FormField>
         <FormField control={form.control} name="role" label={t('create.role')}>
           {(props) => <RoleSelect {...props} roles={getCreatableRoles(actor)} />}

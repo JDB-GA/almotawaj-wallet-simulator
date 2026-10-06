@@ -30,7 +30,7 @@ export function BusinessNameCard({ profile }: BusinessNameCardProps) {
         <form onSubmit={onSubmit} noValidate className="grid gap-4">
           <FieldGroup>
             <FormField control={form.control} name="displayName" label={t('business.name')}>
-              {(props) => <Input {...props} autoComplete="organization" maxLength={DISPLAY_NAME_MAX_LENGTH} />}
+              {(props) => <Input {...props} autoComplete="organization" maxLength={DISPLAY_NAME_MAX_LENGTH} placeholder={t('business.placeholder')} />}
             </FormField>
             <FormErrorMessage errorKey={errorKey} />
           </FieldGroup>

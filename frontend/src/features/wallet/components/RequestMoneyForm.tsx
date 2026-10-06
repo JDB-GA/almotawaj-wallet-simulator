@@ -68,7 +68,7 @@ export function RequestMoneyForm({ onSuccess }: RequestMoneyFormProps) {
           {(props) => <Input {...props} dir="ltr" inputMode="decimal" autoComplete="off" placeholder={AMOUNT_PLACEHOLDER} />}
         </FormField>
         <FormField control={form.control} name="note" label={t('transfer.note')}>
-          {(props) => <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} />}
+          {(props) => <Textarea {...props} rows={2} maxLength={TRANSFER_NOTE_MAX_LENGTH} placeholder={t('transfer.notePlaceholder')} />}
         </FormField>
         {create.isError && getTransferFieldErrors(create.error).length === 0 && <FormErrorMessage errorKey="unexpected" />}
       </FieldGroup>

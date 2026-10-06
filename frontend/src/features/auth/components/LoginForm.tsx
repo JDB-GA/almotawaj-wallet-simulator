@@ -22,7 +22,7 @@ export function LoginForm() {
           )}
         </FormField>
         <FormField control={form.control} name="password" label={t('fields.password')}>
-          {(props) => <PasswordInput {...props} autoComplete="current-password" />}
+          {(props) => <PasswordInput {...props} autoComplete="current-password" placeholder={t('fields.passwordPlaceholder')} />}
         </FormField>
         <Link to={ROUTES.forgotPassword} className="-mt-3 self-end text-sm underline-offset-4 hover:underline">
           {t('forgot.link')}
