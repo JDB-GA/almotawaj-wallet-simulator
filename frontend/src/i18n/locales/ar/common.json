@@ -97,6 +97,9 @@
     },
     "profile": {
       "title": "الملف الشخصي"
+    },
+    "merchantDevelopers": {
+      "title": "دليل المطورين"
     }
   },
   "nav": {

@@ -103,6 +103,8 @@ Sensitive endpoints allow 10 requests per minute for each client address and end
 
 ## Payment gateway
 
+Merchants read the same guide inside the app under **Developer Guide** (`/merchant/developers`), in English and Arabic, with copyable cURL and Node.js examples that use the real API address.
+
 A merchant accepts wallet payments in four steps:
 
 1. Create an API key under **API keys** in the merchant dashboard (or `POST /api/merchant/api-keys`). The full key is returned once; only its SHA-256 hash is stored.

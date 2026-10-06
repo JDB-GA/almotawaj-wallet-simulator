@@ -97,6 +97,9 @@
     },
     "profile": {
       "title": "Profile"
+    },
+    "merchantDevelopers": {
+      "title": "Developer Guide"
     }
   },
   "nav": {

@@ -13,6 +13,7 @@ export const ROUTES = {
   merchant: '/merchant',
   merchantPayments: '/merchant/payments',
   merchantApiKeys: '/merchant/api-keys',
+  merchantDevelopers: '/merchant/developers',
   checkout: '/checkout/:sessionId',
   admin: '/admin',
   kycReviews: '/admin/kyc',
