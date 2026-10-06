@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { PageTitle } from '@/components/PageTitle'
+import { CallbackGuide } from '../components/CallbackGuide'
 import { ConfirmPaymentGuide } from '../components/ConfirmPaymentGuide'
 import { CreateSessionGuide } from '../components/CreateSessionGuide'
 import { ErrorsGuide } from '../components/ErrorsGuide'
@@ -19,6 +20,7 @@ export function DeveloperGuidePage() {
       <GuideOverview />
       <CreateSessionGuide />
       <ConfirmPaymentGuide />
+      <CallbackGuide />
       <ManagePaymentGuide />
       <ErrorsGuide />
     </div>
