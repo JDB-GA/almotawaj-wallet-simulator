@@ -24,6 +24,7 @@ export const REQUEST_FIELDS = [
   { name: 'amount', type: 'number', required: true },
   { name: 'description', type: 'string', required: false },
   { name: 'returnUrl', type: 'string', required: false },
+  { name: 'expiresInMinutes', type: 'number', required: false },
 ] as const
 
 export const RESPONSE_FIELDS = [

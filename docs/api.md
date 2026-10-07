@@ -144,6 +144,8 @@ A merchant sets one callback URL (`PUT /api/merchant/webhook`, or the API keys p
 | `EXPIRED` | Not paid in time | – |
 | `REFUNDED` | The full amount moved back to the customer | – |
 
+A session may set `expiresInMinutes` (1 to 30, default 30). A runnable sample store is in [`examples/demo-shop`](../examples/demo-shop/README.md).
+
 An API key only opens `/api/gateway/**`; it cannot read the wallet or any other endpoint. Without a valid key the gateway answers `401`.
 
 ## PDF documents

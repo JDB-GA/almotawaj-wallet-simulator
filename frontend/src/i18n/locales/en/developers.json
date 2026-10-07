@@ -35,7 +35,8 @@
     "orderReference": "Your own order id. Up to 64 letters, digits, dots, dashes or underscores. It can be used for one session only.",
     "amount": "Amount in BHD with up to 3 decimals, from 0.100 to 5000.000.",
     "description": "What the customer is paying for, up to 140 characters. Shown on the checkout page.",
-    "returnUrl": "A full http(s) address on your site, up to 500 characters. The customer is sent there after paying. We add sessionId and orderReference to it."
+    "returnUrl": "A full http(s) address on your site, up to 500 characters. The customer is sent there after paying. We add sessionId and orderReference to it.",
+    "expiresInMinutes": "How long the session can be paid, from 1 to 30 minutes. Defaults to 30."
   },
   "response": {
     "id": "The session id. Store it with your order.",
