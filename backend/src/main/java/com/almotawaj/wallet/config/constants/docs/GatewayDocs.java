@@ -37,7 +37,7 @@ public final class GatewayDocs {
     public static final String LIST_DESCRIPTION = "Checkout sessions with the masked payer. Filter by status. Paged and sortable (default createdAt,desc).";
     public static final String LIST_OK = "Page of checkout sessions";
     public static final String CREATE = "Create a checkout session";
-    public static final String CREATE_DESCRIPTION = "Creates a PENDING session that expires after 30 minutes and returns the `checkoutUrl` to send the customer to. After paying, the customer is sent to the optional `returnUrl` with `sessionId` and `orderReference` added. An order reference can be used once per merchant.";
+    public static final String CREATE_DESCRIPTION = "Creates a PENDING session that expires after `expiresInMinutes` (1 to 30, default 30) and returns the `checkoutUrl` to send the customer to. After paying, the customer is sent to the optional `returnUrl` with `sessionId` and `orderReference` added. An order reference can be used once per merchant.";
     public static final String CREATED = "Session created";
     public static final String ORDER_EXISTS = "A session already exists for this order reference (ORDER_ALREADY_EXISTS)";
     public static final String GET = "Get a checkout session";

@@ -12,6 +12,7 @@ public final class GatewayMessages {
     public static final String ORDER_REFERENCE_REQUIRED = "Order reference is required";
     public static final String ORDER_REFERENCE_TOO_LONG = "Order reference must be at most {max} characters";
     public static final String ORDER_REFERENCE_INVALID = "Order reference can only contain letters, digits, dots, dashes and underscores";
+    public static final String EXPIRY_OUT_OF_RANGE = "Expiry must be between {min} and {max} minutes";
     public static final String ORDER_ALREADY_EXISTS = "A payment already exists for this order reference";
     public static final String CHECKOUT_NOT_FOUND = "Payment not found";
     public static final String CHECKOUT_NOT_PENDING = "This payment is no longer waiting to be paid";

@@ -1,6 +1,7 @@
 package com.almotawaj.wallet.model.request;
 
 import com.almotawaj.wallet.config.constants.ErrorMessages;
+import com.almotawaj.wallet.config.constants.GatewayConstants;
 import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.ValidationPatterns;
@@ -33,6 +34,11 @@ public record CreateCheckoutSessionRequest(
         @Schema(example = DocExamples.RETURN_URL)
         @Size(max = ValidationLimits.URL_MAX, message = GatewayMessages.URL_TOO_LONG)
         @Pattern(regexp = ValidationPatterns.HTTP_URL, message = GatewayMessages.URL_INVALID)
-        String returnUrl
+        String returnUrl,
+
+        @Schema(example = DocExamples.EXPIRES_IN_MINUTES, description = "Defaults to 30")
+        @Min(value = GatewayConstants.SESSION_LIFETIME_MIN_MINUTES, message = GatewayMessages.EXPIRY_OUT_OF_RANGE)
+        @Max(value = GatewayConstants.SESSION_LIFETIME_MAX_MINUTES, message = GatewayMessages.EXPIRY_OUT_OF_RANGE)
+        Integer expiresInMinutes
 ) {
 }
