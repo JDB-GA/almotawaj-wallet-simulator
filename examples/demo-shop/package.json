@@ -1,0 +1,13 @@
+{
+  "name": "wallet-demo-shop",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sample store that accepts payments through the Almotawaj Digital Wallet gateway",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node src/server.ts"
+  }
+}
