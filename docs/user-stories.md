@@ -1,6 +1,6 @@
 # User Stories
 
-Format: *As a [user], I want to [action], so that [reason].* Stories marked (planned) are not built yet.
+Format: *As a [user], I want to [action], so that [reason].* Every story below is built; the checkboxes are its acceptance criteria.
 
 ## Epic: Accounts
 

@@ -77,4 +77,10 @@ Every feature is built as one vertical slice, backend first, on its own branch:
 
 In order of priority:
 
-1. **Final pass** – documentation, ERD, Swagger and tests updated; presentation.
+1. **Final pass** – deploy the latest build, confirm the first production start, refresh the public ERD diagram and prepare the presentation.
+
+Backlog, not scheduled:
+
+- **Gateway test mode** – sessions that move no real balance, so merchants can try an integration safely.
+- **Partial refunds** – refund part of a paid session.
+- **Callback redelivery** – retry failed callbacks later and show delivery history to the merchant.

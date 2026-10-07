@@ -61,11 +61,11 @@ Authorization: Bearer <SEED_TOKEN>
 | Email                           | Mobile   | Role          | Demo state                  |
 | ------------------------------- | -------- | ------------- | --------------------------- |
 | `admin@almotawaj.com`           | 30000001 | `SUPER_ADMIN` | –                           |
-| `reviewer@almotawaj.com`        | 30000004 | `ADMIN`       | `KYC_REVIEW`, `USER_MANAGE` |
+| `reviewer@almotawaj.com`        | 30000004 | `ADMIN`       | `KYC_REVIEW`, `USER_MANAGE`, `STATISTICS_VIEW` |
 | `merchant@almotawaj.com`        | 30000003 | `MERCHANT`    | –                           |
 | `client@almotawaj.com`          | 30000002 | `CLIENT`      | KYC pending                 |
-| `verified.client@almotawaj.com` | 30000005 | `CLIENT`      | KYC approved                |
-| `rejected.client@almotawaj.com` | 30000006 | `CLIENT`      | KYC rejected with a reason  |
+| `illia@almotawaj.com`           | 30000005 | `CLIENT`      | KYC approved                |
+| `salman@almotawaj.com`          | 30000006 | `CLIENT`      | KYC rejected with a reason  |
 
 All accounts use `SEED_PASSWORD` and have verified emails. Seeded KYC applications have no document files.
 
