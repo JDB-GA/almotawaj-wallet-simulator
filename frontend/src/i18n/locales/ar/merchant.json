@@ -78,7 +78,6 @@
     "description": "راجع التفاصيل قبل الدفع من محفظتك.",
     "amount": "المبلغ المطلوب",
     "merchant": "التاجر",
-    "expires": "ادفع قبل",
     "pay": "ادفع {{amount}}",
     "confirmTitle": "تأكيد الدفع",
     "confirmDescription": "سيُخصم {{amount}} من محفظتك ويُرسل إلى {{merchant}}.",
@@ -88,7 +87,8 @@
     "notFound": "رابط الدفع غير صالح.",
     "loadError": "تعذر تحميل هذه الدفعة.",
     "returnTo": "العودة إلى {{site}}",
-    "returning": "جارٍ إعادتك إلى {{site}}…"
+    "returning": "جارٍ إعادتك إلى {{site}}…",
+    "expiresIn": "الوقت المتبقي للدفع"
   },
   "webhook": {
     "title": "إشعار الدفع",
