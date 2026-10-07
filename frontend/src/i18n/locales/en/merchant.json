@@ -78,7 +78,6 @@
     "description": "Check the details before you pay from your wallet.",
     "amount": "Amount to pay",
     "merchant": "Merchant",
-    "expires": "Pay before",
     "pay": "Pay {{amount}}",
     "confirmTitle": "Confirm this payment",
     "confirmDescription": "{{amount}} will be taken from your wallet and sent to {{merchant}}.",
@@ -88,7 +87,8 @@
     "notFound": "This payment link is not valid.",
     "loadError": "Could not load this payment.",
     "returnTo": "Return to {{site}}",
-    "returning": "Taking you back to {{site}}…"
+    "returning": "Taking you back to {{site}}…",
+    "expiresIn": "Time left to pay"
   },
   "webhook": {
     "title": "Payment callback",
