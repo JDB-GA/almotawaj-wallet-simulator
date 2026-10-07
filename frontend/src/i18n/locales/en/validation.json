@@ -61,5 +61,7 @@
   "orderReferenceUsed": "A payment already exists for this order reference",
   "businessNameLength": "Business name must be {{businessNameMin}} to {{businessNameMax}} characters",
   "businessNameInvalid": "Use letters, digits, spaces and . , & ' - only",
-  "urlInvalid": "Enter a full address that starts with https:// or http://"
+  "urlInvalid": "Enter a full address that starts with https:// or http://",
+  "callbackUrlRequired": "Enter the callback URL",
+  "callbackUrlInvalid": "Enter a full address that starts with https://"
 }

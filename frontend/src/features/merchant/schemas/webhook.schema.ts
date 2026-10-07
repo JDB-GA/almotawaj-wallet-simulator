@@ -9,5 +9,10 @@ export const webhookSchema = z.object({
 })
 
 export const webhookFormSchema = z.object({
-  url: z.string().trim().max(URL_MAX_LENGTH, validationKey('urlInvalid')).regex(HTTP_URL_PATTERN, validationKey('urlInvalid')),
+  url: z
+    .string()
+    .trim()
+    .min(1, validationKey('callbackUrlRequired'))
+    .max(URL_MAX_LENGTH, validationKey('callbackUrlInvalid'))
+    .regex(HTTP_URL_PATTERN, validationKey('callbackUrlInvalid')),
 })

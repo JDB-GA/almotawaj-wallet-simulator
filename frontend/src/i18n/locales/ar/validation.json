@@ -61,5 +61,7 @@
   "orderReferenceUsed": "توجد دفعة لهذا المرجع مسبقاً",
   "businessNameLength": "يجب أن يكون اسم النشاط من {{businessNameMin}} إلى {{businessNameMax}} حرفاً",
   "businessNameInvalid": "استخدم الحروف والأرقام والمسافات و . , & ' - فقط",
-  "urlInvalid": "أدخل عنواناً كاملاً يبدأ بـ https:// أو http://"
+  "urlInvalid": "أدخل عنواناً كاملاً يبدأ بـ https:// أو http://",
+  "callbackUrlRequired": "أدخل عنوان الإشعار",
+  "callbackUrlInvalid": "أدخل عنواناً كاملاً يبدأ بـ https://"
 }

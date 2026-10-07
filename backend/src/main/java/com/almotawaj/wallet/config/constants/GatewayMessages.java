@@ -5,7 +5,8 @@ public final class GatewayMessages {
     public static final String API_KEY_NAME_TOO_LONG = "Name must be at most {max} characters";
     public static final String API_KEY_NOT_FOUND = "API key not found";
     public static final String API_KEY_LIMIT_REACHED = "Revoke an existing API key before creating another one";
-    public static final String URL_REQUIRED = "URL is required";
+    public static final String WEBHOOK_URL_REQUIRED = "Enter the callback URL";
+    public static final String WEBHOOK_URL_INVALID = "Enter a full address that starts with https://";
     public static final String URL_TOO_LONG = "URL must be at most {max} characters";
     public static final String URL_INVALID = "Enter a full URL that starts with http:// or https://";
     public static final String WEBHOOK_URL_NOT_ALLOWED = "The callback URL must be a public https address";
