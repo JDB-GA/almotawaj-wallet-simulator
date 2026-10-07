@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.UUID;
 
 @Service
@@ -63,7 +64,7 @@ public class CheckoutSessionService {
         session.setAmount(request.amount());
         session.setDescription(description);
         session.setReturnUrl(request.returnUrl());
-        session.setExpiresAt(clock.instant().plus(GatewayConstants.SESSION_LIFETIME));
+        session.setExpiresAt(clock.instant().plus(lifetimeOf(request)));
         CheckoutSession saved = sessionRepository.saveAndFlush(session);
         auditService.record(merchantId, AuditAction.CHECKOUT_CREATED, AuditTargetType.CHECKOUT_SESSION, saved.getId(),
                 saved.getOrderReference());
@@ -83,6 +84,10 @@ public class CheckoutSessionService {
         auditService.record(merchantId, AuditAction.CHECKOUT_CANCELLED, AuditTargetType.CHECKOUT_SESSION, sessionId,
                 session.getOrderReference());
         return mapper.toResponse(session);
+    }
+
+    private static Duration lifetimeOf(CreateCheckoutSessionRequest request) {
+        return request.expiresInMinutes() == null ? GatewayConstants.SESSION_LIFETIME : Duration.ofMinutes(request.expiresInMinutes());
     }
 
     private InformationNotFoundException notFound() {

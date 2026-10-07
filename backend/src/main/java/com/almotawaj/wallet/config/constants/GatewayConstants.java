@@ -8,7 +8,9 @@ public final class GatewayConstants {
     public static final int API_KEY_RANDOM_BYTES = 32;
     public static final String API_KEY_HASH_ALGORITHM = "SHA-256";
     public static final int MAX_ACTIVE_API_KEYS = 5;
-    public static final Duration SESSION_LIFETIME = Duration.ofMinutes(30);
+    public static final int SESSION_LIFETIME_MIN_MINUTES = 1;
+    public static final int SESSION_LIFETIME_MAX_MINUTES = 30;
+    public static final Duration SESSION_LIFETIME = Duration.ofMinutes(SESSION_LIFETIME_MAX_MINUTES);
     public static final long EXPIRY_SWEEP_INTERVAL_MS = 60_000L;
     public static final String CHECKOUT_PAGE_PATH = "/checkout/";
     public static final String RETURN_SESSION_PARAMETER = "sessionId";
