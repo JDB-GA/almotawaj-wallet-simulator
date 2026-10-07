@@ -11,9 +11,9 @@ import jakarta.validation.constraints.Size;
 
 public record UpdateWebhookRequest(
         @Schema(example = DocExamples.WEBHOOK_URL)
-        @NotBlank(message = GatewayMessages.URL_REQUIRED)
+        @NotBlank(message = GatewayMessages.WEBHOOK_URL_REQUIRED)
         @Size(max = ValidationLimits.URL_MAX, message = GatewayMessages.URL_TOO_LONG)
-        @Pattern(regexp = ValidationPatterns.HTTP_URL, message = GatewayMessages.URL_INVALID)
+        @Pattern(regexp = ValidationPatterns.HTTP_URL, message = GatewayMessages.WEBHOOK_URL_INVALID)
         String url
 ) {
 }
