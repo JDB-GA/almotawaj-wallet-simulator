@@ -5,6 +5,9 @@ import java.awt.Color;
 public final class PdfConstants {
     public static final String REGULAR_FONT = "net/sf/jasperreports/fonts/dejavu/DejaVuSans.ttf";
     public static final String BOLD_FONT = "net/sf/jasperreports/fonts/dejavu/DejaVuSans-Bold.ttf";
+    public static final String LOGO = "pdf/logo.png";
+    public static final float LOGO_SIZE = 40f;
+    public static final float[] HEADER_COLUMN_WIDTHS = {1f, 9f};
     public static final float TITLE_SIZE = 16f;
     public static final float HEADING_SIZE = 11f;
     public static final float BODY_SIZE = 9f;

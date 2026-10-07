@@ -1,11 +1,13 @@
 package com.almotawaj.wallet.service.pdf;
 
 import com.almotawaj.wallet.config.constants.PdfConstants;
+import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.model.TransactionDirection;
 import com.almotawaj.wallet.model.WalletTransaction;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -22,7 +24,7 @@ public final class PdfFormats {
     }
 
     public static String money(BigDecimal amount) {
-        return amount.toPlainString() + " " + WalletConstants.CURRENCY;
+        return amount.setScale(ValidationLimits.MONEY_SCALE, RoundingMode.HALF_UP).toPlainString() + " " + WalletConstants.CURRENCY;
     }
 
     public static String signedMoney(WalletTransaction transaction) {
