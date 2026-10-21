@@ -60,12 +60,22 @@ for s in JWT_SECRET OTP_SECRET SEED_TOKEN DB_PASSWORD RESEND_API_KEY SEED_PASSWO
 done
 ```
 
-**4. Deploy** from the repository root:
+**4. Uploads bucket.** KYC documents and profile pictures go to a private Cloud Storage bucket mounted into the container at `/data`, so they survive restarts and redeploys with no code change (the app's default `STORAGE_ROOT` is `/data/uploads`):
+
+```bash
+gcloud storage buckets create gs://almotawaj-wallet-uploads --location europe-west4 --uniform-bucket-level-access --public-access-prevention
+gcloud storage buckets add-iam-policy-binding gs://almotawaj-wallet-uploads --member="serviceAccount:wallet-api@almotawaj-wallet.iam.gserviceaccount.com" --role=roles/storage.objectUser
+```
+
+Public access is blocked on the bucket; files are only served through the API, which checks who is asking.
+
+**5. Deploy** from the repository root:
 
 ```bash
 gcloud run deploy wallet-api --source backend --region europe-west4 --service-account wallet-api@almotawaj-wallet.iam.gserviceaccount.com \
-  --allow-unauthenticated --ingress all --min-instances 1 --max-instances 2 --memory 1Gi \
-  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>/<database>?sslmode=require;DB_USERNAME=<role>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
+  --allow-unauthenticated --ingress all --min-instances 1 --max-instances 2 --memory 1Gi --execution-environment gen2 \
+  --add-volume name=uploads,type=cloud-storage,bucket=almotawaj-wallet-uploads --add-volume-mount volume=uploads,mount-path=/data \
+  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>/<database>?sslmode=require;DB_USERNAME=<role>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>" \
   --set-secrets "DB_PASSWORD=DB_PASSWORD:latest,JWT_SECRET=JWT_SECRET:latest,OTP_SECRET=OTP_SECRET:latest,RESEND_API_KEY=RESEND_API_KEY:latest,SEED_TOKEN=SEED_TOKEN:latest,SEED_PASSWORD=SEED_PASSWORD:latest"
 ```
 
@@ -73,7 +83,7 @@ gcloud run deploy wallet-api --source backend --region europe-west4 --service-ac
 
 The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself contains a comma. `--min-instances 1` keeps one instance warm so the demo never waits for Spring Boot to start; `--memory 1Gi` gives the JVM room.
 
-**5. Map the domain:** in the Cloud Run console, add the custom domain `api.almotawaj.com` to `wallet-api` and create the DNS records it shows.
+**6. Map the domain:** in the Cloud Run console, add the custom domain `api.almotawaj.com` to `wallet-api` and create the DNS records it shows.
 
 | Variable                       | Source         | Value                                                                                      |
 | ------------------------------ | -------------- | ------------------------------------------------------------------------------------------ |
@@ -88,11 +98,11 @@ The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself 
 | `MAIL_FROM`                    | env var        | verified Resend sender                                                                     |
 | `MAIL_LOGO_URL`                | env var        | optional logo URL for emails                                                               |
 | `APP_URL`                      | env var        | `https://wallet.almotawaj.com` (email links)                                               |
-| `STORAGE_ROOT`                 | env var        | `/tmp/uploads` (see below)                                                                 |
+| `STORAGE_ROOT`                 | –              | leave unset: default `/data/uploads` is the mounted bucket                                                             |
 | `SEED_TOKEN` / `SEED_PASSWORD` | Secret Manager | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
 | `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | –              | leave unset in production; `true` only allows callbacks to local addresses in development  |
 
-Cloud Run sets `PORT` itself. Its filesystem lives only as long as the instance, so uploaded KYC files and profile pictures in `/tmp/uploads` disappear on redeploy or restart; that is acceptable for the demo, and a Cloud Storage volume mount is the next step for lasting files.
+Cloud Run sets `PORT` itself. The bucket mount needs the `gen2` execution environment.
 
 **Updating:** change a setting with `gcloud run services update wallet-api --region europe-west4 --update-env-vars KEY=value`. Rotate a secret with `gcloud secrets versions add NAME --data-file=-`, then deploy again so new instances read it.
 
