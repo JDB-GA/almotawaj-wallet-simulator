@@ -40,6 +40,8 @@ public final class ErrorMessages {
     public static final String VALIDATION_FAILED = "Validation failed";
     public static final String VALIDATION_ERRORS_KEY = "errors";
     public static final String INVALID_CREDENTIALS = "Invalid credentials";
+    public static final String ACCOUNT_DEACTIVATED = "This account has been deactivated";
+    public static final String ACCOUNT_LOCKED = "This account is locked";
     public static final String ACCESS_DENIED = "You do not have permission to perform this action";
     public static final String EMAIL_ALREADY_REGISTERED = "Email address is already registered";
     public static final String MOBILE_ALREADY_REGISTERED = "Mobile number is already registered";

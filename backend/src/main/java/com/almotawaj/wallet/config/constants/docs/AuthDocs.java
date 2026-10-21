@@ -12,7 +12,7 @@ public final class AuthDocs {
     public static final String LOGIN = "Log in";
     public static final String LOGIN_DESCRIPTION = "Signs in with an email or an 8-digit mobile number. Sets the httpOnly access_token cookie. Unverified users receive a new code if none is active.";
     public static final String LOGIN_OK = "Signed in; session cookie set";
-    public static final String LOGIN_UNAUTHORIZED = "Wrong credentials, or the account is suspended or closed (INVALID_CREDENTIALS)";
+    public static final String LOGIN_UNAUTHORIZED = "Wrong credentials (INVALID_CREDENTIALS), or correct credentials for a suspended/closed (ACCOUNT_DEACTIVATED) or locked (ACCOUNT_LOCKED) account";
 
     public static final String LOGOUT = "Log out";
     public static final String LOGOUT_DESCRIPTION = "Clears the session cookie.";

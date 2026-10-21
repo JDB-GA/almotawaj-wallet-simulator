@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -15,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import com.almotawaj.wallet.config.constants.ErrorMessages;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -57,6 +61,26 @@ public class SecurityConfiguration {
                 .addFilterBefore(apiKeyAuthenticationFilter, JwtRequestFilter.class);
 
         return http.build();
+    }
+
+    /**
+     * Checks account status only after the password matches, so a suspended or locked account
+     * gets a specific error without revealing account state to someone who doesn't know the password.
+     */
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider(MyUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        provider.setPreAuthenticationChecks(user -> { });
+        provider.setPostAuthenticationChecks(user -> {
+            if (!user.isAccountNonLocked()) {
+                throw new LockedException(ErrorMessages.ACCOUNT_LOCKED);
+            }
+            if (!user.isEnabled()) {
+                throw new DisabledException(ErrorMessages.ACCOUNT_DEACTIVATED);
+            }
+        });
+        return provider;
     }
 
     @Bean

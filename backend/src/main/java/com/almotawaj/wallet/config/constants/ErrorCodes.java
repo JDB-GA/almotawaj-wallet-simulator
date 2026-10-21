@@ -4,6 +4,8 @@ public final class ErrorCodes {
     public static final String PROPERTY = "code";
     public static final String VALIDATION_FAILED = "VALIDATION_FAILED";
     public static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
+    public static final String ACCOUNT_DEACTIVATED = "ACCOUNT_DEACTIVATED";
+    public static final String ACCOUNT_LOCKED = "ACCOUNT_LOCKED";
     public static final String EMAIL_ALREADY_REGISTERED = "EMAIL_ALREADY_REGISTERED";
     public static final String MOBILE_ALREADY_REGISTERED = "MOBILE_ALREADY_REGISTERED";
     public static final String DATA_CONFLICT = "DATA_CONFLICT";
