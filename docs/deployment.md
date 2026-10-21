@@ -12,7 +12,7 @@ The API runs on **Cloud Run** as service `wallet-api` in project `almotawaj-wall
 
 Neon is serverless PostgreSQL: it suspends after about 5 idle minutes and wakes in about a second, so the free plan covers the demo. Cloud SQL would run 24/7 at roughly $9–10 a month.
 
-1. In the [Neon console](https://console.neon.tech), create a project in **AWS Europe Central 1 (Frankfurt)** with Postgres 17+ and a database such as `wallet`.
+1. In the [Neon console](https://console.neon.tech), create a project in **AWS Europe Central 1 (Frankfurt)** with Postgres 17+. Leave the extras (Auth, Data API, object storage) off: uploads go to Cloud Storage instead. The default database `neondb` with role `neondb_owner` is enough.
 2. Open **Connect** and read the parameters (not the URL with the password inside):
    - `DB_URL` = `jdbc:postgresql://<host>/<database>?sslmode=require` (host looks like `ep-xxxx.eu-central-1.aws.neon.tech`; use the direct host, without `-pooler`)
    - `DB_USERNAME` = the role
@@ -83,7 +83,20 @@ gcloud run deploy wallet-api --source backend --region europe-west4 --service-ac
 
 The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself contains a comma. `--min-instances 1` keeps one instance warm so the demo never waits for Spring Boot to start; `--memory 1Gi` gives the JVM room.
 
-**6. Map the domain:** in the Cloud Run console, add the custom domain `api.almotawaj.com` to `wallet-api` and create the DNS records it shows.
+**6. Map the domain.** `almotawaj.com` is already verified for the Google account (`gcloud domains list-user-verified`; otherwise run `gcloud domains verify almotawaj.com`). Domain mappings need the beta component:
+
+```bash
+gcloud components install beta
+gcloud beta run domain-mappings create --service wallet-api --domain api.almotawaj.com --region europe-west4
+```
+
+Then, in **Vercel → Domains → almotawaj.com → DNS Records** (Vercel hosts the DNS), set `api` to `CNAME ghs.googlehosted.com.` and remove any older `api` record. Google issues the HTTPS certificate on its own once DNS resolves, usually within 15–60 minutes. Check with:
+
+```bash
+gcloud beta run domain-mappings describe --domain api.almotawaj.com --region europe-west4 --format="value(status.conditions)"
+```
+
+Until then the API is reachable at its `*.run.app` URL (`gcloud run services describe wallet-api --region europe-west4 --format="value(status.url)"`). The web app must use `https://api.almotawaj.com`, not the `run.app` URL, because the login cookie is `SameSite=Strict`.
 
 | Variable                       | Source         | Value                                                                                      |
 | ------------------------------ | -------------- | ------------------------------------------------------------------------------------------ |
@@ -104,7 +117,65 @@ The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself 
 
 Cloud Run sets `PORT` itself. The bucket mount needs the `gen2` execution environment.
 
-**Updating:** change a setting with `gcloud run services update wallet-api --region europe-west4 --update-env-vars KEY=value`. Rotate a secret with `gcloud secrets versions add NAME --data-file=-`, then deploy again so new instances read it.
+### Running the live API
+
+All commands assume `gcloud config set project almotawaj-wallet`.
+
+**Service URL and status:**
+
+```bash
+gcloud run services describe wallet-api --region europe-west4 --format="value(status.url,status.conditions[0].status)"
+```
+
+**Logs** (startup, errors, requests):
+
+```bash
+gcloud run services logs read wallet-api --region europe-west4 --limit 100
+gcloud beta run services logs tail wallet-api --region europe-west4
+```
+
+**Seed the demo data** once after the first deploy. The token and the demo password live only in Secret Manager:
+
+```bash
+gcloud secrets versions access latest --secret SEED_TOKEN
+gcloud secrets versions access latest --secret SEED_PASSWORD
+curl -X POST https://api.almotawaj.com/api/seed -H "Authorization: Bearer $(gcloud secrets versions access latest --secret SEED_TOKEN)"
+```
+
+`201` means the demo accounts exist; every one of them signs in with `SEED_PASSWORD` (accounts listed in the [backend guide](../backend/README.md#seeding)). To switch seeding off, remove the secret from the service: `gcloud run services update wallet-api --region europe-west4 --remove-secrets SEED_TOKEN`.
+
+**Redeploy after code changes:** run the deploy command from step 5 again. Settings and secrets stay unless the command changes them, so a code-only redeploy can be shortened to:
+
+```bash
+gcloud run deploy wallet-api --source backend --region europe-west4
+```
+
+**Change a setting:** `gcloud run services update wallet-api --region europe-west4 --update-env-vars KEY=value`.
+
+**Rotate a secret:** add a new version, then roll a new revision so it is read:
+
+```bash
+gcloud secrets versions add JWT_SECRET --data-file=-
+gcloud run services update wallet-api --region europe-west4 --update-labels rotated=$(date +%s)
+```
+
+Rotating `JWT_SECRET` signs everyone out; rotating `DB_PASSWORD` must happen in Neon first (**Roles → Reset password**).
+
+**Uploaded files:** `gcloud storage ls -r gs://almotawaj-wallet-uploads/uploads/`.
+
+**Stop paying while idle:** `gcloud run services update wallet-api --region europe-west4 --min-instances 0` (the next request then waits for Spring Boot to start).
+
+### Running the database
+
+| Task                   | Where                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------- |
+| Query the data         | Neon console → **SQL Editor**, or `psql "<connection string>"`                              |
+| Back up / restore      | Neon console → **Branches** (point-in-time restore within the history window)               |
+| Reset the demo         | `DELETE /api/admin/seed-data` as the super admin, then seed again                           |
+| Change the password    | Neon console → **Roles** → reset, then `gcloud secrets versions add DB_PASSWORD --data-file=-` and roll a revision |
+| Usage and suspend time | Neon console → **Monitoring**; the compute suspends after 5 idle minutes                    |
+
+The API connects to the direct host (no `-pooler`) with `sslmode=require`; the database name is `neondb` and the role `neondb_owner`.
 
 ## Web App – Vercel
 
