@@ -6,25 +6,37 @@
 
 ## Server Deployment – Google Cloud Run
 
-The API runs on **Cloud Run** as service `wallet-api` in `me-central1`, on the custom domain `api.almotawaj.com`. Cloud Build packs `/backend` into a container, so there is no Dockerfile. `application-prod.properties` ships inside the build; Cloud Run only provides the values it reads: plain settings as environment variables, secrets from **Secret Manager**.
+The API runs on **Cloud Run** as service `wallet-api` in project `almotawaj-wallet`, region `europe-west4` (Netherlands, a few milliseconds from the Frankfurt database, and one of the regions that supports Cloud Run custom domains), on the custom domain `api.almotawaj.com`. Cloud Build packs `/backend` into a container, so there is no Dockerfile. `application-prod.properties` ships inside the build; Cloud Run only provides the values it reads: plain settings as environment variables, secrets from **Secret Manager**.
 
-**Database – Neon.** Create a free Neon project in the region closest to Cloud Run and take the connection details: `DB_URL` is `jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require` (add `jdbc:`, leave credentials out of the URL), `DB_USERNAME` is the Neon role and `DB_PASSWORD` the Neon password. Neon suspends after about 5 idle minutes and wakes in about a second, so it costs nothing for a demo; Cloud SQL would run 24/7 at roughly $9–10 a month. Tables are created on first start (`ddl-auto=update`).
+### Database – Neon
 
-**1. Enable the services** (once per project):
+Neon is serverless PostgreSQL: it suspends after about 5 idle minutes and wakes in about a second, so the free plan covers the demo. Cloud SQL would run 24/7 at roughly $9–10 a month.
+
+1. In the [Neon console](https://console.neon.tech), create a project in **AWS Europe Central 1 (Frankfurt)** with Postgres 17+ and a database such as `wallet`.
+2. Open **Connect** and read the parameters (not the URL with the password inside):
+   - `DB_URL` = `jdbc:postgresql://<host>/<database>?sslmode=require` (host looks like `ep-xxxx.eu-central-1.aws.neon.tech`; use the direct host, without `-pooler`)
+   - `DB_USERNAME` = the role
+   - `DB_PASSWORD` = the role password, stored only in Secret Manager (step 3)
+3. Nothing else is needed: Hibernate creates the tables on first start (`ddl-auto=update`), and `POST /api/seed` adds demo data.
+
+### Google Cloud
+
+**1. Project and billing** (once):
 
 ```bash
+gcloud projects create almotawaj-wallet --name="Almotawaj Wallet"
+gcloud billing projects link almotawaj-wallet --billing-account=<billing-account-id>
+gcloud config set project almotawaj-wallet
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
 ```
 
-**2. Create the secrets.** Paste the value, then press Ctrl+D:
+**2. A dedicated runtime identity.** The service runs as its own service account with no project roles, instead of the default compute account:
 
 ```bash
-gcloud secrets create DB_PASSWORD --data-file=-
-gcloud secrets create RESEND_API_KEY --data-file=-
-gcloud secrets create SEED_PASSWORD --data-file=-
+gcloud iam service-accounts create wallet-api --display-name="Wallet API runtime"
 ```
 
-Generated ones:
+**3. Secrets.** Generated ones never appear on screen:
 
 ```bash
 openssl rand -hex 32 | tr -d '\n' | gcloud secrets create JWT_SECRET --data-file=-
@@ -32,19 +44,32 @@ openssl rand -hex 32 | tr -d '\n' | gcloud secrets create OTP_SECRET --data-file
 openssl rand -hex 24 | tr -d '\n' | gcloud secrets create SEED_TOKEN --data-file=-
 ```
 
-**3. Let Cloud Run read them:**
+Typed ones: run each, paste the value, then press Ctrl+D twice (no Enter, so no trailing newline):
 
 ```bash
-gcloud projects add-iam-policy-binding <project-id> --member="serviceAccount:<project-number>-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
+gcloud secrets create DB_PASSWORD --data-file=-
+gcloud secrets create RESEND_API_KEY --data-file=-
+gcloud secrets create SEED_PASSWORD --data-file=-
+```
+
+Grant the service account read access to each secret separately, not project-wide:
+
+```bash
+for s in JWT_SECRET OTP_SECRET SEED_TOKEN DB_PASSWORD RESEND_API_KEY SEED_PASSWORD; do
+  gcloud secrets add-iam-policy-binding $s --member="serviceAccount:wallet-api@almotawaj-wallet.iam.gserviceaccount.com" --role=roles/secretmanager.secretAccessor
+done
 ```
 
 **4. Deploy** from the repository root:
 
 ```bash
-gcloud run deploy wallet-api --source backend --region me-central1 --allow-unauthenticated --min-instances 1 --memory 1Gi \
-  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require;DB_USERNAME=<user>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
+gcloud run deploy wallet-api --source backend --region europe-west4 --service-account wallet-api@almotawaj-wallet.iam.gserviceaccount.com \
+  --allow-unauthenticated --ingress all --min-instances 1 --max-instances 2 --memory 1Gi \
+  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>/<database>?sslmode=require;DB_USERNAME=<role>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
   --set-secrets "DB_PASSWORD=DB_PASSWORD:latest,JWT_SECRET=JWT_SECRET:latest,OTP_SECRET=OTP_SECRET:latest,RESEND_API_KEY=RESEND_API_KEY:latest,SEED_TOKEN=SEED_TOKEN:latest,SEED_PASSWORD=SEED_PASSWORD:latest"
 ```
+
+`--allow-unauthenticated` is required because the API is public; the app itself enforces JWT, API-key and role checks. `--max-instances 2` caps cost and keeps the in-memory rate limiter meaningful.
 
 The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself contains a comma. `--min-instances 1` keeps one instance warm so the demo never waits for Spring Boot to start; `--memory 1Gi` gives the JVM room.
 
@@ -69,7 +94,7 @@ The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself 
 
 Cloud Run sets `PORT` itself. Its filesystem lives only as long as the instance, so uploaded KYC files and profile pictures in `/tmp/uploads` disappear on redeploy or restart; that is acceptable for the demo, and a Cloud Storage volume mount is the next step for lasting files.
 
-**Updating:** change a setting with `gcloud run services update wallet-api --region me-central1 --update-env-vars KEY=value`. Rotate a secret with `gcloud secrets versions add NAME --data-file=-`, then deploy again so new instances read it.
+**Updating:** change a setting with `gcloud run services update wallet-api --region europe-west4 --update-env-vars KEY=value`. Rotate a secret with `gcloud secrets versions add NAME --data-file=-`, then deploy again so new instances read it.
 
 ## Web App – Vercel
 
