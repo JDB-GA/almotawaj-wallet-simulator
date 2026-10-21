@@ -101,7 +101,7 @@ Until then the API is reachable at its `*.run.app` URL (`gcloud run services des
 | Variable                       | Source         | Value                                                                                      |
 | ------------------------------ | -------------- | ------------------------------------------------------------------------------------------ |
 | `SPRING_PROFILES_ACTIVE`       | env var        | `prod`                                                                                     |
-| `DB_URL`                       | env var        | `jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require`              |
+| `DB_URL`                       | env var        | `jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require`                                  |
 | `DB_USERNAME`                  | env var        | Neon role                                                                                  |
 | `DB_PASSWORD`                  | Secret Manager | Neon password                                                                              |
 | `JWT_SECRET` / `OTP_SECRET`    | Secret Manager | two different `openssl rand -hex 32` values                                                |
@@ -111,7 +111,7 @@ Until then the API is reachable at its `*.run.app` URL (`gcloud run services des
 | `MAIL_FROM`                    | env var        | verified Resend sender                                                                     |
 | `MAIL_LOGO_URL`                | env var        | optional logo URL for emails                                                               |
 | `APP_URL`                      | env var        | `https://wallet.almotawaj.com` (email links)                                               |
-| `STORAGE_ROOT`                 | –              | leave unset: default `/data/uploads` is the mounted bucket                                                             |
+| `STORAGE_ROOT`                 | –              | leave unset: default `/data/uploads` is the mounted bucket                                 |
 | `SEED_TOKEN` / `SEED_PASSWORD` | Secret Manager | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
 | `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | –              | leave unset in production; `true` only allows callbacks to local addresses in development  |
 
@@ -167,13 +167,13 @@ Rotating `JWT_SECRET` signs everyone out; rotating `DB_PASSWORD` must happen in 
 
 ### Running the database
 
-| Task                   | Where                                                                                       |
-| ---------------------- | ------------------------------------------------------------------------------------------- |
-| Query the data         | Neon console → **SQL Editor**, or `psql "<connection string>"`                              |
-| Back up / restore      | Neon console → **Branches** (point-in-time restore within the history window)               |
-| Reset the demo         | `DELETE /api/admin/seed-data` as the super admin, then seed again                           |
+| Task                   | Where                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Query the data         | Neon console → **SQL Editor**, or `psql "<connection string>"`                                                     |
+| Back up / restore      | Neon console → **Branches** (point-in-time restore within the history window)                                      |
+| Reset the demo         | `DELETE /api/admin/seed-data` as the super admin, then seed again                                                  |
 | Change the password    | Neon console → **Roles** → reset, then `gcloud secrets versions add DB_PASSWORD --data-file=-` and roll a revision |
-| Usage and suspend time | Neon console → **Monitoring**; the compute suspends after 5 idle minutes                    |
+| Usage and suspend time | Neon console → **Monitoring**; the compute suspends after 5 idle minutes                                           |
 
 The API connects to the direct host (no `-pooler`) with `sslmode=require`; the database name is `neondb` and the role `neondb_owner`.
 
