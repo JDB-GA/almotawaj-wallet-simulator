@@ -8,6 +8,8 @@
 
 The API runs on **Cloud Run** as service `wallet-api` in `me-central1`, on the custom domain `api.almotawaj.com`. Cloud Build packs `/backend` into a container, so there is no Dockerfile. `application-prod.properties` ships inside the build; Cloud Run only provides the values it reads: plain settings as environment variables, secrets from **Secret Manager**.
 
+**Database – Neon.** Create a free Neon project in the region closest to Cloud Run and take the connection details: `DB_URL` is `jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require` (add `jdbc:`, leave credentials out of the URL), `DB_USERNAME` is the Neon role and `DB_PASSWORD` the Neon password. Neon suspends after about 5 idle minutes and wakes in about a second, so it costs nothing for a demo; Cloud SQL would run 24/7 at roughly $9–10 a month. Tables are created on first start (`ddl-auto=update`).
+
 **1. Enable the services** (once per project):
 
 ```bash
@@ -40,7 +42,7 @@ gcloud projects add-iam-policy-binding <project-id> --member="serviceAccount:<pr
 
 ```bash
 gcloud run deploy wallet-api --source backend --region me-central1 --allow-unauthenticated --min-instances 1 --memory 1Gi \
-  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>:5432/<db>?sslmode=require;DB_USERNAME=<user>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
+  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require;DB_USERNAME=<user>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
   --set-secrets "DB_PASSWORD=DB_PASSWORD:latest,JWT_SECRET=JWT_SECRET:latest,OTP_SECRET=OTP_SECRET:latest,RESEND_API_KEY=RESEND_API_KEY:latest,SEED_TOKEN=SEED_TOKEN:latest,SEED_PASSWORD=SEED_PASSWORD:latest"
 ```
 
@@ -51,9 +53,9 @@ The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself 
 | Variable                       | Source         | Value                                                                                      |
 | ------------------------------ | -------------- | ------------------------------------------------------------------------------------------ |
 | `SPRING_PROFILES_ACTIVE`       | env var        | `prod`                                                                                     |
-| `DB_URL`                       | env var        | `jdbc:postgresql://<host>:5432/<db>?sslmode=require` (any managed PostgreSQL)              |
-| `DB_USERNAME`                  | env var        | database user                                                                              |
-| `DB_PASSWORD`                  | Secret Manager | database password                                                                          |
+| `DB_URL`                       | env var        | `jdbc:postgresql://<host>.neon.tech/<db>?sslmode=require`              |
+| `DB_USERNAME`                  | env var        | Neon role                                                                                  |
+| `DB_PASSWORD`                  | Secret Manager | Neon password                                                                              |
 | `JWT_SECRET` / `OTP_SECRET`    | Secret Manager | two different `openssl rand -hex 32` values                                                |
 | `JWT_EXPIRATION_MS`            | env var        | optional, default `86400000` (24 h)                                                        |
 | `CORS_ALLOWED_ORIGINS`         | env var        | `https://wallet.almotawaj.com,https://www.wallet.almotawaj.com`                            |
