@@ -49,7 +49,7 @@ Monorepo:
 | [`frontend/README.md`](frontend/README.md)           | Frontend setup, scripts, structure, pages and localisation                                                     |
 | [`docs/api.md`](docs/api.md)                         | Endpoint reference, error format, paging, rate limiting, payment gateway, PDF documents and live notifications |
 | [`docs/business-rules.md`](docs/business-rules.md)   | Roles, permissions and business rules                                                                          |
-| [`docs/deployment.md`](docs/deployment.md)           | Railway and Vercel deployment with every environment variable                                                  |
+| [`docs/deployment.md`](docs/deployment.md)           | Cloud Run and Vercel deployment with every environment variable                                                |
 | [`examples/demo-shop`](examples/demo-shop/README.md) | A sample store that integrates the payment gateway, for trying every payment outcome                           |
 | [`docs/user-stories.md`](docs/user-stories.md)       | User stories with acceptance criteria                                                                          |
 | [`docs/erd.dbml`](docs/erd.dbml)                     | Database schema ([diagram](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8))                    |

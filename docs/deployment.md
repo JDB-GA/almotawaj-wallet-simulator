@@ -4,30 +4,74 @@
 
 ![Deployment architecture](deployment-architecture.jpg)
 
-**Backend – Railway** (service root directory `/backend`, PostgreSQL plugin, custom domain `api.almotawaj.com`):
+## Server Deployment – Google Cloud Run
 
-1. Attach a **Volume** mounted at `/data` (uploaded KYC files live in `/data/uploads`).
-2. Set the variables below and deploy.
+The API runs on **Cloud Run** as service `wallet-api` in `me-central1`, on the custom domain `api.almotawaj.com`. Cloud Build packs `/backend` into a container, so there is no Dockerfile. `application-prod.properties` ships inside the build; Cloud Run only provides the values it reads: plain settings as environment variables, secrets from **Secret Manager**.
 
-| Variable                       | Value                                                                                      |
-| ------------------------------ | ------------------------------------------------------------------------------------------ |
-| `SPRING_PROFILES_ACTIVE`       | `prod`                                                                                     |
-| `DB_URL`                       | `jdbc:postgresql://${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}`     |
-| `DB_USERNAME` / `DB_PASSWORD`  | `${{Postgres.PGUSER}}` / `${{Postgres.PGPASSWORD}}`                                        |
-| `JWT_SECRET` / `OTP_SECRET`    | two different `openssl rand -hex 32` values                                                |
-| `JWT_EXPIRATION_MS`            | optional, default `86400000` (24 h)                                                        |
-| `CORS_ALLOWED_ORIGINS`         | `https://wallet.almotawaj.com,https://www.wallet.almotawaj.com`                            |
-| `RESEND_API_KEY` / `MAIL_FROM` | Resend key and verified sender                                                             |
-| `MAIL_LOGO_URL`                | optional logo URL for emails                                                               |
-| `APP_URL`                      | `https://wallet.almotawaj.com` (email links)                                               |
-| `STORAGE_ROOT`                 | optional, default `/data/uploads`                                                          |
-| `SEED_TOKEN` / `SEED_PASSWORD` | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
-| `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | leave unset in production; `true` only allows callbacks to local addresses in development  |
-| `RAILPACK_JDK_VERSION`         | `17`                                                                                       |
+**1. Enable the services** (once per project):
 
-Email is sent through Resend's HTTPS API because Railway blocks outbound SMTP on non-Pro plans.
+```bash
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
+```
 
-**Frontend – Vercel** (root directory `frontend`, ignored build step: _only build production_, domain `wallet.almotawaj.com`): set `VITE_API_URL=https://api.almotawaj.com`. `frontend/vercel.json` provides the SPA rewrite and security headers (CSP, HSTS, frame, referrer and permissions policies). API and web app share `almotawaj.com`, so the `SameSite=Strict` cookie works across them.
+**2. Create the secrets.** Paste the value, then press Ctrl+D:
+
+```bash
+gcloud secrets create DB_PASSWORD --data-file=-
+gcloud secrets create RESEND_API_KEY --data-file=-
+gcloud secrets create SEED_PASSWORD --data-file=-
+```
+
+Generated ones:
+
+```bash
+openssl rand -hex 32 | tr -d '\n' | gcloud secrets create JWT_SECRET --data-file=-
+openssl rand -hex 32 | tr -d '\n' | gcloud secrets create OTP_SECRET --data-file=-
+openssl rand -hex 24 | tr -d '\n' | gcloud secrets create SEED_TOKEN --data-file=-
+```
+
+**3. Let Cloud Run read them:**
+
+```bash
+gcloud projects add-iam-policy-binding <project-id> --member="serviceAccount:<project-number>-compute@developer.gserviceaccount.com" --role="roles/secretmanager.secretAccessor"
+```
+
+**4. Deploy** from the repository root:
+
+```bash
+gcloud run deploy wallet-api --source backend --region me-central1 --allow-unauthenticated --min-instances 1 --memory 1Gi \
+  --set-env-vars "^;^SPRING_PROFILES_ACTIVE=prod;DB_URL=jdbc:postgresql://<host>:5432/<db>?sslmode=require;DB_USERNAME=<user>;CORS_ALLOWED_ORIGINS=https://wallet.almotawaj.com,https://www.wallet.almotawaj.com;APP_URL=https://wallet.almotawaj.com;MAIL_FROM=Almotawaj Wallet <no-reply@almotawaj.com>;STORAGE_ROOT=/tmp/uploads" \
+  --set-secrets "DB_PASSWORD=DB_PASSWORD:latest,JWT_SECRET=JWT_SECRET:latest,OTP_SECRET=OTP_SECRET:latest,RESEND_API_KEY=RESEND_API_KEY:latest,SEED_TOKEN=SEED_TOKEN:latest,SEED_PASSWORD=SEED_PASSWORD:latest"
+```
+
+The `^;^` prefix makes `;` the separator, because `CORS_ALLOWED_ORIGINS` itself contains a comma. `--min-instances 1` keeps one instance warm so the demo never waits for Spring Boot to start; `--memory 1Gi` gives the JVM room.
+
+**5. Map the domain:** in the Cloud Run console, add the custom domain `api.almotawaj.com` to `wallet-api` and create the DNS records it shows.
+
+| Variable                       | Source         | Value                                                                                      |
+| ------------------------------ | -------------- | ------------------------------------------------------------------------------------------ |
+| `SPRING_PROFILES_ACTIVE`       | env var        | `prod`                                                                                     |
+| `DB_URL`                       | env var        | `jdbc:postgresql://<host>:5432/<db>?sslmode=require` (any managed PostgreSQL)              |
+| `DB_USERNAME`                  | env var        | database user                                                                              |
+| `DB_PASSWORD`                  | Secret Manager | database password                                                                          |
+| `JWT_SECRET` / `OTP_SECRET`    | Secret Manager | two different `openssl rand -hex 32` values                                                |
+| `JWT_EXPIRATION_MS`            | env var        | optional, default `86400000` (24 h)                                                        |
+| `CORS_ALLOWED_ORIGINS`         | env var        | `https://wallet.almotawaj.com,https://www.wallet.almotawaj.com`                            |
+| `RESEND_API_KEY`               | Secret Manager | Resend key                                                                                 |
+| `MAIL_FROM`                    | env var        | verified Resend sender                                                                     |
+| `MAIL_LOGO_URL`                | env var        | optional logo URL for emails                                                               |
+| `APP_URL`                      | env var        | `https://wallet.almotawaj.com` (email links)                                               |
+| `STORAGE_ROOT`                 | env var        | `/tmp/uploads` (see below)                                                                 |
+| `SEED_TOKEN` / `SEED_PASSWORD` | Secret Manager | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
+| `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | –              | leave unset in production; `true` only allows callbacks to local addresses in development  |
+
+Cloud Run sets `PORT` itself. Its filesystem lives only as long as the instance, so uploaded KYC files and profile pictures in `/tmp/uploads` disappear on redeploy or restart; that is acceptable for the demo, and a Cloud Storage volume mount is the next step for lasting files.
+
+**Updating:** change a setting with `gcloud run services update wallet-api --region me-central1 --update-env-vars KEY=value`. Rotate a secret with `gcloud secrets versions add NAME --data-file=-`, then deploy again so new instances read it.
+
+## Web App – Vercel
+
+Root directory `frontend`, ignored build step: _only build production_, domain `wallet.almotawaj.com`): set `VITE_API_URL=https://api.almotawaj.com`. `frontend/vercel.json` provides the SPA rewrite and security headers (CSP, HSTS, frame, referrer and permissions policies). API and web app share `almotawaj.com`, so the `SameSite=Strict` cookie works across them.
 
 ## Sample shop – Vercel
 

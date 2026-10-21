@@ -37,11 +37,11 @@ Tests use the `test` profile with an in-memory H2 database, so they never touch 
 
 ## Profiles
 
-| Profile         | Database              | Configuration                                                  |
-| --------------- | --------------------- | -------------------------------------------------------------- |
-| `dev` (default) | local PostgreSQL      | `application-dev.properties` (untracked)                       |
-| `test`          | in-memory H2          | `src/test/resources/application-test.properties`               |
-| `prod`          | PostgreSQL on Railway | environment variables, see [deployment](../docs/deployment.md) |
+| Profile         | Database           | Configuration                                                  |
+| --------------- | ------------------ | -------------------------------------------------------------- |
+| `dev` (default) | local PostgreSQL   | `application-dev.properties` (untracked)                       |
+| `test`          | in-memory H2       | `src/test/resources/application-test.properties`               |
+| `prod`          | Managed PostgreSQL | environment variables, see [deployment](../docs/deployment.md) |
 
 ## Seeding
 
