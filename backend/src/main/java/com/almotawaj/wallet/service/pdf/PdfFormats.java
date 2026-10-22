@@ -8,13 +8,18 @@ import com.almotawaj.wallet.model.WalletTransaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public final class PdfFormats {
-    private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern(PdfConstants.DATE_TIME_PATTERN)
-            .withZone(ZoneId.of(WalletConstants.TIME_ZONE));
+    private static final ZoneId ZONE = ZoneId.of(WalletConstants.TIME_ZONE);
+    private static final DateTimeFormatter DATE_TIME = DateTimeFormatter.ofPattern(PdfConstants.DATE_TIME_PATTERN).withZone(ZONE);
+    private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern(PdfConstants.DATE_PATTERN).withZone(ZONE);
 
     private PdfFormats() {
     }
@@ -23,8 +28,21 @@ public final class PdfFormats {
         return DATE_TIME.format(instant);
     }
 
+    public static String date(Instant instant) {
+        return DATE.format(instant);
+    }
+
+    public static String date(LocalDate date) {
+        return DATE.format(date);
+    }
+
+    public static String amount(BigDecimal amount) {
+        DecimalFormat format = new DecimalFormat(PdfConstants.AMOUNT_PATTERN, DecimalFormatSymbols.getInstance(Locale.ROOT));
+        return format.format(amount.setScale(ValidationLimits.MONEY_SCALE, RoundingMode.HALF_UP));
+    }
+
     public static String money(BigDecimal amount) {
-        return amount.setScale(ValidationLimits.MONEY_SCALE, RoundingMode.HALF_UP).toPlainString() + " " + WalletConstants.CURRENCY;
+        return amount(amount) + " " + WalletConstants.CURRENCY;
     }
 
     public static String signedMoney(WalletTransaction transaction) {

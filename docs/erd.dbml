@@ -50,6 +50,10 @@ Enum transaction_type {
   REFUND_ISSUED
   TRANSFER_IN
   TRANSFER_OUT
+  VOUCHER_PURCHASE
+  VOUCHER_SALE
+  PAYOUT_SENT
+  PAYOUT_RECEIVED
 }
 
 Enum transaction_direction {
@@ -261,3 +265,106 @@ Table checkout_sessions {
     (status, expires_at)
   }
 }
+
+// Project 3 (planned)
+
+Enum voucher_status {
+  ACTIVE
+  PAUSED
+  SOLD_OUT
+  EXPIRED
+}
+
+Enum payout_batch_status {
+  PROCESSING
+  COMPLETED
+  PARTIALLY_FAILED
+}
+
+Enum payout_item_status {
+  PENDING
+  PAID
+  FAILED
+}
+
+Table vouchers {
+  id                uuid            [pk]
+  merchant_id       uuid            [not null, ref: > users.id]
+  title             varchar(70)     [not null]
+  price             numeric(19,3)   [not null, note: 'What the client pays']
+  face_value        numeric(19,3)   [not null, note: 'What the voucher is worth']
+  total_quantity    int             [not null]
+  remaining         int             [not null, note: 'Shared stock; check remaining >= 0']
+  per_client_limit  int             [not null]
+  status            voucher_status  [not null, default: 'ACTIVE']
+  expires_at        timestamptz     [not null]
+  version           bigint          [not null, note: 'Optimistic lock']
+  created_at        timestamptz     [not null]
+  updated_at        timestamptz     [not null]
+
+  indexes {
+    (merchant_id, created_at)
+    (status, expires_at)
+  }
+}
+
+Table voucher_purchases {
+  id              uuid           [pk]
+  voucher_id      uuid           [not null, ref: > vouchers.id]
+  buyer_id        uuid           [not null, ref: > users.id]
+  transaction_id  uuid           [not null, ref: - wallet_transactions.id, note: 'The buyer debit']
+  code            varchar(20)    [not null, unique, note: 'Voucher code given to the buyer']
+  price           numeric(19,3)  [not null]
+  created_at      timestamptz    [not null]
+
+  indexes {
+    (voucher_id, buyer_id)
+    (buyer_id, created_at)
+  }
+}
+
+Table payout_batches {
+  id              uuid                 [pk]
+  merchant_id     uuid                 [not null, ref: > users.id]
+  status          payout_batch_status  [not null, default: 'PROCESSING']
+  item_count      int                  [not null]
+  paid_count      int                  [not null, default: 0]
+  failed_count    int                  [not null, default: 0]
+  total_amount    numeric(19,3)        [not null]
+  created_at      timestamptz          [not null]
+  completed_at    timestamptz
+
+  indexes {
+    (merchant_id, created_at)
+  }
+}
+
+Table payout_items {
+  id              uuid                [pk]
+  batch_id        uuid                [not null, ref: > payout_batches.id]
+  recipient_id    uuid                [not null, ref: > users.id]
+  transaction_id  uuid                [ref: - wallet_transactions.id, note: 'Set when paid']
+  amount          numeric(19,3)       [not null]
+  status          payout_item_status  [not null, default: 'PENDING']
+  failure_reason  varchar(60)
+  processed_at    timestamptz
+
+  indexes {
+    (batch_id)
+  }
+}
+
+Table idempotency_records {
+  id               uuid         [pk]
+  user_id          uuid         [not null, ref: > users.id]
+  idempotency_key  varchar(64)  [not null]
+  endpoint         varchar(60)  [not null]
+  response_status  int          [not null]
+  response_body    text         [not null, note: 'Returned again when the key repeats']
+  created_at       timestamptz  [not null]
+
+  indexes {
+    (user_id, idempotency_key) [unique]
+  }
+}
+

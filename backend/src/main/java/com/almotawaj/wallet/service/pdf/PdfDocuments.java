@@ -2,6 +2,7 @@ package com.almotawaj.wallet.service.pdf;
 
 import com.almotawaj.wallet.config.constants.PdfConstants;
 import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
@@ -20,33 +21,31 @@ public class PdfDocuments {
     private final PdfFonts fonts;
     private final Clock clock;
 
-    public byte[] render(PdfLabels labels, String title, Rectangle pageSize, List<PdfPTable> sections) {
+    public byte[] render(PdfLabels labels, Rectangle pageSize, List<? extends Element> sections) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Document document = new Document(pageSize, PdfConstants.PAGE_MARGIN, PdfConstants.PAGE_MARGIN,
-                PdfConstants.PAGE_MARGIN, PdfConstants.PAGE_MARGIN);
-        PdfWriter.getInstance(document, output);
+                PdfConstants.PAGE_TOP_MARGIN, PdfConstants.PAGE_BOTTOM_MARGIN);
+        PdfWriter writer = PdfWriter.getInstance(document, output);
+        writer.setPageEvent(new PdfPageDecorator(fonts, labels, logo, labels.get("generatedAt", PdfFormats.dateTime(clock.instant()))));
+        document.addTitle(labels.get("appName"));
+        document.addCreator(labels.get("appName"));
         document.open();
-        document.add(header(labels, title));
         sections.forEach(document::add);
-        document.add(footer(labels));
         document.close();
         return output.toByteArray();
     }
 
-    private PdfPTable header(PdfLabels labels, String title) {
-        PdfPTable heading = PdfCells.table(labels.runDirection(), 1f);
-        heading.addCell(PdfCells.plain(labels.get("appName"), fonts.muted(), labels.runDirection()));
-        heading.addCell(PdfCells.plain(title, fonts.title(), labels.runDirection()));
-        PdfPTable table = PdfCells.table(labels.runDirection(), PdfConstants.HEADER_COLUMN_WIDTHS);
-        table.addCell(PdfCells.image(logo));
-        table.addCell(PdfCells.nested(heading));
-        return table;
-    }
-
-    private PdfPTable footer(PdfLabels labels) {
-        PdfPTable table = PdfCells.table(labels.runDirection(), 1f);
-        String generatedAt = labels.get("generatedAt", PdfFormats.dateTime(clock.instant()));
-        table.addCell(PdfCells.plain(generatedAt, fonts.muted(), labels.runDirection()));
+    public PdfPTable title(PdfLabels labels, String title, List<String[]> facts) {
+        int direction = labels.runDirection();
+        PdfPTable table = PdfCells.table(direction, PdfConstants.TITLE_COLUMN_WIDTHS);
+        table.addCell(PdfCells.plain(title, fonts.title(), direction));
+        PdfPTable details = PdfCells.table(direction, PdfConstants.DETAIL_COLUMN_WIDTHS);
+        details.setSpacingAfter(0);
+        for (String[] fact : facts) {
+            details.addCell(PdfCells.compact(fact[0], fonts.muted(), direction));
+            details.addCell(PdfCells.compactData(fact[1], fonts.strong(), direction));
+        }
+        table.addCell(PdfCells.nested(details));
         return table;
     }
 }

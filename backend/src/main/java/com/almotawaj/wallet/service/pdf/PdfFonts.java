@@ -14,24 +14,40 @@ public class PdfFonts {
     private final BaseFont regular = load(PdfConstants.REGULAR_FONT);
     private final BaseFont bold = load(PdfConstants.BOLD_FONT);
 
+    public BaseFont regularBase() {
+        return regular;
+    }
+
+    public BaseFont boldBase() {
+        return bold;
+    }
+
     public Font title() {
-        return new Font(bold, PdfConstants.TITLE_SIZE);
+        return new Font(bold, PdfConstants.TITLE_SIZE, Font.NORMAL, PdfConstants.BRAND_COLOR);
     }
 
     public Font heading() {
-        return new Font(bold, PdfConstants.HEADING_SIZE);
+        return new Font(bold, PdfConstants.HEADING_SIZE, Font.NORMAL, PdfConstants.BRAND_COLOR);
+    }
+
+    public Font tableHeader() {
+        return new Font(bold, PdfConstants.BODY_SIZE, Font.NORMAL, PdfConstants.HEADER_TEXT_COLOR);
     }
 
     public Font body() {
-        return new Font(regular, PdfConstants.BODY_SIZE);
+        return new Font(regular, PdfConstants.BODY_SIZE, Font.NORMAL, PdfConstants.TEXT_COLOR);
     }
 
     public Font strong() {
-        return new Font(bold, PdfConstants.BODY_SIZE);
+        return new Font(bold, PdfConstants.BODY_SIZE, Font.NORMAL, PdfConstants.TEXT_COLOR);
     }
 
     public Font muted() {
         return new Font(regular, PdfConstants.BODY_SIZE, Font.NORMAL, PdfConstants.MUTED_COLOR);
+    }
+
+    public Font small() {
+        return new Font(regular, PdfConstants.SMALL_SIZE, Font.NORMAL, PdfConstants.MUTED_COLOR);
     }
 
     private static BaseFont load(String path) {

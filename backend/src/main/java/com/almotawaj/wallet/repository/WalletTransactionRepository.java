@@ -26,6 +26,8 @@ public interface WalletTransactionRepository extends JpaRepository<WalletTransac
     @EntityGraph(attributePaths = {"wallet", "wallet.user"})
     Optional<WalletTransaction> findByIdAndWalletUserId(UUID id, UUID userId);
 
+    Optional<WalletTransaction> findFirstByWalletIdAndCreatedAtBeforeOrderByCreatedAtDesc(UUID walletId, Instant before);
+
     @Query("""
             select coalesce(sum(t.amount), 0) from WalletTransaction t
             where t.wallet.id = :walletId and t.type = :type and t.createdAt >= :since""")

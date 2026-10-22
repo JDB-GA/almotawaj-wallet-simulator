@@ -7,11 +7,17 @@ import java.util.List;
 public record StatementData(
         String ownerName,
         String iban,
+        String statementNumber,
         LocalDate from,
         LocalDate to,
         List<WalletTransaction> transactions,
         long totalTransactions,
+        BigDecimal openingBalance,
+        BigDecimal closingBalance,
+        long creditCount,
         BigDecimal totalCredited,
-        BigDecimal totalDebited
+        long debitCount,
+        BigDecimal totalDebited,
+        boolean filtered
 ) {
 }

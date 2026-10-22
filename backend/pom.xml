@@ -27,7 +27,6 @@
         <bucket4j.version>8.14.0</bucket4j.version>
         <resend.version>4.4.0</resend.version>
         <openpdf.version>2.0.3</openpdf.version>
-        <dejavu-fonts.version>6.21.3</dejavu-fonts.version>
     </properties>
 
     <dependencies>
@@ -110,12 +109,6 @@
             <groupId>com.github.librepdf</groupId>
             <artifactId>openpdf</artifactId>
             <version>${openpdf.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jasperreports</groupId>
-            <artifactId>jasperreports-fonts</artifactId>
-            <version>${dejavu-fonts.version}</version>
         </dependency>
 
         <!-- Lombok -->

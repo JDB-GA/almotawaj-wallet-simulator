@@ -45,8 +45,19 @@ Admins with `USER_MANAGE` manage clients and merchants only; only the super admi
 22. Only KYC-approved clients pay checkouts. A payment is 0.100–5,000.000 BHD, needs enough balance and counts towards a separate daily payment limit of 10,000.000 BHD.
 23. Only a `PAID` session can be refunded, once, in full, and only if the merchant's balance covers it.
 24. Sessions that are not paid in time are marked `EXPIRED` by a job that runs every minute.
-25. A wallet holder can download a receipt only for a transaction of their own wallet. A statement covers only their own wallet and lists at most the 500 newest matching transactions. Both downloads are written to the audit log.
+25. A wallet holder can download a receipt only for a transaction of their own wallet. A statement covers only their own wallet and lists the matching transactions oldest first, up to 5,000, with the opening and closing balance of the period. Both downloads are written to the audit log.
 26. A client's name is their verified KYC name and cannot be edited. A merchant sets a business name (2–70 characters), which replaces their email wherever their name is shown to other users. Profile pictures must be real JPEG or PNG files up to 5 MB; uploading a new one deletes the old file.
 27. A checkout session may carry a return address; after paying, the customer is sent there with the session id and order reference. The return is a convenience only, so merchants must confirm the status through the API or the callback.
 28. A merchant has at most one callback URL. Every status change of their sessions is posted to it, signed with a secret that only that merchant can read. Callback URLs must be public https addresses.
 29. Gateway calls are limited to 120 per minute for each merchant account, whatever address they come from.
+
+### Project 3 (planned)
+
+30. A voucher has a price, a face value, a quantity, a per-client limit and an expiry date. Only an `ACTIVE`, unexpired voucher with stock left can be bought.
+31. Buying a voucher takes one unit of stock with a single database update that only succeeds while stock is above zero, and debits the buyer's locked wallet in the same transaction. If the stock update fails the buyer gets `409 VOUCHER_SOLD_OUT` and nothing is charged. A database check also keeps stock at zero or above.
+32. Only KYC-approved clients buy vouchers, and never more than the voucher's per-client limit. Each purchase gets a unique code. The money goes to the merchant's wallet.
+33. A voucher carries a version number; an edit made from an out-of-date copy is rejected (`409`) instead of overwriting a newer change.
+34. A payout batch holds 1–100 items for active wallet holders, each 0.100–5,000.000 BHD. It returns `202` and runs in the background on a fixed pool of 5 threads.
+35. Every payout item locks the merchant's wallet before debiting it, so the balance never goes below zero. Items that don't fit are marked `FAILED` with the reason; the others are `PAID`. The batch ends `COMPLETED` or `PARTIALLY_FAILED`, and progress is pushed live.
+36. Transfers and voucher purchases accept an `Idempotency-Key` header. The key is unique per user; repeating it returns the stored first response and moves no money again.
+

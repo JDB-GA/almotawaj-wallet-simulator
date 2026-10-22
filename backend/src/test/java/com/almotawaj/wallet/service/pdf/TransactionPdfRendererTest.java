@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,7 +27,8 @@ class TransactionPdfRendererTest {
     private static final Instant NOW = Instant.parse("2026-10-06T10:00:00Z");
 
     private final PdfFonts fonts = new PdfFonts();
-    private final PdfDocuments documents = new PdfDocuments(fonts, Clock.fixed(NOW, ZoneOffset.UTC));
+    private final Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
+    private final PdfDocuments documents = new PdfDocuments(fonts, clock);
 
     @Test
     void receipt_containsTheTransactionInEnglish() throws IOException {
@@ -37,14 +39,63 @@ class TransactionPdfRendererTest {
     }
 
     @Test
-    void statement_listsEntriesAndTotalsInArabic() throws IOException {
-        StatementData statement = new StatementData("سارة علي", "BH02ALMT00000000000001", null, null, List.of(transaction()), 1,
-                new BigDecimal("12.500"), BigDecimal.ZERO);
+    void statement_listsEntriesAndBalancesInArabic() throws IOException {
+        StatementData statement = statement(List.of(transaction()), new BigDecimal("50.000"), new BigDecimal("62.500"),
+                1, new BigDecimal("12.500"), 0, BigDecimal.ZERO);
 
-        byte[] pdf = new StatementPdfRenderer(documents, fonts).render(statement, labels(LocaleConstants.ARABIC));
+        byte[] pdf = new StatementPdfRenderer(documents, fonts, clock).render(statement, labels(LocaleConstants.ARABIC));
 
         assertThat(new PdfReader(pdf).getNumberOfPages()).isEqualTo(1);
-        assertThat(textOf(pdf)).contains("TXN-20261006-AAAAAAAA", "2026-10-06 13:00", "62.500");
+        assertThat(textOf(pdf, 1)).contains("TXN-20261006-AAAAAAAA", "06/10/2026", "50.000", "12.500", "62.500", "STM-202610061300-000001");
+    }
+
+    @Test
+    void statement_showsBankStyleSectionsInEnglish() throws IOException {
+        StatementData statement = statement(List.of(transaction()), new BigDecimal("50.000"), new BigDecimal("62.500"),
+                1, new BigDecimal("12.500"), 0, BigDecimal.ZERO);
+
+        String text = textOf(new StatementPdfRenderer(documents, fonts, clock).render(statement, labels(LocaleConstants.ENGLISH)), 1);
+
+        assertThat(text).contains("Account Statement", "Opening balance", "Total credits (1)", "Closing balance",
+                "Balance brought forward", "Debit", "Credit", "Page 1 of", "End of statement");
+    }
+
+    @Test
+    void statement_spansSeveralPagesWithEveryTransactionAndPageNumbers() throws IOException {
+        List<WalletTransaction> transactions = new ArrayList<>();
+        BigDecimal balance = BigDecimal.ZERO;
+        for (int index = 0; index < 200; index++) {
+            balance = balance.add(BigDecimal.ONE);
+            WalletTransaction transaction = transaction();
+            transaction.setReference("TXN-20261006-%08d".formatted(index));
+            transaction.setAmount(BigDecimal.ONE);
+            transaction.setBalanceAfter(balance);
+            transactions.add(transaction);
+        }
+        StatementData statement = statement(transactions, BigDecimal.ZERO, balance, 200, balance, 0, BigDecimal.ZERO);
+
+        byte[] pdf = new StatementPdfRenderer(documents, fonts, clock).render(statement, labels(LocaleConstants.ENGLISH));
+        int pages = new PdfReader(pdf).getNumberOfPages();
+
+        assertThat(pages).isGreaterThan(1);
+        assertThat(textOf(pdf, pages)).contains("TXN-20261006-00000199", "Closing balance", "200.000");
+        assertThat(textOf(pdf, 2)).contains("Page 2 of", "Description");
+    }
+
+    @Test
+    void statement_explainsWhenFiltersNarrowTheList() throws IOException {
+        StatementData statement = new StatementData("Sara Ali", "BH02ALMT00000000000001", "STM-1", null, null, List.of(), 0,
+                BigDecimal.ZERO, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0, BigDecimal.ZERO, true);
+
+        String text = textOf(new StatementPdfRenderer(documents, fonts, clock).render(statement, labels(LocaleConstants.ENGLISH)), 1);
+
+        assertThat(text).contains("Filtered statement", "No transactions in this period.");
+    }
+
+    private static StatementData statement(List<WalletTransaction> transactions, BigDecimal opening, BigDecimal closing,
+                                           long credits, BigDecimal credited, long debits, BigDecimal debited) {
+        return new StatementData("سارة علي", "BH02ALMT00000000000001", "STM-202610061300-000001", null, null, transactions,
+                transactions.size(), opening, closing, credits, credited, debits, debited, false);
     }
 
     private static PdfLabels labels(Locale locale) {
@@ -56,7 +107,11 @@ class TransactionPdfRendererTest {
     }
 
     private static String textOf(byte[] pdf) throws IOException {
-        return new PdfTextExtractor(new PdfReader(pdf)).getTextFromPage(1);
+        return textOf(pdf, 1);
+    }
+
+    private static String textOf(byte[] pdf, int page) throws IOException {
+        return new PdfTextExtractor(new PdfReader(pdf)).getTextFromPage(page);
     }
 
     private static WalletTransaction transaction() {

@@ -29,9 +29,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -40,7 +43,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransactionDocumentService {
     private static final ZoneId ZONE = ZoneId.of(WalletConstants.TIME_ZONE);
-    private static final PageRequest NEWEST_ROWS = PageRequest.of(0, PdfConstants.STATEMENT_MAX_ROWS, Sort.by(Sort.Direction.DESC, "createdAt"));
+    private static final PageRequest STATEMENT_ROWS = PageRequest.of(0, PdfConstants.STATEMENT_MAX_ROWS, Sort.by(Sort.Direction.ASC, "createdAt"));
+    private static final DateTimeFormatter STATEMENT_NUMBER_DATE = DateTimeFormatter.ofPattern(PdfConstants.STATEMENT_NUMBER_DATE_PATTERN).withZone(ZONE);
 
     private final WalletProvisioner provisioner;
     private final WalletTransactionRepository transactionRepository;
@@ -66,13 +70,41 @@ public class TransactionDocumentService {
     public PdfFile statement(UUID userId, TransactionSearchRequest filter, Locale locale) {
         Wallet wallet = provisioner.getOrCreate(userId);
         Specification<WalletTransaction> specification = WalletTransactionSpecifications.forWallet(wallet.getId(), filter, ZONE);
-        Page<WalletTransaction> page = transactionRepository.findAll(specification, NEWEST_ROWS);
+        Page<WalletTransaction> page = transactionRepository.findAll(specification, STATEMENT_ROWS);
         List<DirectionTotal> totals = totalsRepository.totalsByDirection(specification);
-        StatementData statement = new StatementData(names.fullName(wallet.getUser()), wallet.getIban(), filter.from(), filter.to(),
-                page.getContent(), page.getTotalElements(), DirectionTotal.amountOf(totals, TransactionDirection.CREDIT),
-                DirectionTotal.amountOf(totals, TransactionDirection.DEBIT));
+        StatementData statement = new StatementData(names.fullName(wallet.getUser()), wallet.getIban(), statementNumber(wallet),
+                filter.from(), filter.to(), page.getContent(), page.getTotalElements(),
+                openingBalance(wallet, filter.from()), closingBalance(wallet, filter.to()),
+                DirectionTotal.countOf(totals, TransactionDirection.CREDIT), DirectionTotal.amountOf(totals, TransactionDirection.CREDIT),
+                DirectionTotal.countOf(totals, TransactionDirection.DEBIT), DirectionTotal.amountOf(totals, TransactionDirection.DEBIT),
+                isNarrowed(filter));
         byte[] content = statementRenderer.render(statement, new PdfLabels(messageSource, locale));
         auditService.record(userId, AuditAction.STATEMENT_DOWNLOADED, AuditTargetType.USER, userId, null);
         return new PdfFile(PdfConstants.STATEMENT_FILE_NAME.formatted(LocalDate.now(clock.withZone(ZONE))), content);
+    }
+
+    private BigDecimal openingBalance(Wallet wallet, LocalDate from) {
+        return from == null ? BigDecimal.ZERO : balanceBefore(wallet, from.atStartOfDay(ZONE).toInstant());
+    }
+
+    private BigDecimal closingBalance(Wallet wallet, LocalDate to) {
+        return to == null ? wallet.getBalance() : balanceBefore(wallet, to.plusDays(1).atStartOfDay(ZONE).toInstant());
+    }
+
+    private BigDecimal balanceBefore(Wallet wallet, Instant before) {
+        return transactionRepository.findFirstByWalletIdAndCreatedAtBeforeOrderByCreatedAtDesc(wallet.getId(), before)
+                .map(WalletTransaction::getBalanceAfter)
+                .orElse(BigDecimal.ZERO);
+    }
+
+    private String statementNumber(Wallet wallet) {
+        String iban = wallet.getIban();
+        String ibanTail = iban.substring(Math.max(0, iban.length() - PdfConstants.STATEMENT_NUMBER_IBAN_DIGITS));
+        return PdfConstants.STATEMENT_NUMBER_PATTERN.formatted(STATEMENT_NUMBER_DATE.format(clock.instant()), ibanTail);
+    }
+
+    private static boolean isNarrowed(TransactionSearchRequest filter) {
+        return (filter.search() != null && !filter.search().isBlank()) || filter.type() != null || filter.direction() != null
+                || filter.minAmount() != null || filter.maxAmount() != null;
     }
 }

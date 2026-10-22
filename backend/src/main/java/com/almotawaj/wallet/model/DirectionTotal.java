@@ -11,4 +11,12 @@ public record DirectionTotal(TransactionDirection direction, Long count, BigDeci
                 .findFirst()
                 .orElse(BigDecimal.ZERO);
     }
+
+    public static long countOf(List<DirectionTotal> totals, TransactionDirection direction) {
+        return totals.stream()
+                .filter(total -> total.direction() == direction)
+                .map(DirectionTotal::count)
+                .findFirst()
+                .orElse(0L);
+    }
 }

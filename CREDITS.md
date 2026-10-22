@@ -17,3 +17,9 @@ https://ap-gateway.mastercard.com/api/documentation/integrationGuidelines/hosted
 | The gateway sends webhook notifications              | Signed callbacks to the merchant's callback URL                            |
 
 This project is not affiliated with Mastercard and does not use Mastercard's services or code. It pays from a wallet balance, not from a card.
+
+## Statement and receipt font
+
+PDF statements and receipts use **IBM Plex Sans Arabic** (Regular and SemiBold), which covers both English and Arabic. It is made by IBM and released under the SIL Open Font License 1.1; the licence ships next to the font files in `backend/src/main/resources/pdf/fonts/OFL.txt`.
+
+https://github.com/IBM/plex

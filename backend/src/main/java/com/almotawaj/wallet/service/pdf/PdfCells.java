@@ -11,6 +11,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.core.io.ClassPathResource;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
@@ -33,23 +34,71 @@ public final class PdfCells {
         cell.setLeading(0f, PdfConstants.LINE_HEIGHT);
         cell.setBorder(Rectangle.BOTTOM);
         cell.setBorderColor(PdfConstants.BORDER_COLOR);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         return cell;
     }
 
     public static PdfPCell data(String value, Font font, int tableDirection) {
         PdfPCell cell = text(value, font, PdfWriter.RUN_DIRECTION_LTR);
-        cell.setHorizontalAlignment(tableDirection == PdfWriter.RUN_DIRECTION_RTL ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT);
+        cell.setHorizontalAlignment(isRtl(tableDirection) ? Element.ALIGN_RIGHT : Element.ALIGN_LEFT);
+        return cell;
+    }
+
+    public static PdfPCell amount(String value, Font font, int tableDirection) {
+        PdfPCell cell = text(value, font, PdfWriter.RUN_DIRECTION_LTR);
+        cell.setHorizontalAlignment(isRtl(tableDirection) ? Element.ALIGN_LEFT : Element.ALIGN_RIGHT);
         return cell;
     }
 
     public static PdfPCell header(String value, Font font, int runDirection) {
         PdfPCell cell = text(value, font, runDirection);
         cell.setBackgroundColor(PdfConstants.HEADER_BACKGROUND);
+        cell.setBorder(Rectangle.NO_BORDER);
+        return cell;
+    }
+
+    public static PdfPCell amountHeader(String value, Font font, int runDirection) {
+        PdfPCell cell = header(value, font, runDirection);
+        cell.setHorizontalAlignment(isRtl(runDirection) ? Element.ALIGN_LEFT : Element.ALIGN_RIGHT);
         return cell;
     }
 
     public static PdfPCell plain(String value, Font font, int runDirection) {
         PdfPCell cell = text(value, font, runDirection);
+        cell.setBorder(Rectangle.NO_BORDER);
+        return cell;
+    }
+
+    public static PdfPCell compact(String value, Font font, int runDirection) {
+        PdfPCell cell = plain(value, font, runDirection);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        return cell;
+    }
+
+    public static PdfPCell compactData(String value, Font font, int tableDirection) {
+        PdfPCell cell = data(value, font, tableDirection);
+        cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPaddingTop(1f);
+        cell.setPaddingBottom(1f);
+        return cell;
+    }
+
+    public static PdfPCell shaded(PdfPCell cell, Color background) {
+        cell.setBackgroundColor(background);
+        return cell;
+    }
+
+    public static PdfPCell box(PdfPTable content) {
+        PdfPCell cell = new PdfPCell(content);
+        cell.setBorder(Rectangle.BOX);
+        cell.setBorderColor(PdfConstants.BORDER_COLOR);
+        cell.setPadding(PdfConstants.BOX_PADDING);
+        return cell;
+    }
+
+    public static PdfPCell empty() {
+        PdfPCell cell = new PdfPCell();
         cell.setBorder(Rectangle.NO_BORDER);
         return cell;
     }
@@ -64,17 +113,14 @@ public final class PdfCells {
         }
     }
 
-    public static PdfPCell image(Image image) {
-        PdfPCell cell = new PdfPCell(image, false);
-        cell.setBorder(Rectangle.NO_BORDER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        return cell;
-    }
-
     public static PdfPCell nested(PdfPTable table) {
         PdfPCell cell = new PdfPCell(table);
         cell.setBorder(Rectangle.NO_BORDER);
         return cell;
+    }
+
+    private static boolean isRtl(int direction) {
+        return direction == PdfWriter.RUN_DIRECTION_RTL;
     }
 
     private static float[] reversed(float[] widths) {

@@ -9,7 +9,7 @@ A bilingual (English / Arabic) digital wallet for Bahrain. Clients register, ver
 | Swagger UI  | https://api.almotawaj.com/swagger-ui.html                                                                                 |
 | Sample shop | https://demo-shop.almotawaj.com – a merchant website that takes payments through the gateway                              |
 | ERD         | [dbdiagram.io](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8) · source: [`docs/erd.dbml`](docs/erd.dbml) |
-| Planning    | [`Planning.md`](Planning.md) · user stories: [`docs/user-stories.md`](docs/user-stories.md)                               |
+| Planning    | P02: [`PLANNING-P02.md`](PLANNING-P02.md) · [`docs/USER-STORIES-P02.md`](docs/USER-STORIES-P02.md) · P03: [`PLANNING-P03.md`](PLANNING-P03.md) · [`docs/USER-STORIES-P03.md`](docs/USER-STORIES-P03.md)                               |
 | Trello      | https://trello.com/b/81cjvTR6/project-02-jdb                                                                              |
 
 Monorepo:
@@ -51,9 +51,11 @@ Monorepo:
 | [`docs/business-rules.md`](docs/business-rules.md)   | Roles, permissions and business rules                                                                          |
 | [`docs/deployment.md`](docs/deployment.md)           | Cloud Run and Vercel deployment with every environment variable                                                |
 | [`examples/demo-shop`](examples/demo-shop/README.md) | A sample store that integrates the payment gateway, for trying every payment outcome                           |
-| [`docs/user-stories.md`](docs/user-stories.md)       | User stories with acceptance criteria                                                                          |
+| [`docs/USER-STORIES-P02.md`](docs/USER-STORIES-P02.md)       | User stories with acceptance criteria                                                                          |
+| [`docs/USER-STORIES-P03.md`](docs/USER-STORIES-P03.md)       | Project 3 user stories (planned)                                                                               |
 | [`docs/erd.dbml`](docs/erd.dbml)                     | Database schema ([diagram](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8))                    |
-| [`Planning.md`](Planning.md)                         | Process, timeline, requirement coverage and next steps                                                         |
+| [`PLANNING-P02.md`](PLANNING-P02.md)                         | Process, timeline, requirement coverage and next steps                                                         |
+| [`PLANNING-P03.md`](PLANNING-P03.md)                         | Project 3 plan: tasks, concurrency fixes, endpoints and tests                                                  |
 | [`CREDITS.md`](CREDITS.md)                           | Credit for the payment gateway process                                                                         |
 
 JavaDoc is used on the main services: [`UserService.java`](backend/src/main/java/com/almotawaj/wallet/service/UserService.java) (authentication), [`WalletService.java`](backend/src/main/java/com/almotawaj/wallet/service/WalletService.java) (wallet) and [`TransferService.java`](backend/src/main/java/com/almotawaj/wallet/service/TransferService.java) (transactions).
@@ -80,7 +82,7 @@ Fill in `application-dev.properties` before the first run; every key is explaine
 
 ## Project management
 
-Development follows feature branches (`feature-auth`, `feature-activity-audit`, `feature-admin-statistics`, …) with short Title Case commits. The process, timeline and remaining work are in [`Planning.md`](Planning.md); user stories with acceptance criteria are in [`docs/user-stories.md`](docs/user-stories.md); progress is tracked on [Trello](https://trello.com/b/81cjvTR6/project-02-jdb).
+Development follows feature branches (`feature-auth`, `feature-activity-audit`, `feature-admin-statistics`, …) with short Title Case commits. The process, timeline and remaining work are in [`PLANNING-P02.md`](PLANNING-P02.md); user stories with acceptance criteria are in [`docs/USER-STORIES-P02.md`](docs/USER-STORIES-P02.md); progress is tracked on [Trello](https://trello.com/b/81cjvTR6/project-02-jdb).
 
 ## License
 

@@ -4,6 +4,7 @@ import com.almotawaj.wallet.config.constants.PdfConstants;
 import com.almotawaj.wallet.model.TransactionDirection;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class ReceiptPdfRenderer {
     public byte[] render(WalletTransaction transaction, String ownerName, PdfLabels labels) {
         boolean isCredit = transaction.getDirection() == TransactionDirection.CREDIT;
         PdfPTable summary = details(labels);
+        heading(summary, labels, "receipt.details");
         row(summary, labels, "amount", PdfFormats.signedMoney(transaction));
         localized(summary, labels, "type", labels.type(transaction.getType()));
         row(summary, labels, "reference", transaction.getReference());
@@ -39,7 +41,10 @@ public class ReceiptPdfRenderer {
         row(counterparty, labels, "email", PdfFormats.orEmpty(transaction.getCounterpartyEmail()));
         row(counterparty, labels, "mobile", PdfFormats.orEmpty(transaction.getCounterpartyMobile()));
 
-        return documents.render(labels, labels.get("receipt.title"), PageSize.A4, List.of(summary, owner, counterparty));
+        PdfPTable title = documents.title(labels, labels.get("receipt.title"), List.of(
+                new String[]{labels.get("reference"), transaction.getReference()},
+                new String[]{labels.get("date"), PdfFormats.dateTime(transaction.getCreatedAt())}));
+        return documents.render(labels, PageSize.A4, List.of(title, summary, owner, counterparty));
     }
 
     private static PdfPTable details(PdfLabels labels) {
@@ -47,8 +52,9 @@ public class ReceiptPdfRenderer {
     }
 
     private void heading(PdfPTable table, PdfLabels labels, String key) {
-        table.addCell(PdfCells.header(labels.get(key), fonts.heading(), labels.runDirection()));
-        table.addCell(PdfCells.header("", fonts.heading(), labels.runDirection()));
+        PdfPCell cell = PdfCells.header(labels.get(key), fonts.tableHeader(), labels.runDirection());
+        cell.setColspan(2);
+        table.addCell(cell);
     }
 
     private void row(PdfPTable table, PdfLabels labels, String key, String value) {

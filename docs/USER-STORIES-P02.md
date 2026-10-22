@@ -1,6 +1,6 @@
-# User Stories
+# User Stories – P02
 
-Format: _As a [user], I want to [action], so that [reason]._ Every story below is built; the checkboxes are its acceptance criteria.
+Format: _As a [user], I want to [action], so that [reason]._ Every story below is built; the checkboxes are its acceptance criteria. Project 3 stories: [`USER-STORIES-P03.md`](USER-STORIES-P03.md).
 
 ## Epic: Accounts
 
