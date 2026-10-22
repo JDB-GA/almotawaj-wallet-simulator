@@ -63,7 +63,11 @@
     "REFUND": "Refund",
     "REFUND_ISSUED": "Refund issued",
     "TRANSFER_IN": "Money received",
-    "TRANSFER_OUT": "Money sent"
+    "TRANSFER_OUT": "Money sent",
+    "VOUCHER_PURCHASE": "Voucher purchase",
+    "VOUCHER_SALE": "Voucher sale",
+    "PAYOUT_SENT": "Payout sent",
+    "PAYOUT_RECEIVED": "Payout received"
   },
   "transfer": {
     "open": "Send money",

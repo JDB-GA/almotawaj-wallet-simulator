@@ -7,5 +7,9 @@ public enum TransactionType {
     REFUND,
     REFUND_ISSUED,
     TRANSFER_IN,
-    TRANSFER_OUT
+    TRANSFER_OUT,
+    VOUCHER_PURCHASE,
+    VOUCHER_SALE,
+    PAYOUT_SENT,
+    PAYOUT_RECEIVED
 }

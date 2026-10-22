@@ -24,7 +24,7 @@ export const WALLET_QUERY_KEYS = {
   recipientSuggestions: (query: string) => ['wallet', 'recipient-suggestions', query],
 } as const
 
-export const TRANSACTION_TYPES = ['TOP_UP', 'PAYMENT', 'PAYMENT_RECEIVED', 'REFUND', 'REFUND_ISSUED', 'TRANSFER_IN', 'TRANSFER_OUT'] as const
+export const TRANSACTION_TYPES = ['TOP_UP', 'PAYMENT', 'PAYMENT_RECEIVED', 'REFUND', 'REFUND_ISSUED', 'TRANSFER_IN', 'TRANSFER_OUT', 'VOUCHER_PURCHASE', 'VOUCHER_SALE', 'PAYOUT_SENT', 'PAYOUT_RECEIVED'] as const
 export const TOP_UP_SOURCES = ['NBB_SALARY', 'BBK_SAVINGS', 'BISB_CURRENT', 'ABC_BUSINESS', 'ENBD_UAE'] as const
 export const TRANSACTION_DIRECTIONS = ['CREDIT', 'DEBIT'] as const
 

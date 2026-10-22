@@ -63,7 +63,11 @@
     "REFUND": "استرداد",
     "REFUND_ISSUED": "استرداد صادر",
     "TRANSFER_IN": "أموال مستلمة",
-    "TRANSFER_OUT": "أموال مرسلة"
+    "TRANSFER_OUT": "أموال مرسلة",
+    "VOUCHER_PURCHASE": "شراء قسيمة",
+    "VOUCHER_SALE": "بيع قسيمة",
+    "PAYOUT_SENT": "دفعة صادرة",
+    "PAYOUT_RECEIVED": "دفعة واردة"
   },
   "transfer": {
     "open": "إرسال أموال",
