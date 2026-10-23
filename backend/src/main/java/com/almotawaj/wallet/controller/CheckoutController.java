@@ -5,7 +5,9 @@ import com.almotawaj.wallet.config.constants.SecurityConstants;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.GatewayDocs;
 import com.almotawaj.wallet.config.security.MyUserDetails;
+import com.almotawaj.wallet.model.request.PayCheckoutRequest;
 import com.almotawaj.wallet.model.response.CheckoutViewResponse;
+import com.almotawaj.wallet.model.response.UsableVoucherResponse;
 import com.almotawaj.wallet.service.CheckoutPaymentService;
 import com.almotawaj.wallet.service.CheckoutSessionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,9 +19,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,13 +43,22 @@ public class CheckoutController {
         return sessionService.view(sessionId);
     }
 
+    @Operation(summary = GatewayDocs.VOUCHERS, description = GatewayDocs.VOUCHERS_DESCRIPTION)
+    @ApiResponse(responseCode = ApiDocs.OK, description = GatewayDocs.VOUCHERS_OK)
+    @ApiResponse(responseCode = ApiDocs.NOT_FOUND, description = GatewayDocs.NOT_FOUND)
+    @GetMapping(ApiPaths.CHECKOUT_SESSION_VOUCHERS)
+    public List<UsableVoucherResponse> vouchers(@AuthenticationPrincipal MyUserDetails client, @PathVariable UUID sessionId) {
+        return paymentService.usableVouchers(client.user().getId(), sessionId);
+    }
+
     @Operation(summary = GatewayDocs.PAY, description = GatewayDocs.PAY_DESCRIPTION)
     @ApiResponse(responseCode = ApiDocs.OK, description = GatewayDocs.PAY_OK)
     @ApiResponse(responseCode = ApiDocs.NOT_FOUND, description = GatewayDocs.NOT_FOUND)
     @ApiResponse(responseCode = ApiDocs.UNPROCESSABLE, description = GatewayDocs.PAY_UNPROCESSABLE)
     @ApiResponse(responseCode = ApiDocs.TOO_MANY_REQUESTS, description = ApiDocs.RATE_LIMITED)
     @PostMapping(ApiPaths.CHECKOUT_SESSION_PAY)
-    public CheckoutViewResponse pay(@AuthenticationPrincipal MyUserDetails client, @PathVariable UUID sessionId) {
-        return paymentService.pay(client.user().getId(), sessionId);
+    public CheckoutViewResponse pay(@AuthenticationPrincipal MyUserDetails client, @PathVariable UUID sessionId,
+                                    @RequestBody(required = false) PayCheckoutRequest request) {
+        return paymentService.pay(client.user().getId(), sessionId, request == null ? null : request.voucherId());
     }
 }

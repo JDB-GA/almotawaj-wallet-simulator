@@ -11,15 +11,17 @@ export function usePayCheckout(sessionId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: () => checkoutApi.pay(sessionId),
+    mutationFn: (voucherId: string | null) => checkoutApi.pay(sessionId, voucherId),
     onSuccess: async (checkout) => {
       toast.success(t('merchant:checkout.paid'))
       queryClient.setQueryData(CHECKOUT_QUERY_KEYS.detail(sessionId), checkout)
       await queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.all })
+      await queryClient.invalidateQueries({ queryKey: CHECKOUT_QUERY_KEYS.vouchers(sessionId) })
     },
     onError: async (error) => {
       toast.error(t(`errors:${getErrorKey(error)}`))
       await queryClient.invalidateQueries({ queryKey: CHECKOUT_QUERY_KEYS.detail(sessionId) })
+      await queryClient.invalidateQueries({ queryKey: CHECKOUT_QUERY_KEYS.vouchers(sessionId) })
     },
   })
 }

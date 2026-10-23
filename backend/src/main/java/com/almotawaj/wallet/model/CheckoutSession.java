@@ -52,6 +52,9 @@ public class CheckoutSession {
     @Column(name = "expires_at", nullable = false, updatable = false)
     private Instant expiresAt;
 
+    @Column(precision = ValidationLimits.MONEY_PRECISION, scale = ValidationLimits.MONEY_SCALE)
+    private BigDecimal voucherDiscount;
+
     private Instant paidAt;
 
     private Instant refundedAt;

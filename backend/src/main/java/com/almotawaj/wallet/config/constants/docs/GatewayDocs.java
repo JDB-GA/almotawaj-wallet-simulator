@@ -56,9 +56,12 @@ public final class GatewayDocs {
     public static final String VIEW_DESCRIPTION = "Merchant, amount and status of a checkout session.";
     public static final String VIEW_OK = "Checkout details";
     public static final String PAY = "Pay a checkout";
-    public static final String PAY_DESCRIPTION = "Moves the amount from the client's wallet to the merchant's wallet and marks the session PAID. A session can be paid once.";
+    public static final String PAY_DESCRIPTION = "Moves the amount from the client's wallet to the merchant's wallet and marks the session PAID. A session can be paid once. An optional voucherId of an unused voucher from this merchant is redeemed in the same transaction and its face value is taken off the amount.";
     public static final String PAY_OK = "Checkout paid";
-    public static final String PAY_UNPROCESSABLE = "Not pending (CHECKOUT_NOT_PENDING), expired (CHECKOUT_EXPIRED), balance too low (INSUFFICIENT_BALANCE), daily limit (DAILY_CHECKOUT_LIMIT_EXCEEDED), KYC missing (WALLET_KYC_REQUIRED) or merchant unavailable (MERCHANT_UNAVAILABLE)";
+    public static final String PAY_UNPROCESSABLE = "Not pending (CHECKOUT_NOT_PENDING), expired (CHECKOUT_EXPIRED), balance too low (INSUFFICIENT_BALANCE), daily limit (DAILY_CHECKOUT_LIMIT_EXCEEDED), KYC missing (WALLET_KYC_REQUIRED) merchant unavailable (MERCHANT_UNAVAILABLE) or voucher already used or not from this merchant (VOUCHER_NOT_USABLE)";
+    public static final String VOUCHERS = "List vouchers usable for a checkout";
+    public static final String VOUCHERS_DESCRIPTION = "The signed-in client's unused vouchers bought from this checkout's merchant.";
+    public static final String VOUCHERS_OK = "Usable vouchers";
 
     public static final String API_KEY_SCHEME_NAME = "merchantApiKey";
     public static final String API_KEY_SCHEME_DESCRIPTION = "A key created under Merchant API Keys";

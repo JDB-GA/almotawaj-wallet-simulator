@@ -8,6 +8,7 @@ import com.almotawaj.wallet.model.UserRole;
 import com.almotawaj.wallet.model.Wallet;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.repository.CheckoutSessionRepository;
+import com.almotawaj.wallet.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.repository.WalletTransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,8 @@ class CheckoutPaymentServiceTest {
     @Mock
     private CheckoutSessionRepository sessionRepository;
     @Mock
+    private VoucherPurchaseRepository purchaseRepository;
+    @Mock
     private WalletProvisioner provisioner;
     @Mock
     private WalletLocker walletLocker;
@@ -60,7 +63,7 @@ class CheckoutPaymentServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new CheckoutPaymentService(sessionRepository, provisioner, walletLocker, new WalletAccessPolicy(),
+        service = new CheckoutPaymentService(sessionRepository, purchaseRepository, provisioner, walletLocker, new WalletAccessPolicy(),
                 new DailyLimitPolicy(transactionRepository, CLOCK), new WalletLedger(transactionRepository, referenceGenerator),
                 new Counterparties(names), new CheckoutSessionMapper(names, CLOCK, "http://localhost:5173"), auditService,
                 eventPublisher, CLOCK);
@@ -84,7 +87,7 @@ class CheckoutPaymentServiceTest {
 
     @Test
     void pay_movesMoneyToTheMerchantAndMarksPaid() {
-        var view = service.pay(payerWallet.getUser().getId(), SESSION_ID);
+        var view = service.pay(payerWallet.getUser().getId(), SESSION_ID, null);
 
         assertThat(view.status()).isEqualTo(CheckoutStatus.PAID);
         assertThat(payerWallet.getBalance()).isEqualByComparingTo("30.000");
@@ -110,7 +113,7 @@ class CheckoutPaymentServiceTest {
     }
 
     private void assertRejected(String code) {
-        assertThatThrownBy(() -> service.pay(payerWallet.getUser().getId(), SESSION_ID))
+        assertThatThrownBy(() -> service.pay(payerWallet.getUser().getId(), SESSION_ID, null))
                 .isInstanceOf(BusinessRuleException.class)
                 .hasFieldOrPropertyWithValue("code", code);
         assertThat(merchantWallet.getBalance()).isEqualByComparingTo("0.000");

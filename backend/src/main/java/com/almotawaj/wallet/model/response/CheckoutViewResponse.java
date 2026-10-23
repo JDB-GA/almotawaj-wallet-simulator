@@ -11,6 +11,7 @@ public record CheckoutViewResponse(
         String merchantName,
         String orderReference,
         BigDecimal amount,
+        BigDecimal voucherDiscount,
         String description,
         CheckoutStatus status,
         String returnUrl,

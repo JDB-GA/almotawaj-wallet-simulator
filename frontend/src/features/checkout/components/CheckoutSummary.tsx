@@ -28,6 +28,9 @@ export function CheckoutSummary({ checkout }: CheckoutSummaryProps) {
         <KycDetailRow label={t('checkout.merchant')} value={checkout.merchantName} dir="ltr" />
         <KycDetailRow label={t('payments.order')} value={checkout.orderReference} dir="ltr" />
         {checkout.description && <KycDetailRow label={t('payments.descriptionLabel')} value={checkout.description} />}
+        {checkout.voucherDiscount !== null && (
+          <KycDetailRow label={t('checkout.voucher.discount')} value={formatMoney(checkout.voucherDiscount, language)} dir="ltr" />
+        )}
       </dl>
       {checkout.status === 'PENDING' && <CheckoutCountdown checkout={checkout} />}
     </div>

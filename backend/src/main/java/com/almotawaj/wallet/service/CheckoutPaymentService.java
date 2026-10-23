@@ -14,10 +14,13 @@ import com.almotawaj.wallet.model.CheckoutStatus;
 import com.almotawaj.wallet.model.Counterparty;
 import com.almotawaj.wallet.model.TransactionType;
 import com.almotawaj.wallet.model.User;
+import com.almotawaj.wallet.model.VoucherPurchaseStatus;
 import com.almotawaj.wallet.model.Wallet;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.model.response.CheckoutViewResponse;
+import com.almotawaj.wallet.model.response.UsableVoucherResponse;
 import com.almotawaj.wallet.repository.CheckoutSessionRepository;
+import com.almotawaj.wallet.repository.VoucherPurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,12 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class CheckoutPaymentService {
     private final CheckoutSessionRepository sessionRepository;
+    private final VoucherPurchaseRepository purchaseRepository;
     private final WalletProvisioner provisioner;
     private final WalletLocker walletLocker;
     private final WalletAccessPolicy accessPolicy;
@@ -43,8 +48,17 @@ public class CheckoutPaymentService {
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
 
+    @Transactional(readOnly = true)
+    public List<UsableVoucherResponse> usableVouchers(UUID payerId, UUID sessionId) {
+        CheckoutSession session = sessionRepository.findById(sessionId).orElseThrow(() ->
+                new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
+        return purchaseRepository.findUsable(payerId, session.getMerchant().getId(), VoucherPurchaseStatus.UNUSED).stream()
+                .map(UsableVoucherResponse::from)
+                .toList();
+    }
+
     @Transactional
-    public CheckoutViewResponse pay(UUID payerId, UUID sessionId) {
+    public CheckoutViewResponse pay(UUID payerId, UUID sessionId, UUID voucherId) {
         CheckoutSession session = sessionRepository.findByIdForUpdate(sessionId).orElseThrow(() ->
                 new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
         Instant now = clock.instant();
@@ -54,24 +68,38 @@ public class CheckoutPaymentService {
                 provisioner.getOrCreate(merchant.getId()).getId());
         Wallet payerWallet = locked.source();
         Wallet merchantWallet = locked.target();
-        BigDecimal amount = session.getAmount();
+        BigDecimal discount = voucherId == null ? BigDecimal.ZERO : redeem(voucherId, payerId, session, now);
+        BigDecimal amount = session.getAmount().subtract(discount);
         if (payerWallet.getBalance().compareTo(amount) < 0) {
             throw new BusinessRuleException(ErrorMessages.INSUFFICIENT_BALANCE, ErrorCodes.INSUFFICIENT_BALANCE);
         }
-        dailyLimitPolicy.ensureCheckoutAllowed(payerWallet.getId(), amount);
 
         Counterparty payerDetails = counterparties.of(payerWallet);
-        WalletTransaction received = ledger.credit(merchantWallet, TransactionType.PAYMENT_RECEIVED, amount, payerDetails,
-                session.getOrderReference());
-        ledger.debit(payerWallet, TransactionType.PAYMENT, amount, counterparties.of(merchantWallet), session.getOrderReference());
+        if (amount.signum() > 0) {
+            dailyLimitPolicy.ensureCheckoutAllowed(payerWallet.getId(), amount);
+            WalletTransaction received = ledger.credit(merchantWallet, TransactionType.PAYMENT_RECEIVED, amount, payerDetails,
+                    session.getOrderReference());
+            ledger.debit(payerWallet, TransactionType.PAYMENT, amount, counterparties.of(merchantWallet), session.getOrderReference());
+            eventPublisher.publishEvent(new MoneyReceivedEvent(merchant.getId(), amount, payerDetails.name(), received.getReference()));
+        }
+        session.setVoucherDiscount(discount.signum() > 0 ? discount : null);
         session.setPayer(payerWallet.getUser());
         session.setStatus(CheckoutStatus.PAID);
         session.setPaidAt(now);
 
         auditService.record(payerId, AuditAction.CHECKOUT_PAID, AuditTargetType.CHECKOUT_SESSION, sessionId, session.getOrderReference());
-        eventPublisher.publishEvent(new MoneyReceivedEvent(merchant.getId(), amount, payerDetails.name(), received.getReference()));
         eventPublisher.publishEvent(new CheckoutStatusChangedEvent(sessionId));
         return mapper.toView(session);
+    }
+
+    private BigDecimal redeem(UUID voucherId, UUID payerId, CheckoutSession session, Instant now) {
+        int redeemed = purchaseRepository.redeem(voucherId, payerId, session.getMerchant().getId(), session, now,
+                VoucherPurchaseStatus.UNUSED, VoucherPurchaseStatus.REDEEMED);
+        if (redeemed == 0) {
+            throw new BusinessRuleException(ErrorMessages.VOUCHER_NOT_USABLE, ErrorCodes.VOUCHER_NOT_USABLE);
+        }
+        BigDecimal faceValue = purchaseRepository.findById(voucherId).orElseThrow().getVoucher().getFaceValue();
+        return faceValue.min(session.getAmount());
     }
 
     private void ensurePayable(CheckoutSession session, Instant now) {

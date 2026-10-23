@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { CopyButton } from '@/components/CopyButton'
 import { LoadErrorAlert } from '@/components/LoadErrorAlert'
 import { PaginationControls } from '@/components/PaginationControls'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { formatDateTime } from '@/features/kyc/utils/format-kyc-date'
 import { EmptyState } from '@/features/merchant/components/EmptyState'
 import { formatMoney } from '@/features/wallet/utils/format-money'
 import { useLanguage } from '@/hooks/useLanguage'
+import { VOUCHER_PURCHASE_BADGE_VARIANTS } from '../constants/voucher.constants'
 import { useVoucherPurchases } from '../hooks/useVoucherPurchases'
 
 export function VoucherPurchasesList() {
@@ -38,6 +40,7 @@ export function VoucherPurchasesList() {
             <TableHead>{t('mine.date')}</TableHead>
             <TableHead>{t('mine.voucher')}</TableHead>
             <TableHead>{t('mine.code')}</TableHead>
+            <TableHead>{t('mine.status')}</TableHead>
             <TableHead className="text-end">{t('mine.paid')}</TableHead>
           </TableRow>
         </TableHeader>
@@ -63,6 +66,14 @@ export function VoucherPurchasesList() {
                     {purchase.code}
                   </bdi>
                   <CopyButton value={purchase.code} label={t('mine.copy')} successMessage={t('mine.copied')} failureMessage={t('mine.copyFailed')} />
+                </div>
+              </TableCell>
+              <TableCell data-label={t('mine.status')}>
+                <div className="flex flex-col gap-1">
+                  <Badge variant={VOUCHER_PURCHASE_BADGE_VARIANTS[purchase.status]}>{t(`purchaseStatus.${purchase.status}`)}</Badge>
+                  {purchase.redeemedAt && (
+                    <span className="text-xs text-muted-foreground">{formatDateTime(purchase.redeemedAt, language)}</span>
+                  )}
                 </div>
               </TableCell>
               <TableCell data-label={t('mine.paid')} className="text-end">

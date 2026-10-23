@@ -102,6 +102,7 @@ public final class ErrorMessages {
     public static final String VOUCHER_LIMIT_REACHED = "You have already bought the maximum number of this voucher";
     public static final String VOUCHER_EDIT_CONFLICT = "This voucher was changed by someone else. Reload it and try again";
     public static final String VOUCHER_PRICE_ABOVE_FACE_VALUE = "The price cannot be higher than the face value";
+    public static final String VOUCHER_NOT_USABLE = "This voucher was already used or cannot be used for this payment";
     public static final String VOUCHER_TITLE_REQUIRED = "Title is required";
     public static final String VOUCHER_TITLE_TOO_LONG = "Title must be at most {max} characters";
     public static final String VOUCHER_PRICE_REQUIRED = "Price is required";

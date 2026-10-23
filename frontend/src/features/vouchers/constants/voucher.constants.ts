@@ -1,5 +1,5 @@
 import type { BadgeVariant } from '@/features/kyc/types/badge-variant.types'
-import type { PayoutBatchStatus, PayoutItemStatus, VoucherStatus } from '../types/voucher.types'
+import type { PayoutBatchStatus, PayoutItemStatus, VoucherPurchaseStatus, VoucherStatus } from '../types/voucher.types'
 
 export const VOUCHER_ENDPOINTS = {
   available: '/api/vouchers',
@@ -27,6 +27,7 @@ export const PAYOUT_QUERY_KEYS = {
 export const VOUCHER_STATUSES = ['ACTIVE', 'PAUSED', 'SOLD_OUT', 'EXPIRED'] as const
 export const PAYOUT_BATCH_STATUSES = ['PROCESSING', 'COMPLETED', 'PARTIALLY_FAILED'] as const
 export const PAYOUT_ITEM_STATUSES = ['PENDING', 'PAID', 'FAILED'] as const
+export const VOUCHER_PURCHASE_STATUSES = ['UNUSED', 'REDEEMED'] as const
 export const PAYOUT_PROCESSING_ERROR = 'PROCESSING_ERROR'
 export const PAYOUT_FAILURE_REASONS = ['INSUFFICIENT_BALANCE', 'RECIPIENT_UNAVAILABLE', PAYOUT_PROCESSING_ERROR] as const
 
@@ -47,6 +48,11 @@ export const PAYOUT_ITEM_BADGE_VARIANTS: Readonly<Record<PayoutItemStatus, Badge
   PENDING: 'secondary',
   PAID: 'default',
   FAILED: 'destructive',
+}
+
+export const VOUCHER_PURCHASE_BADGE_VARIANTS: Readonly<Record<VoucherPurchaseStatus, BadgeVariant>> = {
+  UNUSED: 'default',
+  REDEEMED: 'secondary',
 }
 
 export const VOUCHERS_PAGE_SIZE = 12
