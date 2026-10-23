@@ -14,11 +14,13 @@ import {
   MS_DECIMALS,
   PAYOUT_AMOUNT_MAX,
   PAYOUT_AMOUNT_MIN,
+  PAYOUT_SHARED_STEPS,
   RECIPIENTS_MAX,
   RECIPIENTS_MIN,
 } from '../constants/simulation.constants'
 import { useSimulations } from '../hooks/useSimulations'
 import { NumberField } from './NumberField'
+import { RaceReplay } from './RaceReplay'
 import { StatTile } from './StatTile'
 import { ThreadTimeline } from './ThreadTimeline'
 
@@ -73,6 +75,15 @@ export function PayoutRacePanel() {
           <ThreadTimeline
             attempts={result.attempts}
             rowLabel={(attempt) => `#${String(attempt.index + 1)} ${attempt.thread ?? ''}`}
+          />
+          <RaceReplay
+            key={result.durationMs}
+            attempts={result.attempts}
+            rowLabel={(attempt) => `#${String(attempt.index + 1)} ${attempt.thread ?? ''}`}
+            sharedLabel={t('payout.balance')}
+            sharedStart={result.startingBalance}
+            sharedSteps={PAYOUT_SHARED_STEPS}
+            formatValue={(value) => formatMoney(value, language)}
           />
         </section>
       )}

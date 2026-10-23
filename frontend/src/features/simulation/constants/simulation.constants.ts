@@ -59,3 +59,5 @@ export const STEP_BADGE_CLASSES = {
   PAID: 'bg-primary text-primary-foreground',
   FAILED: 'bg-destructive text-white',
 } as const
+export const VOUCHER_SHARED_STEPS = ['WRITE', 'COMMITTED'] as const
+export const PAYOUT_SHARED_STEPS = ['LOCKED', 'PAID'] as const
