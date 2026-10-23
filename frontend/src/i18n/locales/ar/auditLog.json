@@ -39,7 +39,12 @@
     "PROFILE_PICTURE_UPDATED": "تحديث الصورة الشخصية",
     "PROFILE_PICTURE_REMOVED": "إزالة الصورة الشخصية",
     "WEBHOOK_UPDATED": "تحديث إشعار الدفع",
-    "WEBHOOK_REMOVED": "إزالة إشعار الدفع"
+    "WEBHOOK_REMOVED": "إزالة إشعار الدفع",
+    "VOUCHER_CREATED": "إنشاء قسيمة",
+    "VOUCHER_UPDATED": "تعديل قسيمة",
+    "VOUCHER_PURCHASED": "شراء قسيمة",
+    "PAYOUT_BATCH_CREATED": "إنشاء دفعة جماعية",
+    "PAYOUT_BATCH_COMPLETED": "اكتمال دفعة جماعية"
   },
   "targets": {
     "USER": "مستخدم",
@@ -47,7 +52,9 @@
     "PAYMENT_REQUEST": "طلب دفع",
     "WALLET_TRANSACTION": "معاملة محفظة",
     "API_KEY": "مفتاح API",
-    "CHECKOUT_SESSION": "دفعة تاجر"
+    "CHECKOUT_SESSION": "دفعة تاجر",
+    "VOUCHER": "قسيمة",
+    "PAYOUT_BATCH": "دفعة جماعية"
   },
   "table": {
     "time": "الوقت",

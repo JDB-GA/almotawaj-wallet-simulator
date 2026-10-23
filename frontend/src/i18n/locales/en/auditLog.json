@@ -39,7 +39,12 @@
     "PROFILE_PICTURE_UPDATED": "Profile picture updated",
     "PROFILE_PICTURE_REMOVED": "Profile picture removed",
     "WEBHOOK_UPDATED": "Payment callback updated",
-    "WEBHOOK_REMOVED": "Payment callback removed"
+    "WEBHOOK_REMOVED": "Payment callback removed",
+    "VOUCHER_CREATED": "Voucher created",
+    "VOUCHER_UPDATED": "Voucher updated",
+    "VOUCHER_PURCHASED": "Voucher purchased",
+    "PAYOUT_BATCH_CREATED": "Bulk payout created",
+    "PAYOUT_BATCH_COMPLETED": "Bulk payout completed"
   },
   "targets": {
     "USER": "User",
@@ -47,7 +52,9 @@
     "PAYMENT_REQUEST": "Payment request",
     "WALLET_TRANSACTION": "Wallet transaction",
     "API_KEY": "API key",
-    "CHECKOUT_SESSION": "Merchant payment"
+    "CHECKOUT_SESSION": "Merchant payment",
+    "VOUCHER": "Voucher",
+    "PAYOUT_BATCH": "Bulk payout"
   },
   "table": {
     "time": "Time",
