@@ -49,7 +49,7 @@ public class Voucher {
     private int perClientLimit;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private VoucherStatus status = VoucherStatus.ACTIVE;
 
     @Column(nullable = false)

@@ -23,6 +23,6 @@ public class TransactionReferenceGenerator {
         for (int index = 0; index < WalletConstants.TRANSACTION_REFERENCE_RANDOM_LENGTH; index++) {
             suffix.append(alphabet.charAt(RANDOM.nextInt(alphabet.length())));
         }
-        return WalletConstants.TRANSACTION_REFERENCE_PREFIX + "-" + LocalDate.now(clock).format(DATE) + "-" + suffix;
+        return String.join(WalletConstants.REFERENCE_SEPARATOR, WalletConstants.TRANSACTION_REFERENCE_PREFIX, LocalDate.now(clock).format(DATE), suffix);
     }
 }

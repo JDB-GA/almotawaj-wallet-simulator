@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.PaymentRequestDocs;
 import com.almotawaj.wallet.config.security.MyUserDetails;
@@ -38,7 +39,7 @@ public class PaymentRequestController {
     @GetMapping
     public PageResponse<PaymentRequestResponse> list(
             @AuthenticationPrincipal MyUserDetails userDetails,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return requestService.list(userDetails.user().getId(), pageable);
     }
 

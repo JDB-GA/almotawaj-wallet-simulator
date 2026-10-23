@@ -39,7 +39,7 @@ public class PayoutItem {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private PayoutItemStatus status = PayoutItemStatus.PENDING;
 
     @Column(length = ValidationLimits.PAYOUT_FAILURE_REASON_MAX)

@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.KycDocs;
 import com.almotawaj.wallet.config.constants.docs.KycReviewDocs;
@@ -46,7 +47,7 @@ public class AdminKycController {
     @GetMapping
     public PageResponse<KycApplicationSummaryResponse> list(
             @RequestParam(required = false) KycApplicationStatus status,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return kycReviewService.list(status, pageable);
     }
 

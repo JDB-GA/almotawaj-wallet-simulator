@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.GatewayDocs;
 import com.almotawaj.wallet.config.security.MyUserDetails;
@@ -41,7 +42,7 @@ public class MerchantCheckoutController {
     public PageResponse<CheckoutSessionResponse> list(
             @AuthenticationPrincipal MyUserDetails merchant,
             @RequestParam(required = false) CheckoutStatus status,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return sessionService.list(merchant.user().getId(), status, pageable);
     }
 

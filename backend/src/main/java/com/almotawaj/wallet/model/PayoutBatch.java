@@ -29,7 +29,7 @@ public class PayoutBatch {
     private User merchant;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private PayoutBatchStatus status = PayoutBatchStatus.PROCESSING;
 
     @Column(nullable = false, updatable = false)

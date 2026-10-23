@@ -33,7 +33,7 @@ public class KycApplication {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private KycApplicationStatus status = KycApplicationStatus.PENDING;
 
     @Column(nullable = false, length = ValidationLimits.FULL_NAME_MAX)

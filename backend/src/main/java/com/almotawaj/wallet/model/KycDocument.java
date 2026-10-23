@@ -28,7 +28,7 @@ public class KycDocument {
     private KycApplication application;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private KycDocumentType type;
 
     private LocalDate expiryDate;

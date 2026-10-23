@@ -41,7 +41,7 @@ public class PaymentRequest {
     private String note;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private PaymentRequestStatus status = PaymentRequestStatus.PENDING;
 
     @CreationTimestamp

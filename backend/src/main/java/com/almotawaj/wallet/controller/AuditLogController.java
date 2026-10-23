@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.KycReviewDocs;
 import com.almotawaj.wallet.config.constants.docs.SystemDocs;
@@ -39,7 +40,7 @@ public class AuditLogController {
     public PageResponse<AuditLogResponse> list(
             @RequestParam(required = false) AuditAction action,
             @RequestParam(required = false) UUID targetId,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return auditService.list(action, targetId, pageable);
     }
 }

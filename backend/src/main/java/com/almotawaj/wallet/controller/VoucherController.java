@@ -3,6 +3,7 @@ package com.almotawaj.wallet.controller;
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
@@ -42,7 +43,7 @@ public class VoucherController {
     @GetMapping
     @PreAuthorize(SecurityConstants.HAS_WALLET_ROLE)
     public PageResponse<VoucherResponse> listAvailable(
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return voucherService.listAvailable(pageable);
     }
 
@@ -69,7 +70,7 @@ public class VoucherController {
     @PreAuthorize(SecurityConstants.HAS_ROLE_CLIENT)
     public PageResponse<VoucherPurchaseResponse> listPurchases(
             @AuthenticationPrincipal MyUserDetails userDetails,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return voucherService.listPurchases(userDetails.user().getId(), pageable);
     }
 }

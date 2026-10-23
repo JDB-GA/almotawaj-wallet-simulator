@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 public class PayoutExecutorConfig {
-    @Bean(name = WalletConstants.PAYOUT_EXECUTOR, destroyMethod = "shutdown")
+    @Bean(name = WalletConstants.PAYOUT_EXECUTOR, destroyMethod = WalletConstants.EXECUTOR_SHUTDOWN_METHOD)
     public ExecutorService payoutExecutor() {
         AtomicInteger counter = new AtomicInteger();
         ThreadFactory threads = task -> {

@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.config.constants.docs.KycReviewDocs;
 import com.almotawaj.wallet.config.constants.docs.UserAdminDocs;
@@ -47,7 +48,7 @@ public class AdminUserController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) UserRole role,
             @RequestParam(required = false) UserStatus status,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return userManagementService.list(search, role, status, pageable);
     }
 

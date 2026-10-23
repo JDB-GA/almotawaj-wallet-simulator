@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.repository.specification;
 
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.model.request.TransactionSearchRequest;
 import jakarta.persistence.criteria.Expression;
@@ -44,9 +45,9 @@ public final class WalletTransactionSpecifications {
                 equalTo("type", filter.type()),
                 equalTo("direction", filter.direction()),
                 (root, query, builder) -> filter.from() == null ? null
-                        : builder.greaterThanOrEqualTo(root.get("createdAt"), filter.from().atStartOfDay(zone).toInstant()),
+                        : builder.greaterThanOrEqualTo(root.get(SortFields.CREATED_AT), filter.from().atStartOfDay(zone).toInstant()),
                 (root, query, builder) -> filter.to() == null ? null
-                        : builder.lessThan(root.get("createdAt"), filter.to().plusDays(1).atStartOfDay(zone).toInstant()),
+                        : builder.lessThan(root.get(SortFields.CREATED_AT), filter.to().plusDays(1).atStartOfDay(zone).toInstant()),
                 (root, query, builder) -> filter.minAmount() == null ? null
                         : builder.greaterThanOrEqualTo(root.get("amount"), filter.minAmount()),
                 (root, query, builder) -> filter.maxAmount() == null ? null

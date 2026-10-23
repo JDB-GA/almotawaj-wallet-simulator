@@ -2,6 +2,7 @@ package com.almotawaj.wallet.controller;
 
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.docs.AdminStatisticsDocs;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.model.request.TransactionSearchRequest;
@@ -36,7 +37,7 @@ public class AdminTransactionController {
     @GetMapping
     public PageResponse<AdminTransactionResponse> list(
             @ParameterObject @Valid TransactionSearchRequest filter,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = SortFields.CREATED_AT, direction = Sort.Direction.DESC) Pageable pageable) {
         return statisticsService.listTransactions(filter, pageable);
     }
 }

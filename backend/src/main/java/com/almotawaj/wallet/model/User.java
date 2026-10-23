@@ -36,16 +36,16 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private UserRole role = UserRole.CLIENT;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private UserStatus status = UserStatus.ACTIVE;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'NOT_SUBMITTED'")
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private KycStatus kycStatus = KycStatus.NOT_SUBMITTED;
 
     @ElementCollection(fetch = FetchType.EAGER)

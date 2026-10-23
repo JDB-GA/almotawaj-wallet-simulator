@@ -3,6 +3,7 @@ package com.almotawaj.wallet.service;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.PdfConstants;
+import com.almotawaj.wallet.config.constants.SortFields;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
 import com.almotawaj.wallet.model.AuditAction;
@@ -43,7 +44,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransactionDocumentService {
     private static final ZoneId ZONE = ZoneId.of(WalletConstants.TIME_ZONE);
-    private static final PageRequest STATEMENT_ROWS = PageRequest.of(0, PdfConstants.STATEMENT_MAX_ROWS, Sort.by(Sort.Direction.ASC, "createdAt"));
+    private static final PageRequest STATEMENT_ROWS = PageRequest.of(0, PdfConstants.STATEMENT_MAX_ROWS, Sort.by(Sort.Direction.ASC, SortFields.CREATED_AT));
     private static final DateTimeFormatter STATEMENT_NUMBER_DATE = DateTimeFormatter.ofPattern(PdfConstants.STATEMENT_NUMBER_DATE_PATTERN).withZone(ZONE);
 
     private final WalletProvisioner provisioner;

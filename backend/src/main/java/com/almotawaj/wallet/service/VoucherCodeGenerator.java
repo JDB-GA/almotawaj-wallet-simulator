@@ -27,7 +27,7 @@ public class VoucherCodeGenerator {
         StringBuilder code = new StringBuilder(WalletConstants.VOUCHER_CODE_PREFIX);
         for (int index = 0; index < WalletConstants.VOUCHER_CODE_RANDOM_LENGTH; index++) {
             if (index % WalletConstants.VOUCHER_CODE_GROUP_SIZE == 0) {
-                code.append('-');
+                code.append(WalletConstants.REFERENCE_SEPARATOR);
             }
             code.append(alphabet.charAt(RANDOM.nextInt(alphabet.length())));
         }

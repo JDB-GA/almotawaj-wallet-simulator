@@ -36,7 +36,7 @@ public class IdempotencyRecord {
     @Column(nullable = false, updatable = false)
     private int responseStatus;
 
-    @Column(nullable = false, updatable = false, columnDefinition = "text")
+    @Column(nullable = false, updatable = false, columnDefinition = DatabaseTables.TEXT_COLUMN)
     private String responseBody;
 
     @CreationTimestamp

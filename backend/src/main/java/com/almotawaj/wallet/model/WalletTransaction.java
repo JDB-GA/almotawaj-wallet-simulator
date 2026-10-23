@@ -30,7 +30,7 @@ public class WalletTransaction {
     private String reference;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, updatable = false, length = 20)
+    @Column(nullable = false, updatable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private TransactionType type;
 
     @Enumerated(EnumType.STRING)

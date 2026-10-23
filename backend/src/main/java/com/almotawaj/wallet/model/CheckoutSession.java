@@ -46,7 +46,7 @@ public class CheckoutSession {
     private String returnUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
     private CheckoutStatus status = CheckoutStatus.PENDING;
 
     @Column(name = "expires_at", nullable = false, updatable = false)

@@ -18,6 +18,7 @@ public final class DatabaseTables {
     public static final String PAYOUT_BATCHES = "payout_batches";
     public static final String PAYOUT_ITEMS = "payout_items";
     public static final String IDEMPOTENCY_RECORDS = "idempotency_records";
+    public static final String TEXT_COLUMN = "text";
 
     private DatabaseTables() {
     }

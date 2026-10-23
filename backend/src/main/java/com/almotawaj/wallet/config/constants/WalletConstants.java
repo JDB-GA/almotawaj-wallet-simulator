@@ -15,6 +15,8 @@ public final class WalletConstants {
     public static final int IBAN_CHECK_REMAINDER = 1;
     public static final String IBAN_PLACEHOLDER_CHECK_DIGITS = "00";
     public static final String IBAN_PATTERN = "^[A-Z]{2}\\d{2}[A-Z0-9]+$";
+    public static final String REFERENCE_SEPARATOR = "-";
+    public static final String EXECUTOR_SHUTDOWN_METHOD = "shutdown";
     public static final String TRANSACTION_REFERENCE_PREFIX = "TXN";
     public static final String TRANSACTION_REFERENCE_DATE_FORMAT = "yyyyMMdd";
     public static final String TRANSACTION_REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -28,7 +30,6 @@ public final class WalletConstants {
     public static final String VOUCHER_CODE_PREFIX = "VCH";
     public static final int VOUCHER_CODE_RANDOM_LENGTH = 12;
     public static final int VOUCHER_CODE_GROUP_SIZE = 4;
-    public static final String VOUCHER_SOLD_OUT_REASON = "VOUCHER_SOLD_OUT";
     public static final String PAYOUT_INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE";
     public static final String PAYOUT_RECIPIENT_UNAVAILABLE = "RECIPIENT_UNAVAILABLE";
     public static final String PAYOUT_PROCESSING_ERROR = "PROCESSING_ERROR";
