@@ -63,5 +63,13 @@
   "businessNameInvalid": "Use letters, digits, spaces and . , & ' - only",
   "urlInvalid": "Enter a full address that starts with https:// or http://",
   "callbackUrlRequired": "Enter the callback URL",
-  "callbackUrlInvalid": "Enter a full address that starts with https://"
+  "callbackUrlInvalid": "Enter a full address that starts with https://",
+  "voucherTitleRequired": "Title is required",
+  "voucherTitleTooLong": "Title must be at most {{voucherTitleMax}} characters",
+  "voucherQuantityInvalid": "Enter a whole number from {{voucherQuantityMin}} to {{voucherQuantityMax}}",
+  "voucherLimitInvalid": "Enter a whole number from {{voucherLimitMin}} to {{voucherLimitMax}}",
+  "voucherExpiryInPast": "The sale must end in the future",
+  "voucherPriceAboveFaceValue": "Price cannot be higher than the face value",
+  "payoutItemsRequired": "Add at least one recipient",
+  "payoutItemsTooMany": "A payout can have at most {{payoutItemsMax}} recipients"
 }

@@ -1,0 +1,116 @@
+{
+  "tabs": {
+    "shop": "المتجر",
+    "mine": "قسائمي"
+  },
+  "status": {
+    "ACTIVE": "معروضة للبيع",
+    "PAUSED": "موقوفة",
+    "SOLD_OUT": "نفدت",
+    "EXPIRED": "منتهية"
+  },
+  "stock": {
+    "label": "المتبقي",
+    "left": "متبقٍ {{remaining}} من {{total}}",
+    "soldOut": "نفدت"
+  },
+  "shop": {
+    "description": "قسائم محدودة من التجار. كل قسيمة تذهب لمشترٍ واحد فقط، حتى لو ضغط عدة أشخاص شراء في نفس اللحظة.",
+    "buy": "شراء",
+    "bought": "اشتريت {{title}}",
+    "save": "وفّر {{amount}}",
+    "expires": "حتى {{date}}",
+    "limit_one": "الحد {{count}} لكل شخص",
+    "limit_other": "الحد {{count}} لكل شخص",
+    "loadError": "تعذر تحميل القسائم.",
+    "emptyTitle": "لا توجد قسائم معروضة",
+    "emptyDescription": "عد قريباً لعروض جديدة."
+  },
+  "mine": {
+    "date": "تاريخ الشراء",
+    "voucher": "القسيمة",
+    "code": "الرمز",
+    "paid": "المدفوع",
+    "copy": "نسخ الرمز",
+    "copied": "تم نسخ الرمز",
+    "copyFailed": "تعذر نسخ الرمز",
+    "loadError": "تعذر تحميل قسائمك.",
+    "emptyTitle": "لا توجد قسائم بعد",
+    "emptyDescription": "تظهر هنا القسائم التي تشتريها مع رموزها."
+  },
+  "manage": {
+    "description": "بِع عدداً محدوداً من القسائم. المخزون محمي فلا تبيع أكثر مما لديك.",
+    "create": "قسيمة جديدة",
+    "voucher": "القسيمة",
+    "stock": "المخزون",
+    "status": "الحالة",
+    "price": "السعر",
+    "actions": "الإجراءات",
+    "pause": "إيقاف",
+    "resume": "استئناف",
+    "paused": "تم إيقاف القسيمة",
+    "resumed": "عادت القسيمة للبيع",
+    "loadError": "تعذر تحميل قسائمك.",
+    "emptyTitle": "لا توجد قسائم بعد",
+    "emptyDescription": "أنشئ أول قسيمة لتبدأ البيع."
+  },
+  "form": {
+    "heading": "قسيمة جديدة",
+    "description": "يدفع العميل السعر ويحصل على قسيمة بقيمتها الاسمية.",
+    "title": "العنوان",
+    "titlePlaceholder": "مثال: بطاقة هدية بقيمة 50 دينار",
+    "price": "السعر ({{currency}})",
+    "faceValue": "القيمة الاسمية ({{currency}})",
+    "quantity": "الكمية",
+    "quantityHint": "إجمالي العدد المتاح للبيع",
+    "perClientLimit": "الحد لكل عميل",
+    "expiresAt": "ينتهي البيع",
+    "cancel": "إلغاء",
+    "create": "إنشاء القسيمة",
+    "created": "تم إنشاء القسيمة"
+  },
+  "payouts": {
+    "description": "أضف المستلمين والمبالغ. تُنفَّذ الدفعات بالتوازي في الخلفية، ولا يمكن أن ينزل رصيدك تحت الصفر.",
+    "recipient": "المستلم",
+    "recipientPlaceholder": "البريد أو الهاتف أو الآيبان",
+    "amount": "المبلغ ({{currency}})",
+    "amountColumn": "المبلغ",
+    "remove": "حذف المستلم",
+    "addRecipient": "إضافة مستلم",
+    "start_one": "ادفع لشخص واحد",
+    "start_other": "ادفع لـ {{count}} أشخاص",
+    "progressTitle": "تقدم الدفعات",
+    "progress": "تم {{done}} من {{total}} · {{paid}} مدفوعة · {{failed}} فاشلة",
+    "result": "النتيجة",
+    "history": "الدفعات السابقة",
+    "date": "البدء",
+    "results": "النتائج",
+    "status": "الحالة",
+    "total": "الإجمالي",
+    "view": "عرض",
+    "summary": "{{paid}} مدفوعة، {{failed}} فاشلة من {{total}}",
+    "loadError": "تعذر تحميل الدفعات.",
+    "emptyTitle": "لا توجد دفعات بعد",
+    "emptyDescription": "تظهر هنا الدفعات التي تبدأها.",
+    "completed": "اكتملت الدفعة: {{paid}} مدفوعة، {{failed}} فاشلة"
+  },
+  "payoutStatus": {
+    "PROCESSING": "قيد التنفيذ",
+    "COMPLETED": "مكتملة",
+    "PARTIALLY_FAILED": "فشل جزئي"
+  },
+  "payoutItemStatus": {
+    "PENDING": "بالانتظار",
+    "PAID": "مدفوعة",
+    "FAILED": "فاشلة"
+  },
+  "failure": {
+    "INSUFFICIENT_BALANCE": "الرصيد المتبقي غير كافٍ",
+    "RECIPIENT_UNAVAILABLE": "المستلم لم يعد يستطيع الاستلام",
+    "PROCESSING_ERROR": "خطأ غير متوقع"
+  },
+  "live": {
+    "sold": "تم بيع قسيمة",
+    "soldDescription": "{{title}} · متبقٍ {{remaining}}"
+  }
+}

@@ -9,4 +9,5 @@ export interface RequestOptions {
   method?: HttpMethod
   body?: FormData | object
   signal?: AbortSignal
+  headers?: Record<string, string>
 }

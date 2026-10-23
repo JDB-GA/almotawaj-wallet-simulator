@@ -24,4 +24,7 @@ export const ROUTES = {
   userTransactions: '/admin/users/:userId/transactions',
   auditLog: '/admin/audit-log',
   paymentRequests: '/payment-requests',
+  vouchers: '/vouchers',
+  merchantVouchers: '/merchant/vouchers',
+  merchantPayouts: '/merchant/payouts',
 } as const

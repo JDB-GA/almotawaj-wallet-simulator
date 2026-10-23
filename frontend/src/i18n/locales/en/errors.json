@@ -56,5 +56,14 @@
   "INSUFFICIENT_BALANCE": "Your balance is not enough for this transfer",
   "SELF_TRANSFER_NOT_ALLOWED": "You can't send money to yourself",
   "RECIPIENT_NOT_FOUND": "No wallet found for this email, mobile number or IBAN",
-  "RECIPIENT_UNAVAILABLE": "This user can't receive money yet"
+  "RECIPIENT_UNAVAILABLE": "This user can't receive money yet",
+  "VOUCHER_NOT_FOUND": "This voucher was not found",
+  "VOUCHER_SOLD_OUT": "Sold out. Someone else got the last one",
+  "VOUCHER_UNAVAILABLE": "This voucher is paused or expired",
+  "VOUCHER_LIMIT_REACHED": "You already bought the maximum allowed of this voucher",
+  "VOUCHER_EDIT_CONFLICT": "This voucher was changed by someone else. Reload and try again",
+  "VOUCHER_PRICE_ABOVE_FACE_VALUE": "Price cannot be higher than the face value",
+  "PAYOUT_BATCH_NOT_FOUND": "This payout was not found",
+  "PAYOUT_RECIPIENT_DUPLICATE": "Each recipient can appear only once",
+  "IDEMPOTENCY_KEY_REUSED": "This request was already used for something else"
 }

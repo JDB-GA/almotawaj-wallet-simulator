@@ -13,8 +13,9 @@ async function parseProblem(response: Response): Promise<ProblemDetail> {
   return result.success ? result.data : {}
 }
 
-async function send(path: string, { method = 'GET', body, signal }: RequestOptions): Promise<Response> {
+async function send(path: string, { method = 'GET', body, signal, headers: extraHeaders }: RequestOptions): Promise<Response> {
   const headers: Record<string, string> = {
+    ...extraHeaders,
     Accept: CONTENT_TYPE_JSON,
     'Accept-Language': i18n.resolvedLanguage ?? DEFAULT_LANGUAGE,
   }

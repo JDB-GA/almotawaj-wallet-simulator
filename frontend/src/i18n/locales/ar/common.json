@@ -100,6 +100,18 @@
     },
     "merchantDevelopers": {
       "title": "دليل المطورين"
+    },
+    "vouchers": {
+      "title": "القسائم",
+      "heading": "متجر القسائم"
+    },
+    "merchantVouchers": {
+      "title": "قسائمي",
+      "heading": "القسائم التي تبيعها"
+    },
+    "merchantPayouts": {
+      "title": "الدفعات الجماعية",
+      "heading": "ادفع لعدة أشخاص دفعة واحدة"
     }
   },
   "nav": {

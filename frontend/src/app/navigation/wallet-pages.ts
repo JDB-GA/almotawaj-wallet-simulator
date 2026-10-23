@@ -1,4 +1,5 @@
 import {
+  BanknoteIcon,
   CircleUserIcon,
   CodeIcon,
   CreditCardIcon,
@@ -7,6 +8,7 @@ import {
   ReceiptTextIcon,
   ShieldCheckIcon,
   StoreIcon,
+  TicketIcon,
   WalletIcon,
 } from 'lucide-react'
 import { ROUTES } from '@/config/routes'
@@ -36,6 +38,22 @@ export const WALLET_PAGES: readonly AppPage[] = [
     roles: ['MERCHANT'],
     showInSidebar: true,
     lazy: async () => ({ Component: (await import('@/features/merchant/pages/MerchantPaymentsPage')).MerchantPaymentsPage }),
+  },
+  {
+    id: 'merchantVouchers',
+    path: ROUTES.merchantVouchers,
+    icon: TicketIcon,
+    roles: ['MERCHANT'],
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/vouchers/pages/MerchantVouchersPage')).MerchantVouchersPage }),
+  },
+  {
+    id: 'merchantPayouts',
+    path: ROUTES.merchantPayouts,
+    icon: BanknoteIcon,
+    roles: ['MERCHANT'],
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/vouchers/pages/MerchantPayoutsPage')).MerchantPayoutsPage }),
   },
   {
     id: 'merchantApiKeys',
@@ -79,6 +97,15 @@ export const WALLET_PAGES: readonly AppPage[] = [
     requiresWallet: true,
     showInSidebar: true,
     lazy: async () => ({ Component: (await import('@/features/wallet/pages/PaymentRequestsPage')).PaymentRequestsPage }),
+  },
+  {
+    id: 'vouchers',
+    path: ROUTES.vouchers,
+    icon: TicketIcon,
+    roles: ['CLIENT'],
+    requiresWallet: true,
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/vouchers/pages/VouchersPage')).VouchersPage }),
   },
   {
     id: 'verification',

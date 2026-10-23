@@ -22,6 +22,9 @@ type AppPageId =
   | 'changePassword'
   | 'profile'
   | 'paymentRequests'
+  | 'vouchers'
+  | 'merchantVouchers'
+  | 'merchantPayouts'
 
 export interface AppPage {
   id: AppPageId

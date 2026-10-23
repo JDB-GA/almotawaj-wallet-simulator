@@ -1,0 +1,116 @@
+{
+  "tabs": {
+    "shop": "Shop",
+    "mine": "My vouchers"
+  },
+  "status": {
+    "ACTIVE": "On sale",
+    "PAUSED": "Paused",
+    "SOLD_OUT": "Sold out",
+    "EXPIRED": "Expired"
+  },
+  "stock": {
+    "label": "Stock left",
+    "left": "{{remaining}} of {{total}} left",
+    "soldOut": "Sold out"
+  },
+  "shop": {
+    "description": "Limited vouchers from merchants. Each one can only go to one buyer, even when many people press Buy at the same moment.",
+    "buy": "Buy",
+    "bought": "You bought {{title}}",
+    "save": "Save {{amount}}",
+    "expires": "Until {{date}}",
+    "limit_one": "Max {{count}} per person",
+    "limit_other": "Max {{count}} per person",
+    "loadError": "Could not load vouchers.",
+    "emptyTitle": "No vouchers on sale",
+    "emptyDescription": "Check back soon for new offers."
+  },
+  "mine": {
+    "date": "Bought",
+    "voucher": "Voucher",
+    "code": "Code",
+    "paid": "Paid",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "copyFailed": "Could not copy the code",
+    "loadError": "Could not load your vouchers.",
+    "emptyTitle": "No vouchers yet",
+    "emptyDescription": "Vouchers you buy appear here with their codes."
+  },
+  "manage": {
+    "description": "Sell a limited number of vouchers. Stock is protected, so you never sell more than you have.",
+    "create": "New voucher",
+    "voucher": "Voucher",
+    "stock": "Stock",
+    "status": "Status",
+    "price": "Price",
+    "actions": "Actions",
+    "pause": "Pause",
+    "resume": "Resume",
+    "paused": "Voucher paused",
+    "resumed": "Voucher back on sale",
+    "loadError": "Could not load your vouchers.",
+    "emptyTitle": "No vouchers yet",
+    "emptyDescription": "Create your first voucher to start selling."
+  },
+  "form": {
+    "heading": "New voucher",
+    "description": "Clients pay the price and get a voucher worth the face value.",
+    "title": "Title",
+    "titlePlaceholder": "e.g. 50 BHD gift card",
+    "price": "Price ({{currency}})",
+    "faceValue": "Face value ({{currency}})",
+    "quantity": "Quantity",
+    "quantityHint": "How many can be sold in total",
+    "perClientLimit": "Max per client",
+    "expiresAt": "Sale ends",
+    "cancel": "Cancel",
+    "create": "Create voucher",
+    "created": "Voucher created"
+  },
+  "payouts": {
+    "description": "Add recipients and amounts. Payouts run in parallel in the background, and your balance can never go below zero.",
+    "recipient": "Recipient",
+    "recipientPlaceholder": "Email, mobile or IBAN",
+    "amount": "Amount ({{currency}})",
+    "amountColumn": "Amount",
+    "remove": "Remove recipient",
+    "addRecipient": "Add recipient",
+    "start_one": "Pay {{count}} person",
+    "start_other": "Pay {{count}} people",
+    "progressTitle": "Payout progress",
+    "progress": "{{done}} of {{total}} done · {{paid}} paid · {{failed}} failed",
+    "result": "Result",
+    "history": "Past payouts",
+    "date": "Started",
+    "results": "Results",
+    "status": "Status",
+    "total": "Total",
+    "view": "View",
+    "summary": "{{paid}} paid, {{failed}} failed of {{total}}",
+    "loadError": "Could not load payouts.",
+    "emptyTitle": "No payouts yet",
+    "emptyDescription": "Payouts you start appear here.",
+    "completed": "Payout finished: {{paid}} paid, {{failed}} failed"
+  },
+  "payoutStatus": {
+    "PROCESSING": "Processing",
+    "COMPLETED": "Completed",
+    "PARTIALLY_FAILED": "Partly failed"
+  },
+  "payoutItemStatus": {
+    "PENDING": "Waiting",
+    "PAID": "Paid",
+    "FAILED": "Failed"
+  },
+  "failure": {
+    "INSUFFICIENT_BALANCE": "Not enough balance left",
+    "RECIPIENT_UNAVAILABLE": "Recipient can no longer receive money",
+    "PROCESSING_ERROR": "Unexpected error"
+  },
+  "live": {
+    "sold": "Voucher sold",
+    "soldDescription": "{{title}} · {{remaining}} left"
+  }
+}

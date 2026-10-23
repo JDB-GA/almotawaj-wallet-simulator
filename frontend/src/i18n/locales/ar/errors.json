@@ -56,5 +56,14 @@
   "INSUFFICIENT_BALANCE": "رصيدك غير كافٍ لهذا التحويل",
   "SELF_TRANSFER_NOT_ALLOWED": "لا يمكنك إرسال الأموال إلى نفسك",
   "RECIPIENT_NOT_FOUND": "لا توجد محفظة بهذا البريد أو الرقم أو الآيبان",
-  "RECIPIENT_UNAVAILABLE": "لا يمكن لهذا المستخدم استلام الأموال بعد"
+  "RECIPIENT_UNAVAILABLE": "لا يمكن لهذا المستخدم استلام الأموال بعد",
+  "VOUCHER_NOT_FOUND": "لم يتم العثور على هذه القسيمة",
+  "VOUCHER_SOLD_OUT": "نفدت. حصل شخص آخر على آخر قسيمة",
+  "VOUCHER_UNAVAILABLE": "هذه القسيمة موقوفة أو منتهية",
+  "VOUCHER_LIMIT_REACHED": "اشتريت الحد الأقصى المسموح من هذه القسيمة",
+  "VOUCHER_EDIT_CONFLICT": "عدّل شخص آخر هذه القسيمة. أعد التحميل وحاول مجدداً",
+  "VOUCHER_PRICE_ABOVE_FACE_VALUE": "لا يمكن أن يزيد السعر عن القيمة الاسمية",
+  "PAYOUT_BATCH_NOT_FOUND": "لم يتم العثور على هذه الدفعة",
+  "PAYOUT_RECIPIENT_DUPLICATE": "يمكن أن يظهر كل مستلم مرة واحدة فقط",
+  "IDEMPOTENCY_KEY_REUSED": "تم استخدام هذا الطلب لغرض آخر"
 }

@@ -100,6 +100,18 @@
     },
     "merchantDevelopers": {
       "title": "Developer Guide"
+    },
+    "vouchers": {
+      "title": "Vouchers",
+      "heading": "Voucher shop"
+    },
+    "merchantVouchers": {
+      "title": "My Vouchers",
+      "heading": "Vouchers you sell"
+    },
+    "merchantPayouts": {
+      "title": "Bulk Payouts",
+      "heading": "Pay many people at once"
     }
   },
   "nav": {
