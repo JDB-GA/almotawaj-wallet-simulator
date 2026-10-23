@@ -18,6 +18,7 @@ import com.almotawaj.wallet.model.VoucherPurchaseStatus;
 import com.almotawaj.wallet.model.Wallet;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.model.response.CheckoutViewResponse;
+import com.almotawaj.wallet.model.response.UsableVoucherResponse;
 import com.almotawaj.wallet.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.repository.VoucherPurchaseRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,6 +47,15 @@ public class CheckoutPaymentService {
     private final AuditService auditService;
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
+
+    @Transactional(readOnly = true)
+    public List<UsableVoucherResponse> usableVouchers(UUID payerId, UUID sessionId) {
+        CheckoutSession session = sessionRepository.findById(sessionId).orElseThrow(() ->
+                new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
+        return purchaseRepository.findUsable(payerId, session.getMerchant().getId(), VoucherPurchaseStatus.UNUSED).stream()
+                .map(UsableVoucherResponse::from)
+                .toList();
+    }
 
     @Transactional
     public CheckoutViewResponse pay(UUID payerId, UUID sessionId, UUID voucherId) {

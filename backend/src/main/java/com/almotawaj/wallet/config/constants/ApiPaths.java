@@ -63,6 +63,7 @@ public final class ApiPaths {
     public static final String CHECKOUT = "/api/checkout";
     public static final String CHECKOUT_SESSION = "/{sessionId}";
     public static final String CHECKOUT_SESSION_PAY = "/{sessionId}/pay";
+    public static final String CHECKOUT_SESSION_VOUCHERS = "/{sessionId}/vouchers";
     public static final String CHECKOUT_SESSION_CANCEL = "/{sessionId}/cancel";
     public static final String CHECKOUT_SESSION_REFUND = "/{sessionId}/refund";
     public static final String VOUCHERS = "/api/vouchers";

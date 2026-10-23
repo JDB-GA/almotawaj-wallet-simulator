@@ -65,9 +65,9 @@ public class SeedDataCleanupService {
         applicationRepository.clearReviewersByIdIn(userIds);
         otpChallengeRepository.deleteAllByUserIdIn(userIds);
         paymentRequestRepository.deleteAllByUserIdIn(userIds);
-        checkoutSessionRepository.deleteAllByUserIdIn(userIds);
         idempotencyRepository.deleteAllByUserIdIn(userIds);
         voucherPurchaseRepository.deleteAllByUserIdIn(userIds);
+        checkoutSessionRepository.deleteAllByUserIdIn(userIds);
         voucherRepository.deleteAllByMerchantIdIn(userIds);
         payoutItemRepository.deleteAllByUserIdIn(userIds);
         payoutBatchRepository.deleteAllByMerchantIdIn(userIds);
