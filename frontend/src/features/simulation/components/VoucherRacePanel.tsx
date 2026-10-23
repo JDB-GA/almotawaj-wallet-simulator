@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { BUYERS_MAX, BUYERS_MIN, DEFAULT_BUYERS, DEFAULT_STOCK, MS_DECIMALS, SIMULATION_MODES, STOCK_MAX, STOCK_MIN } from '../constants/simulation.constants'
+import { BUYERS_MAX, BUYERS_MIN, DEFAULT_BUYERS, DEFAULT_STOCK, MS_DECIMALS, SIMULATION_MODES, STOCK_MAX, STOCK_MIN, VOUCHER_SHARED_STEPS } from '../constants/simulation.constants'
 import { useSimulations } from '../hooks/useSimulations'
 import type { SimulationMode } from '../types/simulation.types'
 import { NumberField } from './NumberField'
+import { RaceReplay } from './RaceReplay'
 import { StatTile } from './StatTile'
 import { ThreadTimeline } from './ThreadTimeline'
 
@@ -74,6 +75,15 @@ export function VoucherRacePanel() {
           <ThreadTimeline
             attempts={result.attempts}
             rowLabel={(attempt) => attempt.thread ?? t('voucher.buyer', { number: attempt.index + 1 })}
+          />
+          <RaceReplay
+            key={result.durationMs}
+            attempts={result.attempts}
+            rowLabel={(attempt) => attempt.thread ?? t('voucher.buyer', { number: attempt.index + 1 })}
+            sharedLabel={t('voucher.stockLabel')}
+            sharedStart={result.stock}
+            sharedSteps={VOUCHER_SHARED_STEPS}
+            formatValue={String}
           />
         </section>
       )}

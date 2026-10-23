@@ -13,6 +13,7 @@ import com.almotawaj.wallet.model.AuditAction;
 import com.almotawaj.wallet.model.AuditTargetType;
 import com.almotawaj.wallet.model.Counterparty;
 import com.almotawaj.wallet.model.IdempotencyRecord;
+import com.almotawaj.wallet.model.SimulationStepType;
 import com.almotawaj.wallet.model.TransactionType;
 import com.almotawaj.wallet.model.Voucher;
 import com.almotawaj.wallet.model.VoucherPurchase;
@@ -57,13 +58,17 @@ public class VoucherPurchaseService {
         log.info(LogMessages.VOUCHER_PURCHASE_STARTED, buyerId, voucherId);
         Instant now = clock.instant();
         Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(VoucherService::notFound);
+        SimulationTrace.mark(SimulationStepType.READ, BigDecimal.valueOf(voucher.getRemaining()));
         ensureOnSale(voucher, now);
         UUID merchantId = voucher.getMerchant().getId();
         String title = voucher.getTitle();
         BigDecimal price = voucher.getPrice();
         int perClientLimit = voucher.getPerClientLimit();
 
-        if (voucherRepository.takeOne(voucherId, VoucherStatus.ACTIVE, now) == 0) {
+        int taken = voucherRepository.takeOne(voucherId, VoucherStatus.ACTIVE, now);
+        SimulationTrace.mark(SimulationStepType.TAKE_ONE, BigDecimal.valueOf(taken));
+        if (taken == 0) {
+            SimulationTrace.mark(SimulationStepType.SOLD_OUT);
             log.info(LogMessages.VOUCHER_SOLD_OUT, buyerId, voucherId);
             throw new ConflictException(ErrorMessages.VOUCHER_SOLD_OUT, ErrorCodes.VOUCHER_SOLD_OUT);
         }
@@ -76,6 +81,7 @@ public class VoucherPurchaseService {
         WalletLocker.LockedPair locked = walletLocker.lockPair(buyerWallet.getId(), merchantWallet.getId());
         Wallet buyer = locked.source();
         Wallet merchant = locked.target();
+        SimulationTrace.mark(SimulationStepType.LOCKED);
         if (purchaseRepository.countByVoucherIdAndBuyerId(voucherId, buyerId) >= perClientLimit) {
             throw new BusinessRuleException(ErrorMessages.VOUCHER_LIMIT_REACHED, ErrorCodes.VOUCHER_LIMIT_REACHED);
         }
@@ -100,6 +106,7 @@ public class VoucherPurchaseService {
         }
 
         int remaining = sold.getRemaining();
+        SimulationTrace.mark(SimulationStepType.COMMITTED, BigDecimal.valueOf(remaining));
         auditService.record(buyerId, AuditAction.VOUCHER_PURCHASED, AuditTargetType.VOUCHER, voucherId, purchase.getCode());
         eventPublisher.publishEvent(new MoneyReceivedEvent(merchantId, price, buyerDetails.name(), credit.getReference()));
         eventPublisher.publishEvent(new VoucherSoldEvent(merchantId, voucherId, title, price, remaining));
@@ -128,6 +135,7 @@ public class VoucherPurchaseService {
 
     private static void ensureOnSale(Voucher voucher, Instant now) {
         if (voucher.getRemaining() == 0) {
+            SimulationTrace.mark(SimulationStepType.SOLD_OUT);
             throw new ConflictException(ErrorMessages.VOUCHER_SOLD_OUT, ErrorCodes.VOUCHER_SOLD_OUT);
         }
         if (voucher.getStatus() != VoucherStatus.ACTIVE || !voucher.getExpiresAt().isAfter(now)) {

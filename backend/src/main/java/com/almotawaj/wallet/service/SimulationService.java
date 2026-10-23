@@ -13,6 +13,7 @@ import com.almotawaj.wallet.model.request.PayoutRaceRequest;
 import com.almotawaj.wallet.model.request.VoucherRaceRequest;
 import com.almotawaj.wallet.model.response.PayoutRaceResult;
 import com.almotawaj.wallet.model.response.SimulationAttempt;
+import com.almotawaj.wallet.model.response.SimulationStep;
 import com.almotawaj.wallet.model.response.VoucherRaceResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,10 +79,11 @@ public class SimulationService {
             List<SimulationAttempt> attempts = new ArrayList<>();
             long origin = System.nanoTime();
             log.info(LogMessages.SIMULATION_STARTED, batchId, request.recipients());
-            PayoutBatch batch = payoutRunner.run(batchId, (itemId, thread, start, end, status) -> {
+            PayoutBatch batch = payoutRunner.run(batchId, (itemId, thread, start, end, status, steps) -> {
                 synchronized (attempts) {
                     attempts.add(new SimulationAttempt(indexes.get(itemId), thread, millis(origin, start), millis(origin, end),
-                            status == PayoutItemStatus.PAID ? SimulationOutcome.PAID : SimulationOutcome.FAILED, null));
+                            status == PayoutItemStatus.PAID ? SimulationOutcome.PAID : SimulationOutcome.FAILED, null,
+                            shift(steps, millis(origin, start))));
                 }
             });
             attempts.sort(Comparator.comparingInt(SimulationAttempt::index));
@@ -125,9 +127,16 @@ public class SimulationService {
                 futures.add(pool.submit(() -> {
                     start.await();
                     long begin = System.nanoTime();
-                    SimulationOutcome outcome = task.call();
+                    SimulationTrace.start(origin);
+                    SimulationOutcome outcome;
+                    try {
+                        outcome = task.call();
+                    } catch (Exception e) {
+                        SimulationTrace.stop();
+                        throw e;
+                    }
                     return new SimulationAttempt(position, Thread.currentThread().getName(), millis(origin, begin),
-                            millis(origin, System.nanoTime()), outcome, null);
+                            millis(origin, System.nanoTime()), outcome, null, SimulationTrace.stop());
                 }));
             }
             start.countDown();
@@ -145,8 +154,12 @@ public class SimulationService {
         try {
             return future.get(SimulationConstants.RACE_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch (ExecutionException | TimeoutException e) {
-            return new SimulationAttempt(index, null, 0, 0, SimulationOutcome.ERROR, e.getClass().getSimpleName());
+            return new SimulationAttempt(index, null, 0, 0, SimulationOutcome.ERROR, e.getClass().getSimpleName(), List.of());
         }
+    }
+
+    private static List<SimulationStep> shift(List<SimulationStep> steps, double offsetMs) {
+        return steps.stream().map(step -> new SimulationStep(step.atMs() + offsetMs, step.type(), step.value())).toList();
     }
 
     private static double millis(long origin, long nanos) {

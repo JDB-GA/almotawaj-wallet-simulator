@@ -51,5 +51,28 @@
     "threads": "Threads used",
     "resultTitle": "Balance never went negative",
     "resultBody": "{{paid}} paid and {{failed}} failed for lack of balance, on {{threads}} threads in {{duration}} ms."
+  },
+  "replay": {
+    "title": "Replay of the real threads (slowed down)",
+    "play": "Play",
+    "pause": "Pause",
+    "restart": "Restart",
+    "speed": "Replay speed",
+    "slower": "{{times}}× slower",
+    "scrub": "Replay time",
+    "running": "Running…",
+    "waiting": "Waiting"
+  },
+  "step": {
+    "READ": "Read",
+    "CHECK": "Check",
+    "SLEEP": "Waited",
+    "WRITE": "Wrote",
+    "TAKE_ONE": "Take one",
+    "SOLD_OUT": "Sold out",
+    "LOCKED": "Locked",
+    "COMMITTED": "Committed",
+    "PAID": "Paid",
+    "FAILED": "Failed"
   }
 }
