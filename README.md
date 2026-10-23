@@ -77,6 +77,16 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 | Database consistency | Every purchase and payout item is one transaction: stock, both wallets, the ledger and the purchase or item row commit together or not at all; a `CHECK (remaining >= 0)` constraint is the last line of defence |
 | Asynchronous processing | Payout batches return `202` and run in the background (`@Async` + a 5-thread pool); live progress and stock changes go out over Server-Sent Events after commit |
 
+### Diagrams
+
+| Flow | Diagram |
+| --- | --- |
+| The last voucher race | [`docs/p03-voucher-race-flow.png`](docs/p03-voucher-race-flow.png) |
+| Bulk payout on a thread pool | [`docs/p03-bulk-payout-flow.png`](docs/p03-bulk-payout-flow.png) |
+| Charged once with an Idempotency-Key | [`docs/p03-idempotency-flow.png`](docs/p03-idempotency-flow.png) |
+
+![The last voucher race](docs/p03-voucher-race-flow.png)
+
 ### Concurrency Explanation
 
 **Where concurrency happens.** Vouchers are a shared, limited resource: during a sale, many clients press Buy at the same moment, each request on its own server thread (and, on Cloud Run, possibly on different instances). Bulk payouts run 5 worker threads that all debit the same merchant wallet.
