@@ -72,6 +72,9 @@ public final class ApiPaths {
     public static final String VOUCHER_BY_ID = "/{voucherId}";
     public static final String MERCHANT_PAYOUTS = "/api/merchant/payouts";
     public static final String PAYOUT_BY_ID = "/{batchId}";
+    public static final String ADMIN_SIMULATIONS = "/api/admin/simulations";
+    public static final String SIMULATION_VOUCHER_RACE = "/voucher-race";
+    public static final String SIMULATION_PAYOUT_RACE = "/payout-race";
     public static final String PROFILE = "/api/profile";
     public static final String PROFILE_PICTURE = "/picture";
     public static final String USER_BY_ID = "/{userId}";

@@ -32,6 +32,13 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
             where v.id = :id and v.remaining > 0 and v.status = :status and v.expiresAt > :now""")
     int takeOne(UUID id, VoucherStatus status, Instant now);
 
+    @Query("select v.remaining from Voucher v where v.id = :id")
+    int readRemaining(UUID id);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("update Voucher v set v.remaining = :remaining where v.id = :id")
+    void overwriteRemaining(UUID id, int remaining);
+
     @Modifying
     @Query("delete from Voucher v where v.merchant.id in :userIds")
     void deleteAllByMerchantIdIn(Collection<UUID> userIds);

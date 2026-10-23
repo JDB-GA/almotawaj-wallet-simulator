@@ -33,6 +33,8 @@ public final class LogMessages {
     public static final String PAYOUT_ITEM_FAILED = "Payout item {} of batch {} failed on {}: {}";
     public static final String PAYOUT_BATCH_FINISHED = "Payout batch {} finished as {}: {} paid, {} failed in {} ms";
     public static final String PAYOUT_ITEM_CRASHED = "Payout item {} of batch {} crashed";
+    public static final String SIMULATION_STARTED = "Simulation {} started: {} threads";
+    public static final String SIMULATION_FINISHED = "Simulation {} finished in {} ms: {}";
 
     private LogMessages() {
     }

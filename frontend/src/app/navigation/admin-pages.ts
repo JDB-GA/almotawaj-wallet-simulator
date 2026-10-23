@@ -1,4 +1,4 @@
-import { ClipboardCheckIcon, HistoryIcon, LayoutDashboardIcon, ReceiptTextIcon, UsersIcon } from 'lucide-react'
+import { ActivityIcon, ClipboardCheckIcon, HistoryIcon, LayoutDashboardIcon, ReceiptTextIcon, UsersIcon } from 'lucide-react'
 import { ROUTES } from '@/config/routes'
 import type { AppPage } from './app-page.types'
 
@@ -76,5 +76,13 @@ export const ADMIN_PAGES: readonly AppPage[] = [
     roles: ['SUPER_ADMIN'],
     showInSidebar: true,
     lazy: async () => ({ Component: (await import('@/features/audit-log/pages/AuditLogPage')).AuditLogPage }),
+  },
+  {
+    id: 'simulation',
+    path: ROUTES.simulation,
+    icon: ActivityIcon,
+    roles: ['SUPER_ADMIN'],
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/simulation/pages/SimulationPage')).SimulationPage }),
   },
 ]

@@ -24,4 +24,8 @@ public interface AuditLogRepository extends JpaRepository<AuditLog, UUID> {
     @Modifying
     @Query("update AuditLog log set log.actor = null where log.actor.id in :userIds")
     void clearActorsByIdIn(Collection<UUID> userIds);
+
+    @Modifying
+    @Query("delete from AuditLog log where log.actor.id in :userIds")
+    void deleteAllByActorIdIn(Collection<UUID> userIds);
 }

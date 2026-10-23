@@ -112,6 +112,10 @@
     "merchantPayouts": {
       "title": "Bulk Payouts",
       "heading": "Pay many people at once"
+    },
+    "simulation": {
+      "title": "Concurrency Lab",
+      "heading": "See concurrency in action"
     }
   },
   "nav": {

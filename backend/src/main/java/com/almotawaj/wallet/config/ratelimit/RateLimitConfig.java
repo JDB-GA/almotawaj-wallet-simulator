@@ -26,7 +26,7 @@ public class RateLimitConfig implements WebMvcConfigurer {
                         ApiPaths.MERCHANT_VOUCHERS + ApiPaths.ALL, ApiPaths.MERCHANT_PAYOUTS, ApiPaths.VOUCHERS + ApiPaths.ALL,
                         ApiPaths.MERCHANT_CHECKOUT_SESSIONS + ApiPaths.ALL, ApiPaths.MERCHANT_WEBHOOK,
                         ApiPaths.CHECKOUT + ApiPaths.ALL,
-                        ApiPaths.PROFILE, ApiPaths.PROFILE + ApiPaths.ALL);
+                        ApiPaths.PROFILE, ApiPaths.PROFILE + ApiPaths.ALL, ApiPaths.ADMIN_SIMULATIONS + ApiPaths.ALL);
         registry.addInterceptor(gatewayRateLimitInterceptor).addPathPatterns(ApiPaths.GATEWAY + ApiPaths.ALL);
     }
 }

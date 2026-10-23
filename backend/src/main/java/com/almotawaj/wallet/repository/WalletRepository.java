@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -33,4 +34,7 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
     @Modifying
     @Query("delete from Wallet w where w.user.id in :userIds")
     void deleteAllByUserIdIn(Collection<UUID> userIds);
+
+    @Query("select w.balance from Wallet w where w.user.id = :userId")
+    BigDecimal readBalance(UUID userId);
 }

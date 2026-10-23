@@ -124,6 +124,12 @@ public final class ErrorMessages {
     public static final String IDEMPOTENCY_KEY_REUSED = "This Idempotency-Key was already used for a different request";
     public static final String IDEMPOTENCY_KEY_TOO_LONG = "Idempotency-Key must be at most 64 characters";
 
+    public static final String SIMULATION_MODE_REQUIRED = "Choose SAFE or UNSAFE";
+    public static final String SIMULATION_BUYERS_RANGE = "Buyers must be between {min} and {max}";
+    public static final String SIMULATION_STOCK_RANGE = "Stock must be between {min} and {max}";
+    public static final String SIMULATION_RECIPIENTS_RANGE = "Recipients must be between {min} and {max}";
+    public static final String SIMULATION_AMOUNT_RANGE = "Amount must be between {value} and the maximum allowed";
+    public static final String SIMULATION_BALANCE_RANGE = "Balance must be between 0 and the maximum allowed";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String NOT_FOUND = "The requested resource was not found";
     public static final String IBAN_GENERATION_FAILED = "Could not generate a unique IBAN";

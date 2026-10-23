@@ -1,0 +1,55 @@
+{
+  "description": "Runs a real race on the server in a throw-away sandbox, then draws every thread. Nothing touches real accounts; the sandbox is deleted afterwards.",
+  "tabs": {
+    "voucher": "Last voucher race",
+    "payout": "Parallel payouts"
+  },
+  "run": "Run simulation",
+  "duration": "Duration",
+  "mode": {
+    "SAFE": "Safe (atomic update)",
+    "UNSAFE": "Unsafe (read, then write)"
+  },
+  "modeHint": {
+    "SAFE": "Each buyer runs UPDATE … SET remaining = remaining - 1 WHERE remaining > 0. The database does the check and the change in one step, so only the stock can be sold.",
+    "UNSAFE": "Each buyer reads the stock, waits a moment, then writes stock - 1. Everyone reads the same number before anyone writes, so many buyers \"win\" the same voucher."
+  },
+  "outcome": {
+    "WON": "Got it",
+    "SOLD_OUT": "Sold out",
+    "PAID": "Paid",
+    "FAILED": "Failed",
+    "ERROR": "Error"
+  },
+  "timeline": {
+    "title": "Thread timeline (each bar = one thread, from start to finish)"
+  },
+  "voucher": {
+    "intro": "N buyers press Buy at exactly the same moment for a voucher with limited stock.",
+    "mode": "Mode",
+    "buyers": "Buyers",
+    "stock": "Vouchers in stock",
+    "stockLabel": "Stock",
+    "buyersLabel": "Buyers",
+    "winners": "Got a voucher",
+    "oversold": "Oversold",
+    "buyer": "Buyer {{number}}",
+    "safeTitle": "Consistent: no overselling",
+    "safeBody": "{{winners}} buyer(s) got a voucher and {{losers}} got 409 Sold out. Stock never went below zero.",
+    "oversoldTitle": "Race condition: oversold!",
+    "oversoldBody": "{{winners}} buyers were told they got a voucher, but only {{stock}} existed. This is the lost-update bug the atomic update prevents."
+  },
+  "payout": {
+    "intro": "A merchant pays N people at once. A pool of 5 threads processes the items in parallel, and each item locks the merchant's wallet.",
+    "recipients": "Recipients",
+    "amount": "Amount each (BHD)",
+    "balance": "Merchant balance (BHD)",
+    "startBalance": "Start balance",
+    "endBalance": "End balance",
+    "paid": "Paid",
+    "failed": "Failed",
+    "threads": "Threads used",
+    "resultTitle": "Balance never went negative",
+    "resultBody": "{{paid}} paid and {{failed}} failed for lack of balance, on {{threads}} threads in {{duration}} ms."
+  }
+}

@@ -8,6 +8,7 @@ import com.almotawaj.wallet.config.constants.docs.KycReviewDocs;
 import com.almotawaj.wallet.config.constants.docs.PaymentRequestDocs;
 import com.almotawaj.wallet.config.constants.docs.PayoutDocs;
 import com.almotawaj.wallet.config.constants.docs.ProfileDocs;
+import com.almotawaj.wallet.config.constants.docs.SimulationDocs;
 import com.almotawaj.wallet.config.constants.docs.SystemDocs;
 import com.almotawaj.wallet.config.constants.docs.TransferDocs;
 import com.almotawaj.wallet.config.constants.docs.UserAdminDocs;
@@ -27,7 +28,7 @@ public class TagOrderCustomizer implements OpenApiCustomizer {
             PaymentRequestDocs.TAG, VoucherDocs.TAG, GatewayDocs.CHECKOUT_TAG, GatewayDocs.API_KEYS_TAG, GatewayDocs.WEBHOOK_TAG,
             GatewayDocs.PAYMENTS_TAG, VoucherDocs.MERCHANT_TAG, PayoutDocs.TAG,
             GatewayDocs.GATEWAY_TAG, KycReviewDocs.TAG, UserAdminDocs.TAG, UserAdminDocs.PERMISSIONS_TAG,
-            AdminStatisticsDocs.TAG, SystemDocs.AUDIT_TAG, SystemDocs.SEED_TAG);
+            AdminStatisticsDocs.TAG, SimulationDocs.TAG, SystemDocs.AUDIT_TAG, SystemDocs.SEED_TAG);
 
     @Override
     public void customise(OpenAPI openApi) {

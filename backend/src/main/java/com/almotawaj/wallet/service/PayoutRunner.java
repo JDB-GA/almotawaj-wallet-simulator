@@ -51,6 +51,10 @@ public class PayoutRunner {
     }
 
     public PayoutBatch run(UUID batchId) {
+        return run(batchId, PayoutItemObserver.NONE);
+    }
+
+    public PayoutBatch run(UUID batchId, PayoutItemObserver observer) {
         long started = System.currentTimeMillis();
         UUID merchantId = batchRepository.findById(batchId).orElseThrow().getMerchant().getId();
         List<UUID> itemIds = itemRepository.findByBatchId(batchId).stream().map(PayoutItem::getId).toList();
@@ -60,7 +64,7 @@ public class PayoutRunner {
         log.info(LogMessages.PAYOUT_BATCH_STARTED, batchId, WalletLimits.PAYOUT_THREADS);
 
         List<Future<PayoutItemStatus>> futures = itemIds.stream()
-                .map(itemId -> executor.submit(payOne(batchId, itemId, merchantId, total, paid, failed)))
+                .map(itemId -> executor.submit(payOne(batchId, itemId, merchantId, total, paid, failed, observer)))
                 .toList();
         for (int index = 0; index < futures.size(); index++) {
             await(futures.get(index), batchId, itemIds.get(index), merchantId, total, paid, failed);
@@ -75,9 +79,11 @@ public class PayoutRunner {
     }
 
     private Callable<PayoutItemStatus> payOne(UUID batchId, UUID itemId, UUID merchantId, int total,
-                                              AtomicInteger paid, AtomicInteger failed) {
+                                              AtomicInteger paid, AtomicInteger failed, PayoutItemObserver observer) {
         return () -> {
+            long startNanos = System.nanoTime();
             PayoutItemStatus status = processor.process(itemId);
+            observer.onItemProcessed(itemId, Thread.currentThread().getName(), startNanos, System.nanoTime(), status);
             report(batchId, merchantId, total, status == PayoutItemStatus.PAID ? paid.incrementAndGet() : paid.get(),
                     status == PayoutItemStatus.FAILED ? failed.incrementAndGet() : failed.get());
             return status;

@@ -23,6 +23,7 @@ export const ROUTES = {
   user: '/admin/users/:userId',
   userTransactions: '/admin/users/:userId/transactions',
   auditLog: '/admin/audit-log',
+  simulation: '/admin/simulation',
   paymentRequests: '/payment-requests',
   vouchers: '/vouchers',
   merchantVouchers: '/merchant/vouchers',

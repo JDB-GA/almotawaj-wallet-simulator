@@ -19,6 +19,7 @@ type AppPageId =
   | 'userTransactions'
   | 'userCreate'
   | 'auditLog'
+  | 'simulation'
   | 'changePassword'
   | 'profile'
   | 'paymentRequests'

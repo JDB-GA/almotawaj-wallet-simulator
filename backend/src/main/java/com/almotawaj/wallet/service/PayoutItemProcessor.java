@@ -16,6 +16,7 @@ import com.almotawaj.wallet.model.Wallet;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.repository.PayoutItemRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,6 +39,7 @@ public class PayoutItemProcessor {
     private final Counterparties counterparties;
     private final AuditService auditService;
     private final ApplicationEventPublisher eventPublisher;
+    private final EntityManager entityManager;
     private final Clock clock;
 
     @Transactional
@@ -80,6 +82,7 @@ public class PayoutItemProcessor {
     @Transactional
     public PayoutBatch complete(UUID batchId) {
         PayoutBatch batch = batchRepository.findById(batchId).orElseThrow();
+        entityManager.refresh(batch);
         batch.setStatus(batch.getFailedCount() == 0 ? PayoutBatchStatus.COMPLETED : PayoutBatchStatus.PARTIALLY_FAILED);
         batch.setCompletedAt(clock.instant());
         UUID merchantId = batch.getMerchant().getId();
