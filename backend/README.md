@@ -69,6 +69,8 @@ Authorization: Bearer <SEED_TOKEN>
 
 All accounts use `SEED_PASSWORD` and have verified emails. Seeded KYC applications have no document files.
 
+The merchant also gets four vouchers for the Project 3 demo: Coffee Gift Card (50), Dinner for Two (10), Cinema Ticket (100) and **Spa Day - Last One (1 in stock)**, which is the one to race for. Seeding again never duplicates them.
+
 `DELETE /api/admin/seed-data` (super admin) removes only the demo accounts with their wallets, transactions, payment requests, verification records and documents. Other accounts keep their data.
 
 ## Structure
