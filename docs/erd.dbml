@@ -252,6 +252,7 @@ Table checkout_sessions {
   amount           numeric(19,3)    [not null]
   description      varchar(140)
   return_url       varchar(500)     [note: 'Where the customer is sent after paying']
+  voucher_discount numeric(19,3)    [note: 'Part of the amount covered by a voucher']
   status           checkout_status  [not null, default: 'PENDING']
   expires_at       timestamptz      [not null]
   paid_at          timestamptz
@@ -273,6 +274,11 @@ Enum voucher_status {
   PAUSED
   SOLD_OUT
   EXPIRED
+}
+
+Enum voucher_purchase_status {
+  UNUSED
+  REDEEMED
 }
 
 Enum payout_batch_status {
@@ -315,6 +321,9 @@ Table voucher_purchases {
   transaction_id  uuid           [not null, ref: - wallet_transactions.id, note: 'The buyer debit']
   code            varchar(20)    [not null, unique, note: 'Voucher code given to the buyer']
   price           numeric(19,3)  [not null]
+  status          voucher_purchase_status [not null, default: 'UNUSED']
+  redeemed_checkout_id uuid      [ref: > checkout_sessions.id, note: 'The checkout the voucher paid for']
+  redeemed_at     timestamptz
   created_at      timestamptz    [not null]
 
   indexes {

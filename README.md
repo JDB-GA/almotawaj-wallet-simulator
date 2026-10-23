@@ -39,7 +39,7 @@ Monorepo:
 - **Permissions** – the super admin grants fine-grained permissions to admins with checkboxes.
 - **Audit log** – every sign-in, account, administrative and money action is stored and listed for the super admin, in English and Arabic.
 - **Security** – BCrypt passwords, httpOnly `SameSite=Strict` JWT cookie, token revocation, HMAC-hashed one-time codes, rate limiting, strict CORS, CSP/HSTS and other security headers on both apps, file type checks by content, row locks on every money movement.
-- **Vouchers (Project 3)** – merchants sell a limited number of discounted vouchers; clients buy them with their balance and get a unique code. The last unit always goes to exactly one buyer.
+- **Vouchers (Project 3)** – merchants sell a limited number of discounted vouchers; clients buy them with their balance, get a unique code and spend it when paying that merchant's checkout (for example in the sample shop). The last unit always goes to exactly one buyer, and a code can only be used once.
 - **Bulk payouts (Project 3)** – merchants pay many people in one request; a thread pool pays them in parallel in the background with live progress, and the balance never goes negative.
 - **Concurrency Lab (Project 3)** – the super admin runs real races in a throw-away sandbox and sees every thread on a timeline, safe versus unsafe.
 - **Localisation** – the whole UI and every email are available in English and Arabic (RTL).
@@ -102,6 +102,7 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 | Lost payout counters | `UPDATE payout_batches SET paid_count = paid_count + 1`, plus `AtomicInteger` for the live progress in memory |
 | Stale voucher edits | `@Version`: an edit made from an old copy is rejected with `409` instead of overwriting |
 | Double clicks and retries | `Idempotency-Key` with a unique `(user, key)` constraint: the second request gets the first purchase back |
+| Using one voucher in two tabs | `UPDATE voucher_purchases SET status = 'REDEEMED' WHERE id = ? AND status = 'UNUSED'` in the payment transaction; `0` rows means already used (`422`) |
 
 **Why this approach.** The database is the only thing all server instances share, so the protection lives there: a Java `synchronized` block or lock would only protect one JVM. The atomic update is the cheapest correct fix for a counter (no waiting on a read lock); row locks are used where a read must be followed by a dependent write (balances); optimistic locking fits edits, which rarely collide and should fail loudly rather than block.
 
@@ -114,6 +115,7 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 | Same `Idempotency-Key` sent 10 times in parallel | One purchase, charged once |
 | 10 payouts of 15 BHD from 100 BHD on 5 threads | 6 paid, 4 failed, 10 BHD left, never negative |
 | Stale `version` on a voucher edit | `409`, the newer change survives |
+| `VoucherRedemptionIntegrationTest` – one voucher used in 10 tabs at once, **repeated 20 times** | Exactly one payment succeeds, nine get `VOUCHER_NOT_USABLE`; refunds free the voucher |
 | `SimulationServiceTest` | Safe mode never oversells; unsafe mode does, so the race is real |
 | `VoucherAndPayoutControllerTest` | Status codes, roles, validation and Swagger for every new endpoint |
 
@@ -131,6 +133,8 @@ Run them with `./mvnw test` in `backend/` (181 tests). To see it visually, sign 
 | `GET` | `/api/vouchers` | Vouchers on sale |
 | `POST` | `/api/vouchers/{voucherId}/purchase` | `201`, `409 VOUCHER_SOLD_OUT`, `422`; optional `Idempotency-Key` |
 | `GET` | `/api/vouchers/purchases` | My vouchers and codes |
+| `GET` | `/api/checkout/{sessionId}/vouchers` | My vouchers usable for a checkout |
+| `POST` | `/api/checkout/{sessionId}/pay` | Optional `{"voucherId"}`; `422 VOUCHER_NOT_USABLE` when already used |
 | `GET` / `POST` | `/api/merchant/vouchers` | List / create my vouchers |
 | `PUT` | `/api/merchant/vouchers/{voucherId}` | Edit with `version`; `409 VOUCHER_EDIT_CONFLICT` when stale |
 | `GET` / `POST` | `/api/merchant/payouts` | List / start a bulk payout (`202`) |

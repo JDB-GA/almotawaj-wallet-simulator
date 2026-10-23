@@ -63,4 +63,5 @@ Admins with `USER_MANAGE` manage clients and merchants only; only the super admi
 37. Seeding gives the demo merchant four vouchers, including one with a single unit in stock for the race demonstration.
 38. Write endpoints are rate-limited per signed-in user and endpoint (per address for anonymous requests), so buyers behind the same network do not block each other during a sale.
 39. The Concurrency Lab (super admin only) runs races in throw-away sandbox accounts that are deleted after every run; real accounts are never touched.
+40. A bought voucher is used once, only when paying a checkout of the merchant that sold it. It is marked used with a single database update that only succeeds while it is unused, in the same transaction as the payment, so two tabs paying with the same voucher never both succeed. Its face value comes off the amount (any leftover is lost) and the client pays the rest. A refund returns only the cash part and makes the voucher usable again.
 
