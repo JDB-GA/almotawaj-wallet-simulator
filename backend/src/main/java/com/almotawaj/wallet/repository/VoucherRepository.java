@@ -1,0 +1,33 @@
+package com.almotawaj.wallet.repository;
+
+import com.almotawaj.wallet.model.Voucher;
+import com.almotawaj.wallet.model.VoucherStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
+    Page<Voucher> findByMerchantId(UUID merchantId, Pageable pageable);
+
+    Optional<Voucher> findByIdAndMerchantId(UUID id, UUID merchantId);
+
+    @Query(value = """
+            select v from Voucher v join fetch v.merchant
+            where v.status = :status and v.remaining > 0 and v.expiresAt > :now""",
+            countQuery = """
+            select count(v) from Voucher v
+            where v.status = :status and v.remaining > 0 and v.expiresAt > :now""")
+    Page<Voucher> findAvailable(VoucherStatus status, Instant now, Pageable pageable);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+            update Voucher v set v.remaining = v.remaining - 1
+            where v.id = :id and v.remaining > 0 and v.status = :status and v.expiresAt > :now""")
+    int takeOne(UUID id, VoucherStatus status, Instant now);
+}
