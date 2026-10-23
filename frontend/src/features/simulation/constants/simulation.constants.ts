@@ -5,6 +5,18 @@ export const SIMULATION_ENDPOINTS = {
 
 export const SIMULATION_MODES = ['SAFE', 'UNSAFE'] as const
 export const SIMULATION_OUTCOMES = ['WON', 'SOLD_OUT', 'PAID', 'FAILED', 'ERROR'] as const
+export const SIMULATION_STEP_TYPES = [
+  'READ',
+  'CHECK',
+  'SLEEP',
+  'WRITE',
+  'TAKE_ONE',
+  'SOLD_OUT',
+  'LOCKED',
+  'COMMITTED',
+  'PAID',
+  'FAILED',
+] as const
 
 export const OUTCOME_BAR_CLASSES = {
   WON: 'bg-primary',

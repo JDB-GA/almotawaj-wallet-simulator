@@ -1,8 +1,16 @@
 import { z } from 'zod'
-import { SIMULATION_MODES, SIMULATION_OUTCOMES } from '../constants/simulation.constants'
+import { SIMULATION_MODES, SIMULATION_OUTCOMES, SIMULATION_STEP_TYPES } from '../constants/simulation.constants'
 
 export const simulationModeSchema = z.enum(SIMULATION_MODES)
 export const simulationOutcomeSchema = z.enum(SIMULATION_OUTCOMES)
+
+export const simulationStepTypeSchema = z.enum(SIMULATION_STEP_TYPES)
+
+export const simulationStepSchema = z.object({
+  atMs: z.number(),
+  type: simulationStepTypeSchema,
+  value: z.number().nullable(),
+})
 
 export const simulationAttemptSchema = z.object({
   index: z.number().int(),
@@ -11,6 +19,7 @@ export const simulationAttemptSchema = z.object({
   endMs: z.number(),
   outcome: simulationOutcomeSchema,
   detail: z.string().nullable(),
+  steps: z.array(simulationStepSchema),
 })
 
 export const voucherRaceResultSchema = z.object({
