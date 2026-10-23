@@ -65,6 +65,13 @@ public final class ApiPaths {
     public static final String CHECKOUT_SESSION_PAY = "/{sessionId}/pay";
     public static final String CHECKOUT_SESSION_CANCEL = "/{sessionId}/cancel";
     public static final String CHECKOUT_SESSION_REFUND = "/{sessionId}/refund";
+    public static final String VOUCHERS = "/api/vouchers";
+    public static final String VOUCHER_PURCHASE = "/{voucherId}/purchase";
+    public static final String VOUCHER_PURCHASES = "/purchases";
+    public static final String MERCHANT_VOUCHERS = "/api/merchant/vouchers";
+    public static final String VOUCHER_BY_ID = "/{voucherId}";
+    public static final String MERCHANT_PAYOUTS = "/api/merchant/payouts";
+    public static final String PAYOUT_BY_ID = "/{batchId}";
     public static final String PROFILE = "/api/profile";
     public static final String PROFILE_PICTURE = "/picture";
     public static final String USER_BY_ID = "/{userId}";

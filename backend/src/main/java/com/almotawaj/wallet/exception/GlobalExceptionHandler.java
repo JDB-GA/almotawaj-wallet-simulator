@@ -16,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
@@ -30,6 +31,17 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new LinkedHashMap<>();
         e.getBindingResult().getFieldErrors()
                 .forEach(error -> errors.putIfAbsent(error.getField(), error.getDefaultMessage()));
+
+        ProblemDetail problem = problem(HttpStatus.BAD_REQUEST, ErrorMessages.VALIDATION_FAILED, ErrorCodes.VALIDATION_FAILED);
+        problem.setProperty(ErrorMessages.VALIDATION_ERRORS_KEY, errors);
+        return problem;
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ProblemDetail handleParameterValidation(HandlerMethodValidationException e) {
+        Map<String, String> errors = new LinkedHashMap<>();
+        e.getParameterValidationResults().forEach(result -> errors.putIfAbsent(result.getMethodParameter().getParameterName(),
+                result.getResolvableErrors().get(0).getDefaultMessage()));
 
         ProblemDetail problem = problem(HttpStatus.BAD_REQUEST, ErrorMessages.VALIDATION_FAILED, ErrorCodes.VALIDATION_FAILED);
         problem.setProperty(ErrorMessages.VALIDATION_ERRORS_KEY, errors);

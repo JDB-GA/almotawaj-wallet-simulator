@@ -22,7 +22,8 @@ public class RateLimitConfig implements WebMvcConfigurer {
                         ApiPaths.WALLET_TRANSACTION_RECEIPTS, ApiPaths.WALLET_TRANSACTIONS_STATEMENT);
         registry.addInterceptor(writeRateLimitInterceptor)
                 .addPathPatterns(ApiPaths.WALLET_PAYMENT_REQUESTS, ApiPaths.WALLET_PAYMENT_REQUESTS + ApiPaths.ALL,
-                        ApiPaths.MERCHANT_API_KEYS, ApiPaths.MERCHANT_CHECKOUT_SESSIONS,
+                        ApiPaths.MERCHANT_API_KEYS, ApiPaths.MERCHANT_CHECKOUT_SESSIONS, ApiPaths.MERCHANT_VOUCHERS,
+                        ApiPaths.MERCHANT_VOUCHERS + ApiPaths.ALL, ApiPaths.MERCHANT_PAYOUTS, ApiPaths.VOUCHERS + ApiPaths.ALL,
                         ApiPaths.MERCHANT_CHECKOUT_SESSIONS + ApiPaths.ALL, ApiPaths.MERCHANT_WEBHOOK,
                         ApiPaths.CHECKOUT + ApiPaths.ALL,
                         ApiPaths.PROFILE, ApiPaths.PROFILE + ApiPaths.ALL);
