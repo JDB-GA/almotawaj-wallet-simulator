@@ -10,6 +10,7 @@ import com.almotawaj.wallet.model.PayoutBatch;
 import com.almotawaj.wallet.model.PayoutBatchStatus;
 import com.almotawaj.wallet.model.PayoutItem;
 import com.almotawaj.wallet.model.PayoutItemStatus;
+import com.almotawaj.wallet.model.SimulationStepType;
 import com.almotawaj.wallet.model.TransactionType;
 import com.almotawaj.wallet.model.User;
 import com.almotawaj.wallet.model.Wallet;
@@ -55,6 +56,7 @@ public class PayoutItemProcessor {
         WalletLocker.LockedPair locked = walletLocker.lockPair(merchantWallet.getId(), recipientWallet.getId());
         Wallet merchant = locked.source();
         Wallet receiver = locked.target();
+        SimulationTrace.mark(SimulationStepType.LOCKED, merchant.getBalance());
         if (merchant.getBalance().compareTo(item.getAmount()) < 0) {
             return fail(item, batchId, WalletConstants.PAYOUT_INSUFFICIENT_BALANCE);
         }
@@ -62,6 +64,7 @@ public class PayoutItemProcessor {
         Counterparty merchantDetails = counterparties.of(merchant);
         WalletTransaction debit = ledger.debit(merchant, TransactionType.PAYOUT_SENT, item.getAmount(), counterparties.of(receiver), null);
         WalletTransaction credit = ledger.credit(receiver, TransactionType.PAYOUT_RECEIVED, item.getAmount(), merchantDetails, null);
+        SimulationTrace.mark(SimulationStepType.PAID, merchant.getBalance());
         item.setTransaction(debit);
         item.setStatus(PayoutItemStatus.PAID);
         item.setProcessedAt(clock.instant());
@@ -92,6 +95,7 @@ public class PayoutItemProcessor {
     }
 
     private PayoutItemStatus fail(PayoutItem item, UUID batchId, String reason) {
+        SimulationTrace.mark(SimulationStepType.FAILED);
         item.setStatus(PayoutItemStatus.FAILED);
         item.setFailureReason(reason);
         item.setProcessedAt(clock.instant());

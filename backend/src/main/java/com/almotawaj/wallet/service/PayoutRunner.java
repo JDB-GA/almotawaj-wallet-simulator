@@ -82,8 +82,12 @@ public class PayoutRunner {
                                               AtomicInteger paid, AtomicInteger failed, PayoutItemObserver observer) {
         return () -> {
             long startNanos = System.nanoTime();
+            if (observer != PayoutItemObserver.NONE) {
+                SimulationTrace.start(startNanos);
+            }
             PayoutItemStatus status = processor.process(itemId);
-            observer.onItemProcessed(itemId, Thread.currentThread().getName(), startNanos, System.nanoTime(), status);
+            observer.onItemProcessed(itemId, Thread.currentThread().getName(), startNanos, System.nanoTime(), status,
+                    SimulationTrace.stop());
             report(batchId, merchantId, total, status == PayoutItemStatus.PAID ? paid.incrementAndGet() : paid.get(),
                     status == PayoutItemStatus.FAILED ? failed.incrementAndGet() : failed.get());
             return status;

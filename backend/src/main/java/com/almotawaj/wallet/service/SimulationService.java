@@ -78,7 +78,7 @@ public class SimulationService {
             List<SimulationAttempt> attempts = new ArrayList<>();
             long origin = System.nanoTime();
             log.info(LogMessages.SIMULATION_STARTED, batchId, request.recipients());
-            PayoutBatch batch = payoutRunner.run(batchId, (itemId, thread, start, end, status) -> {
+            PayoutBatch batch = payoutRunner.run(batchId, (itemId, thread, start, end, status, steps) -> {
                 synchronized (attempts) {
                     attempts.add(new SimulationAttempt(indexes.get(itemId), thread, millis(origin, start), millis(origin, end),
                             status == PayoutItemStatus.PAID ? SimulationOutcome.PAID : SimulationOutcome.FAILED, null));
