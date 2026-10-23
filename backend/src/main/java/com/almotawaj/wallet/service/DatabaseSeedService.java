@@ -21,13 +21,16 @@ public class DatabaseSeedService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final KycSeeder kycSeeder;
+    private final VoucherSeeder voucherSeeder;
     private final String seedPassword;
 
     public DatabaseSeedService(UserRepository userRepository, PasswordEncoder passwordEncoder, KycSeeder kycSeeder,
+                               VoucherSeeder voucherSeeder,
                                @Value(SeedConstants.SEED_PASSWORD_PROPERTY) String seedPassword) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.kycSeeder = kycSeeder;
+        this.voucherSeeder = voucherSeeder;
         this.seedPassword = seedPassword;
     }
 
@@ -43,6 +46,9 @@ public class DatabaseSeedService {
                 reviewer = user;
             }
             kycSeeder.seed(user, account, reviewer);
+            if (account.email().equals(SeedConstants.MERCHANT_EMAIL)) {
+                voucherSeeder.seed(user);
+            }
         }
         log.info(LogMessages.SEED_COMPLETED);
     }

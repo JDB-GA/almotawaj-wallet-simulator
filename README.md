@@ -39,6 +39,9 @@ Monorepo:
 - **Permissions** – the super admin grants fine-grained permissions to admins with checkboxes.
 - **Audit log** – every sign-in, account, administrative and money action is stored and listed for the super admin, in English and Arabic.
 - **Security** – BCrypt passwords, httpOnly `SameSite=Strict` JWT cookie, token revocation, HMAC-hashed one-time codes, rate limiting, strict CORS, CSP/HSTS and other security headers on both apps, file type checks by content, row locks on every money movement.
+- **Vouchers (Project 3)** – merchants sell a limited number of discounted vouchers; clients buy them with their balance and get a unique code. The last unit always goes to exactly one buyer.
+- **Bulk payouts (Project 3)** – merchants pay many people in one request; a thread pool pays them in parallel in the background with live progress, and the balance never goes negative.
+- **Concurrency Lab (Project 3)** – the super admin runs real races in a throw-away sandbox and sees every thread on a timeline, safe versus unsafe.
 - **Localisation** – the whole UI and every email are available in English and Arabic (RTL).
 
 ## Documentation
@@ -52,13 +55,109 @@ Monorepo:
 | [`docs/deployment.md`](docs/deployment.md)           | Cloud Run and Vercel deployment with every environment variable                                                |
 | [`examples/demo-shop`](examples/demo-shop/README.md) | A sample store that integrates the payment gateway, for trying every payment outcome                           |
 | [`docs/USER-STORIES-P02.md`](docs/USER-STORIES-P02.md)       | User stories with acceptance criteria                                                                          |
-| [`docs/USER-STORIES-P03.md`](docs/USER-STORIES-P03.md)       | Project 3 user stories (planned)                                                                               |
+| [`docs/USER-STORIES-P03.md`](docs/USER-STORIES-P03.md)       | Project 3 user stories                                                                                         |
 | [`docs/erd.dbml`](docs/erd.dbml)                     | Database schema ([diagram](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8))                    |
 | [`PLANNING-P02.md`](PLANNING-P02.md)                         | Process, timeline, requirement coverage and next steps                                                         |
 | [`PLANNING-P03.md`](PLANNING-P03.md)                         | Project 3 plan: tasks, concurrency fixes, endpoints and tests                                                  |
-| [`CREDITS.md`](CREDITS.md)                           | Credit for the payment gateway process                                                                         |
+| [`CREDITS.md`](CREDITS.md)                           | Credits and external resources for Projects 2 and 3                                                            |
 
 JavaDoc is used on the main services: [`UserService.java`](backend/src/main/java/com/almotawaj/wallet/service/UserService.java) (authentication), [`WalletService.java`](backend/src/main/java/com/almotawaj/wallet/service/WalletService.java) (wallet) and [`TransferService.java`](backend/src/main/java/com/almotawaj/wallet/service/TransferService.java) (transactions).
+
+## Project 3 Changes
+
+Project 3 extends the same wallet so that it stays correct when many people act on the same money or stock at the same moment. The plan and progress are in [`PLANNING-P03.md`](PLANNING-P03.md) and the stories in [`docs/USER-STORIES-P03.md`](docs/USER-STORIES-P03.md).
+
+| Area | What changed |
+| --- | --- |
+| New functionality | Merchant vouchers (create, edit, pause, sell), voucher purchases with codes, bulk payouts, idempotent purchases, bank-style PDF statements, Concurrency Lab |
+| New models | `Voucher`, `VoucherPurchase`, `PayoutBatch`, `PayoutItem`, `IdempotencyRecord` (16 entities in total, see the [ERD](docs/erd.dbml)) |
+| Concurrency-sensitive workflow | Buying the last units of a voucher; paying many people from one merchant wallet at once |
+| Race condition addressed | Two buyers both read "1 left" and both buy; parallel payouts each read the same balance and overdraw it; a payout counter loses increments |
+| Concurrency techniques | Atomic conditional `UPDATE`, pessimistic row locks, optimistic locking (`@Version`), unique constraints, `ExecutorService` with `Callable`/`Future`, `AtomicInteger`, `CountDownLatch` |
+| Database consistency | Every purchase and payout item is one transaction: stock, both wallets, the ledger and the purchase or item row commit together or not at all; a `CHECK (remaining >= 0)` constraint is the last line of defence |
+| Asynchronous processing | Payout batches return `202` and run in the background (`@Async` + a 5-thread pool); live progress and stock changes go out over Server-Sent Events after commit |
+
+### Diagrams
+
+| Flow | Diagram |
+| --- | --- |
+| The last voucher race | [`docs/p03-voucher-race-flow.png`](docs/p03-voucher-race-flow.png) |
+| Bulk payout on a thread pool | [`docs/p03-bulk-payout-flow.png`](docs/p03-bulk-payout-flow.png) |
+| Charged once with an Idempotency-Key | [`docs/p03-idempotency-flow.png`](docs/p03-idempotency-flow.png) |
+
+![The last voucher race](docs/p03-voucher-race-flow.png)
+
+### Concurrency Explanation
+
+**Where concurrency happens.** Vouchers are a shared, limited resource: during a sale, many clients press Buy at the same moment, each request on its own server thread (and, on Cloud Run, possibly on different instances). Bulk payouts run 5 worker threads that all debit the same merchant wallet.
+
+**What could go wrong without control.** With a plain read-then-write, every buyer reads `remaining = 1`, every buyer passes the check and every buyer writes `0`: one voucher is sold many times and many people are charged for something that does not exist. The Concurrency Lab shows this live: 20 buyers, 1 voucher, about 9 "winners". In payouts, threads that read the balance before others write it would overdraw the merchant, and `count = count + 1` done in Java loses increments.
+
+**How it is prevented.**
+
+| Problem | Solution |
+| --- | --- |
+| Overselling the last voucher | `UPDATE voucher SET remaining = remaining - 1 WHERE id = ? AND remaining > 0` – the database checks and changes the stock in one step; `0` rows changed means sold out (`409`) |
+| Overdrawing a wallet | The buyer's and merchant's wallet rows are locked (`SELECT … FOR UPDATE`) in a fixed order, so they are never deadlocked and the balance check sees the latest value |
+| Lost payout counters | `UPDATE payout_batches SET paid_count = paid_count + 1`, plus `AtomicInteger` for the live progress in memory |
+| Stale voucher edits | `@Version`: an edit made from an old copy is rejected with `409` instead of overwriting |
+| Double clicks and retries | `Idempotency-Key` with a unique `(user, key)` constraint: the second request gets the first purchase back |
+
+**Why this approach.** The database is the only thing all server instances share, so the protection lives there: a Java `synchronized` block or lock would only protect one JVM. The atomic update is the cheapest correct fix for a counter (no waiting on a read lock); row locks are used where a read must be followed by a dependent write (balances); optimistic locking fits edits, which rarely collide and should fail loudly rather than block.
+
+### Testing
+
+| Test | What it proves |
+| --- | --- |
+| `ConcurrencyIntegrationTest` – 20 threads buy 1 voucher, **repeated 50 times** | Exactly one `201`, 19 conflicts, stock 0, money adds up – every run |
+| `ParallelPurchaseHttpTest` – 20 real parallel HTTP requests to `POST /api/vouchers/{id}/purchase` | One `201 Created`, nineteen `409 Conflict` |
+| Same `Idempotency-Key` sent 10 times in parallel | One purchase, charged once |
+| 10 payouts of 15 BHD from 100 BHD on 5 threads | 6 paid, 4 failed, 10 BHD left, never negative |
+| Stale `version` on a voucher edit | `409`, the newer change survives |
+| `SimulationServiceTest` | Safe mode never oversells; unsafe mode does, so the race is real |
+| `VoucherAndPayoutControllerTest` | Status codes, roles, validation and Swagger for every new endpoint |
+
+```text
+Request A → 201 Created   {"code":"VCH-JKTQ-CAW8-SLW9", ...}
+Request B → 409 Conflict  {"code":"VOUCHER_SOLD_OUT", "detail":"This voucher is sold out"}
+```
+
+Run them with `./mvnw test` in `backend/` (181 tests). To see it visually, sign in as the super admin and open **Concurrency Lab**.
+
+### Updated API
+
+| Method | Endpoint | Result |
+| --- | --- | --- |
+| `GET` | `/api/vouchers` | Vouchers on sale |
+| `POST` | `/api/vouchers/{voucherId}/purchase` | `201`, `409 VOUCHER_SOLD_OUT`, `422`; optional `Idempotency-Key` |
+| `GET` | `/api/vouchers/purchases` | My vouchers and codes |
+| `GET` / `POST` | `/api/merchant/vouchers` | List / create my vouchers |
+| `PUT` | `/api/merchant/vouchers/{voucherId}` | Edit with `version`; `409 VOUCHER_EDIT_CONFLICT` when stale |
+| `GET` / `POST` | `/api/merchant/payouts` | List / start a bulk payout (`202`) |
+| `GET` | `/api/merchant/payouts/{batchId}` | A batch with every item's result |
+| `POST` | `/api/admin/simulations/voucher-race`, `/payout-race` | Sandbox races for the Concurrency Lab |
+
+Full details, errors and live events: [`docs/api.md`](docs/api.md#vouchers-and-payouts-project-3) and [Swagger UI](https://api.almotawaj.com/swagger-ui.html).
+
+### Challenges
+
+- **Proving a race exists.** A correct implementation never fails, so the race had to be shown on purpose: the Concurrency Lab's unsafe mode reads, waits a few milliseconds and writes, which reliably oversells.
+- **A stale cache hiding real results.** In the dev profile Spring keeps one persistence context open for the whole web request (open-session-in-view), so a summary re-read after the background threads finished still saw old balances and counts. Reading fresh values from the database fixed it.
+- **Rate limits during a sale.** Writes were limited per IP address, so buyers behind the same network would block each other with `429`. Writes are now limited per signed-in user.
+- **Database rules from Project 2.** PostgreSQL had check constraints listing only the old enum values, so new transaction types and audit actions were rejected until those constraints were dropped.
+- **Testing threads.** Tests that use threads cannot roll back inside one transaction, so they create and clean up their own data, and the in-memory test database needed a longer lock timeout.
+
+### Future Improvements
+
+- Merchant redemption of voucher codes (mark a code as used exactly once – another atomic update).
+- Free coupons (price 0, "claim" instead of "buy").
+- Idempotency keys on transfers and payouts too.
+- Payout recipients from a CSV upload, and `CompletableFuture` chaining to email a summary when a batch finishes.
+- A shared message broker for live events, so notifications reach users connected to any Cloud Run instance.
+
+### Credits & External Resources
+
+See [`CREDITS.md`](CREDITS.md#project-3-resources).
 
 ## Quick start
 

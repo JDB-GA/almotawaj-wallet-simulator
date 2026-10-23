@@ -1,6 +1,6 @@
 # User Stories – P03
 
-Format: _As a [user], I want to [action], so that [reason]._ These extend the [P02 stories](USER-STORIES-P02.md) and are planned for Project 3; the checkboxes are the acceptance criteria.
+Format: _As a [user], I want to [action], so that [reason]._ These extend the [P02 stories](USER-STORIES-P02.md) and are built in Project 3; the checkboxes are the acceptance criteria.
 
 ## Epic: Statements
 
@@ -42,5 +42,13 @@ Format: _As a [user], I want to [action], so that [reason]._ These extend the [P
 
 **US-42 – Charged once.** As a wallet holder, I want a double click or a retried request to charge me only once, so that I never pay twice by accident.
 
-- [ ] Transfers and voucher purchases accept an `Idempotency-Key`; repeating it returns the first result.
+- [ ] Voucher purchases accept an `Idempotency-Key`; repeating it returns the first purchase and charges nothing.
+
+## Epic: Demonstration
+
+**US-43 – Concurrency Lab.** As a super admin, I want to run a real race in a throw-away sandbox and see every thread on a timeline, so that I can show how the concurrency control works.
+
+- [ ] Safe mode never sells more than the stock; unsafe mode shows overselling.
+- [ ] Parallel payouts show which thread paid which item and that the balance never went negative.
+- [ ] The sandbox accounts and data are deleted after each run.
 

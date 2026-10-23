@@ -266,7 +266,7 @@ Table checkout_sessions {
   }
 }
 
-// Project 3 (planned)
+// Project 3
 
 Enum voucher_status {
   ACTIVE
