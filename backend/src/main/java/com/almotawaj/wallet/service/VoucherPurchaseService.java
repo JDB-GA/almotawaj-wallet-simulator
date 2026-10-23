@@ -58,6 +58,7 @@ public class VoucherPurchaseService {
         log.info(LogMessages.VOUCHER_PURCHASE_STARTED, buyerId, voucherId);
         Instant now = clock.instant();
         Voucher voucher = voucherRepository.findById(voucherId).orElseThrow(VoucherService::notFound);
+        SimulationTrace.mark(SimulationStepType.READ, BigDecimal.valueOf(voucher.getRemaining()));
         ensureOnSale(voucher, now);
         UUID merchantId = voucher.getMerchant().getId();
         String title = voucher.getTitle();
@@ -134,6 +135,7 @@ public class VoucherPurchaseService {
 
     private static void ensureOnSale(Voucher voucher, Instant now) {
         if (voucher.getRemaining() == 0) {
+            SimulationTrace.mark(SimulationStepType.SOLD_OUT);
             throw new ConflictException(ErrorMessages.VOUCHER_SOLD_OUT, ErrorCodes.VOUCHER_SOLD_OUT);
         }
         if (voucher.getStatus() != VoucherStatus.ACTIVE || !voucher.getExpiresAt().isAfter(now)) {

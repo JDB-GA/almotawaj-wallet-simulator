@@ -2,9 +2,12 @@ package com.almotawaj.wallet.service;
 
 import com.almotawaj.wallet.model.SimulationMode;
 import com.almotawaj.wallet.model.SimulationOutcome;
+import com.almotawaj.wallet.model.SimulationStepType;
 import com.almotawaj.wallet.model.request.PayoutRaceRequest;
 import com.almotawaj.wallet.model.request.VoucherRaceRequest;
 import com.almotawaj.wallet.model.response.PayoutRaceResult;
+import com.almotawaj.wallet.model.response.SimulationAttempt;
+import com.almotawaj.wallet.model.response.SimulationStep;
 import com.almotawaj.wallet.model.response.VoucherRaceResult;
 import com.almotawaj.wallet.repository.UserRepository;
 import com.almotawaj.wallet.repository.VoucherRepository;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,6 +44,9 @@ class SimulationServiceTest {
         assertThat(result.attempts().stream().filter(attempt -> attempt.outcome() == SimulationOutcome.SOLD_OUT)).hasSize(19);
         assertThat(userRepository.count()).isEqualTo(usersBefore);
         assertThat(voucherRepository.count()).isZero();
+        assertThat(result.attempts()).allMatch(attempt -> attempt.steps().get(0).type() == SimulationStepType.READ);
+        assertThat(result.attempts().stream().flatMap(attempt -> attempt.steps().stream())
+                .filter(step -> step.type() == SimulationStepType.TAKE_ONE && step.value().intValue() == 1)).hasSize(1);
     }
 
     @Test
@@ -48,6 +55,12 @@ class SimulationServiceTest {
 
         assertThat(result.winners()).isGreaterThan(1);
         assertThat(result.oversold()).isEqualTo(result.winners() - 1);
+        List<SimulationAttempt> winners = result.attempts().stream()
+                .filter(attempt -> attempt.outcome() == SimulationOutcome.WON).toList();
+        assertThat(winners).allSatisfy(attempt -> assertThat(attempt.steps()).extracting(SimulationStep::type)
+                .containsExactly(SimulationStepType.READ, SimulationStepType.CHECK, SimulationStepType.SLEEP, SimulationStepType.WRITE));
+        assertThat(winners).allMatch(attempt -> attempt.steps().get(0).value().intValue() == 1
+                && attempt.steps().get(3).value().intValue() == 0);
     }
 
     @Test
@@ -59,5 +72,8 @@ class SimulationServiceTest {
         assertThat(result.finalBalance()).isEqualByComparingTo("10.000");
         assertThat(result.threadsUsed()).isBetween(1, 5);
         assertThat(result.attempts()).hasSize(10).allMatch(attempt -> attempt.thread().startsWith("payout-"));
+        assertThat(result.attempts()).allMatch(attempt -> attempt.steps().get(attempt.steps().size() - 1).type()
+                == (attempt.outcome() == SimulationOutcome.PAID ? SimulationStepType.PAID : SimulationStepType.FAILED));
+        assertThat(result.attempts()).allMatch(attempt -> attempt.steps().get(0).atMs() >= attempt.startMs());
     }
 }
