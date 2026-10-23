@@ -41,6 +41,7 @@ export function VoucherPurchasesList() {
             <TableHead>{t('mine.voucher')}</TableHead>
             <TableHead>{t('mine.code')}</TableHead>
             <TableHead>{t('mine.status')}</TableHead>
+            <TableHead className="text-end">{t('mine.value')}</TableHead>
             <TableHead className="text-end">{t('mine.paid')}</TableHead>
           </TableRow>
         </TableHeader>
@@ -75,6 +76,11 @@ export function VoucherPurchasesList() {
                     <span className="text-xs text-muted-foreground">{formatDateTime(purchase.redeemedAt, language)}</span>
                   )}
                 </div>
+              </TableCell>
+              <TableCell data-label={t('mine.value')} className="text-end">
+                <bdi dir="ltr" className="font-semibold tabular-nums text-primary">
+                  {formatMoney(purchase.faceValue, language)}
+                </bdi>
               </TableCell>
               <TableCell data-label={t('mine.paid')} className="text-end">
                 <bdi dir="ltr" className="font-medium tabular-nums">

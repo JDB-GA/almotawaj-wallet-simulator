@@ -35,6 +35,7 @@
     "voucher": "Voucher",
     "code": "Code",
     "status": "Status",
+    "value": "Worth",
     "paid": "Paid",
     "copy": "Copy code",
     "copied": "Code copied",
