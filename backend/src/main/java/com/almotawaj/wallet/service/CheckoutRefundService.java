@@ -13,10 +13,12 @@ import com.almotawaj.wallet.model.CheckoutSession;
 import com.almotawaj.wallet.model.CheckoutStatus;
 import com.almotawaj.wallet.model.Counterparty;
 import com.almotawaj.wallet.model.TransactionType;
+import com.almotawaj.wallet.model.VoucherPurchaseStatus;
 import com.almotawaj.wallet.model.Wallet;
 import com.almotawaj.wallet.model.WalletTransaction;
 import com.almotawaj.wallet.model.response.CheckoutSessionResponse;
 import com.almotawaj.wallet.repository.CheckoutSessionRepository;
+import com.almotawaj.wallet.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,6 +34,7 @@ import java.util.UUID;
 public class CheckoutRefundService {
     private final CheckoutSessionRepository sessionRepository;
     private final WalletRepository walletRepository;
+    private final VoucherPurchaseRepository purchaseRepository;
     private final WalletLocker walletLocker;
     private final WalletLedger ledger;
     private final Counterparties counterparties;
@@ -51,22 +54,26 @@ public class CheckoutRefundService {
         WalletLocker.LockedPair locked = walletLocker.lockPair(walletId(merchantId), walletId(session.getPayer().getId()));
         Wallet merchantWallet = locked.source();
         Wallet payerWallet = locked.target();
-        BigDecimal amount = session.getAmount();
+        BigDecimal discount = session.getVoucherDiscount() == null ? BigDecimal.ZERO : session.getVoucherDiscount();
+        BigDecimal amount = session.getAmount().subtract(discount);
         if (merchantWallet.getBalance().compareTo(amount) < 0) {
             throw new BusinessRuleException(ErrorMessages.INSUFFICIENT_BALANCE, ErrorCodes.INSUFFICIENT_BALANCE);
         }
 
         Counterparty merchantDetails = counterparties.of(merchantWallet);
-        WalletTransaction refunded = ledger.credit(payerWallet, TransactionType.REFUND, amount, merchantDetails,
-                session.getOrderReference());
-        ledger.debit(merchantWallet, TransactionType.REFUND_ISSUED, amount, counterparties.of(payerWallet), session.getOrderReference());
+        if (amount.signum() > 0) {
+            WalletTransaction refunded = ledger.credit(payerWallet, TransactionType.REFUND, amount, merchantDetails,
+                    session.getOrderReference());
+            ledger.debit(merchantWallet, TransactionType.REFUND_ISSUED, amount, counterparties.of(payerWallet), session.getOrderReference());
+            eventPublisher.publishEvent(new MoneyReceivedEvent(session.getPayer().getId(), amount, merchantDetails.name(),
+                    refunded.getReference()));
+        }
+        purchaseRepository.release(sessionId, VoucherPurchaseStatus.UNUSED);
         session.setStatus(CheckoutStatus.REFUNDED);
         session.setRefundedAt(clock.instant());
 
         auditService.record(merchantId, AuditAction.CHECKOUT_REFUNDED, AuditTargetType.CHECKOUT_SESSION, sessionId,
                 session.getOrderReference());
-        eventPublisher.publishEvent(new MoneyReceivedEvent(session.getPayer().getId(), amount, merchantDetails.name(),
-                refunded.getReference()));
         eventPublisher.publishEvent(new CheckoutStatusChangedEvent(sessionId));
         return mapper.toResponse(session);
     }

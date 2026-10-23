@@ -29,7 +29,7 @@ public interface VoucherPurchaseRepository extends JpaRepository<VoucherPurchase
             order by p.createdAt""")
     List<VoucherPurchase> findUsable(UUID buyerId, UUID merchantId, VoucherPurchaseStatus status);
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update VoucherPurchase p
             set p.status = :redeemed, p.redeemedCheckout = :checkout, p.redeemedAt = :now
@@ -38,7 +38,7 @@ public interface VoucherPurchaseRepository extends JpaRepository<VoucherPurchase
     int redeem(UUID id, UUID buyerId, UUID merchantId, CheckoutSession checkout, Instant now,
                VoucherPurchaseStatus unused, VoucherPurchaseStatus redeemed);
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update VoucherPurchase p
             set p.status = :unused, p.redeemedCheckout = null, p.redeemedAt = null
