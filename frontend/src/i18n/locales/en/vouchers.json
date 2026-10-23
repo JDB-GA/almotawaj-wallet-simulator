@@ -9,6 +9,10 @@
     "SOLD_OUT": "Sold out",
     "EXPIRED": "Expired"
   },
+  "purchaseStatus": {
+    "UNUSED": "Ready to use",
+    "REDEEMED": "Used"
+  },
   "stock": {
     "label": "Stock left",
     "left": "{{remaining}} of {{total}} left",
@@ -30,13 +34,14 @@
     "date": "Bought",
     "voucher": "Voucher",
     "code": "Code",
+    "status": "Status",
     "paid": "Paid",
     "copy": "Copy code",
     "copied": "Code copied",
     "copyFailed": "Could not copy the code",
     "loadError": "Could not load your vouchers.",
     "emptyTitle": "No vouchers yet",
-    "emptyDescription": "Vouchers you buy appear here with their codes."
+    "emptyDescription": "Vouchers you buy appear here with their codes. Use them when you pay the merchant that sold them."
   },
   "manage": {
     "description": "Sell a limited number of vouchers. Stock is protected, so you never sell more than you have.",

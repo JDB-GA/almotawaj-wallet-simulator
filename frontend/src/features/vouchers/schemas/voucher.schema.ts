@@ -1,10 +1,11 @@
 import { z } from 'zod'
 import { pageSchema } from '@/lib/api/page.schema'
-import { PAYOUT_BATCH_STATUSES, PAYOUT_ITEM_STATUSES, VOUCHER_STATUSES } from '../constants/voucher.constants'
+import { PAYOUT_BATCH_STATUSES, PAYOUT_ITEM_STATUSES, VOUCHER_PURCHASE_STATUSES, VOUCHER_STATUSES } from '../constants/voucher.constants'
 
 export const voucherStatusSchema = z.enum(VOUCHER_STATUSES)
 export const payoutBatchStatusSchema = z.enum(PAYOUT_BATCH_STATUSES)
 export const payoutItemStatusSchema = z.enum(PAYOUT_ITEM_STATUSES)
+export const voucherPurchaseStatusSchema = z.enum(VOUCHER_PURCHASE_STATUSES)
 
 export const voucherSchema = z.object({
   id: z.uuid(),
@@ -30,6 +31,8 @@ export const voucherPurchaseSchema = z.object({
   price: z.number(),
   faceValue: z.number(),
   transactionReference: z.string(),
+  status: voucherPurchaseStatusSchema,
+  redeemedAt: z.iso.datetime({ offset: true }).nullable(),
   createdAt: z.iso.datetime({ offset: true }),
 })
 

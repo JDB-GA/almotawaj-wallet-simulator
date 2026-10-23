@@ -10,6 +10,7 @@ import type {
   voucherPageSchema,
   voucherPurchasePageSchema,
   voucherPurchaseSchema,
+  voucherPurchaseStatusSchema,
   voucherSchema,
   voucherStatusSchema,
 } from '../schemas/voucher.schema'
@@ -17,6 +18,7 @@ import type {
 export type VoucherStatus = z.infer<typeof voucherStatusSchema>
 export type PayoutBatchStatus = z.infer<typeof payoutBatchStatusSchema>
 export type PayoutItemStatus = z.infer<typeof payoutItemStatusSchema>
+export type VoucherPurchaseStatus = z.infer<typeof voucherPurchaseStatusSchema>
 
 export type Voucher = z.infer<typeof voucherSchema>
 export type VoucherPage = z.infer<typeof voucherPageSchema>
