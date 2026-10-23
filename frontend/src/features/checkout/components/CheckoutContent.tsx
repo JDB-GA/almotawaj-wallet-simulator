@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ConfirmActionDialog } from '@/components/ConfirmActionDialog'
@@ -13,7 +14,9 @@ import { HTTP_STATUS } from '@/lib/api/http.constants'
 import { useCheckout } from '../hooks/useCheckout'
 import { usePayCheckout } from '../hooks/usePayCheckout'
 import { useReturnToMerchant } from '../hooks/useReturnToMerchant'
+import { useUsableVouchers } from '../hooks/useUsableVouchers'
 import { CheckoutSummary } from './CheckoutSummary'
+import { CheckoutVoucherPicker } from './CheckoutVoucherPicker'
 
 interface CheckoutContentProps {
   sessionId: string
@@ -25,6 +28,8 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
   const { data, isPending, isError, error, refetch } = useCheckout(sessionId)
   const pay = usePayCheckout(sessionId)
   const merchantSite = useReturnToMerchant(data, pay.isSuccess)
+  const vouchers = useUsableVouchers(sessionId, data?.status === 'PENDING')
+  const [voucherId, setVoucherId] = useState<string | null>(null)
 
   if (isPending) {
     return (
@@ -48,12 +53,27 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
     )
   }
 
-  const values = { amount: formatMoney(data.amount, language), merchant: data.merchantName }
+  const voucher = vouchers.data?.find((option) => option.id === voucherId) ?? null
+  const discount = voucher ? Math.min(voucher.faceValue, data.amount) : 0
+  const values = { amount: formatMoney(data.amount - discount, language), merchant: data.merchantName }
 
   return (
     <>
       <CardContent>
         <CheckoutSummary checkout={data} />
+        {data.status === 'PENDING' && vouchers.data && vouchers.data.length > 0 && (
+          <div className="mt-6 flex flex-col gap-3">
+            <CheckoutVoucherPicker vouchers={vouchers.data} selectedId={voucherId} onSelect={setVoucherId} />
+            {voucher && (
+              <p className="flex justify-between text-sm" role="status">
+                <span className="text-muted-foreground">{t('checkout.voucher.youPay')}</span>
+                <bdi dir="ltr" className="font-semibold tabular-nums">
+                  {values.amount}
+                </bdi>
+              </p>
+            )}
+          </div>
+        )}
         {pay.isSuccess && merchantSite && (
           <p className="mt-4 text-center text-sm text-muted-foreground" role="status">
             {t('checkout.returning', { site: merchantSite.host })}
@@ -81,7 +101,7 @@ export function CheckoutContent({ sessionId }: CheckoutContentProps) {
             confirmLabel={t('checkout.confirm')}
             cancelLabel={t('cancel')}
             onConfirm={() => {
-              pay.mutate()
+              pay.mutate(voucher?.id ?? null)
             }}
           />
         )}

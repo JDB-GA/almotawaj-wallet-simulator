@@ -88,7 +88,13 @@
     "loadError": "Could not load this payment.",
     "returnTo": "Return to {{site}}",
     "returning": "Taking you back to {{site}}…",
-    "expiresIn": "Time left to pay"
+    "expiresIn": "Time left to pay",
+    "voucher": {
+      "title": "Pay with a voucher",
+      "none": "Don't use a voucher",
+      "youPay": "You pay",
+      "discount": "Paid with voucher"
+    }
   },
   "webhook": {
     "title": "Payment callback",
