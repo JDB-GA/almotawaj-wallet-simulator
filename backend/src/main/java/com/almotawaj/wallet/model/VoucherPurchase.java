@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -42,6 +43,17 @@ public class VoucherPurchase {
 
     @Column(nullable = false, updatable = false, precision = ValidationLimits.MONEY_PRECISION, scale = ValidationLimits.MONEY_SCALE)
     private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("'UNUSED'")
+    @Column(nullable = false, length = ValidationLimits.ENUM_COLUMN_LENGTH)
+    private VoucherPurchaseStatus status = VoucherPurchaseStatus.UNUSED;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "redeemed_checkout_id")
+    private CheckoutSession redeemedCheckout;
+
+    private Instant redeemedAt;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
