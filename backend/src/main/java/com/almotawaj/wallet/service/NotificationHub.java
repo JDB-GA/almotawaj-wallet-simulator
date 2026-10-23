@@ -33,6 +33,11 @@ public class NotificationHub {
                 deliver(userId, emitter, SseEmitter.event().name(eventName).data(payload)));
     }
 
+    public void broadcast(String eventName, Object payload) {
+        emitters.forEach((userId, userEmitters) -> userEmitters.forEach(emitter ->
+                deliver(userId, emitter, SseEmitter.event().name(eventName).data(payload))));
+    }
+
     @Scheduled(fixedRate = NotificationConstants.HEARTBEAT_INTERVAL_MS)
     public void heartbeat() {
         emitters.forEach((userId, userEmitters) -> userEmitters.forEach(emitter ->

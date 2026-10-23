@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,4 +31,8 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
             update Voucher v set v.remaining = v.remaining - 1
             where v.id = :id and v.remaining > 0 and v.status = :status and v.expiresAt > :now""")
     int takeOne(UUID id, VoucherStatus status, Instant now);
+
+    @Modifying
+    @Query("delete from Voucher v where v.merchant.id in :userIds")
+    void deleteAllByMerchantIdIn(Collection<UUID> userIds);
 }

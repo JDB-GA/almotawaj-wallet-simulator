@@ -11,6 +11,11 @@ import com.almotawaj.wallet.repository.MerchantApiKeyRepository;
 import com.almotawaj.wallet.repository.MerchantWebhookRepository;
 import com.almotawaj.wallet.repository.OtpChallengeRepository;
 import com.almotawaj.wallet.repository.PaymentRequestRepository;
+import com.almotawaj.wallet.repository.IdempotencyRecordRepository;
+import com.almotawaj.wallet.repository.VoucherPurchaseRepository;
+import com.almotawaj.wallet.repository.VoucherRepository;
+import com.almotawaj.wallet.repository.PayoutItemRepository;
+import com.almotawaj.wallet.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.repository.UserRepository;
 import com.almotawaj.wallet.repository.WalletRepository;
 import com.almotawaj.wallet.repository.WalletTransactionRepository;
@@ -38,6 +43,11 @@ public class SeedDataCleanupService {
     private final MerchantApiKeyRepository apiKeyRepository;
     private final MerchantWebhookRepository webhookRepository;
     private final AuditLogRepository auditLogRepository;
+    private final IdempotencyRecordRepository idempotencyRepository;
+    private final VoucherPurchaseRepository voucherPurchaseRepository;
+    private final VoucherRepository voucherRepository;
+    private final PayoutItemRepository payoutItemRepository;
+    private final PayoutBatchRepository payoutBatchRepository;
     private final FileStorageService fileStorageService;
 
     @Transactional
@@ -56,6 +66,11 @@ public class SeedDataCleanupService {
         otpChallengeRepository.deleteAllByUserIdIn(userIds);
         paymentRequestRepository.deleteAllByUserIdIn(userIds);
         checkoutSessionRepository.deleteAllByUserIdIn(userIds);
+        idempotencyRepository.deleteAllByUserIdIn(userIds);
+        voucherPurchaseRepository.deleteAllByUserIdIn(userIds);
+        voucherRepository.deleteAllByMerchantIdIn(userIds);
+        payoutItemRepository.deleteAllByUserIdIn(userIds);
+        payoutBatchRepository.deleteAllByMerchantIdIn(userIds);
         apiKeyRepository.deleteAllByMerchantIdIn(userIds);
         webhookRepository.deleteAllByMerchantIdIn(userIds);
         transactionRepository.deleteAllByWalletUserIdIn(userIds);

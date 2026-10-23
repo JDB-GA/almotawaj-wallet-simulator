@@ -58,6 +58,15 @@ public final class ErrorCodes {
     public static final String ORDER_ALREADY_EXISTS = "ORDER_ALREADY_EXISTS";
     public static final String MERCHANT_UNAVAILABLE = "MERCHANT_UNAVAILABLE";
     public static final String DAILY_CHECKOUT_LIMIT_EXCEEDED = "DAILY_CHECKOUT_LIMIT_EXCEEDED";
+    public static final String VOUCHER_NOT_FOUND = "VOUCHER_NOT_FOUND";
+    public static final String VOUCHER_SOLD_OUT = "VOUCHER_SOLD_OUT";
+    public static final String VOUCHER_UNAVAILABLE = "VOUCHER_UNAVAILABLE";
+    public static final String VOUCHER_LIMIT_REACHED = "VOUCHER_LIMIT_REACHED";
+    public static final String VOUCHER_EDIT_CONFLICT = "VOUCHER_EDIT_CONFLICT";
+    public static final String VOUCHER_PRICE_ABOVE_FACE_VALUE = "VOUCHER_PRICE_ABOVE_FACE_VALUE";
+    public static final String PAYOUT_BATCH_NOT_FOUND = "PAYOUT_BATCH_NOT_FOUND";
+    public static final String PAYOUT_RECIPIENT_DUPLICATE = "PAYOUT_RECIPIENT_DUPLICATE";
+    public static final String IDEMPOTENCY_KEY_REUSED = "IDEMPOTENCY_KEY_REUSED";
 
     private ErrorCodes() {
     }

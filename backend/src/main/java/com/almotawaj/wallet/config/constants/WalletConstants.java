@@ -25,6 +25,18 @@ public final class WalletConstants {
     public static final int MOBILE_VISIBLE_DIGITS = 4;
     public static final String LIKE_SUFFIX = "%";
     public static final String TIME_ZONE = "Asia/Bahrain";
+    public static final String VOUCHER_CODE_PREFIX = "VCH";
+    public static final int VOUCHER_CODE_RANDOM_LENGTH = 12;
+    public static final int VOUCHER_CODE_GROUP_SIZE = 4;
+    public static final String VOUCHER_SOLD_OUT_REASON = "VOUCHER_SOLD_OUT";
+    public static final String PAYOUT_INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE";
+    public static final String PAYOUT_RECIPIENT_UNAVAILABLE = "RECIPIENT_UNAVAILABLE";
+    public static final String PAYOUT_PROCESSING_ERROR = "PROCESSING_ERROR";
+    public static final String PAYOUT_THREAD_NAME = "payout-%d";
+    public static final String PAYOUT_EXECUTOR = "payoutExecutor";
+    public static final String IDEMPOTENCY_HEADER = "Idempotency-Key";
+    public static final String IDEMPOTENCY_VOUCHER_PURCHASE = "VOUCHER_PURCHASE";
+    public static final int IDEMPOTENCY_CREATED_STATUS = 201;
 
     private WalletConstants() {
     }

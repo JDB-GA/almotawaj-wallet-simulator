@@ -6,5 +6,7 @@ public enum AuditTargetType {
     PAYMENT_REQUEST,
     WALLET_TRANSACTION,
     API_KEY,
-    CHECKOUT_SESSION
+    CHECKOUT_SESSION,
+    VOUCHER,
+    PAYOUT_BATCH
 }

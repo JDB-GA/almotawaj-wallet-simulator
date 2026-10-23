@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -63,6 +64,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InformationExistException.class)
     public ProblemDetail handleExists(InformationExistException e) {
         return problem(HttpStatus.CONFLICT, e.getMessage(), e.getCode());
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ProblemDetail handleConflict(ConflictException e) {
+        return problem(HttpStatus.CONFLICT, e.getMessage(), e.getCode());
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ProblemDetail handleOptimisticLock(ObjectOptimisticLockingFailureException e) {
+        return problem(HttpStatus.CONFLICT, ErrorMessages.VOUCHER_EDIT_CONFLICT, ErrorCodes.VOUCHER_EDIT_CONFLICT);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
