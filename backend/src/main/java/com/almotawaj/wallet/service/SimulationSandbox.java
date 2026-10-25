@@ -77,7 +77,7 @@ public class SimulationSandbox {
         voucher.setTotalQuantity(stock);
         voucher.setRemaining(stock);
         voucher.setPerClientLimit(stock);
-        voucher.setExpiresAt(clock.instant().plus(Duration.ofHours(SimulationConstants.VOUCHER_EXPIRY_HOURS)));
+        voucher.setSaleEndsAt(clock.instant().plus(Duration.ofHours(SimulationConstants.VOUCHER_EXPIRY_HOURS)));
         return voucherRepository.saveAndFlush(voucher).getId();
     }
 

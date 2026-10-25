@@ -62,8 +62,13 @@ export function MerchantVouchersList() {
                       {voucher.title}
                     </bdi>
                     <span className="text-xs text-muted-foreground">
-                      {t('shop.expires', { date: formatDate(voucher.expiresAt, language) })} · v{voucher.version}
+                      {t('shop.saleEnds', { date: formatDate(voucher.saleEndsAt, language) })} · v{voucher.version}
                     </span>
+                    {voucher.expiresAt && (
+                      <span className="text-xs text-muted-foreground">
+                        {t('shop.validUntil', { date: formatDate(voucher.expiresAt, language) })}
+                      </span>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell data-label={t('manage.stock')} className="min-w-36">

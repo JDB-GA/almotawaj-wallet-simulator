@@ -138,7 +138,7 @@ public class VoucherPurchaseService {
             SimulationTrace.mark(SimulationStepType.SOLD_OUT);
             throw new ConflictException(ErrorMessages.VOUCHER_SOLD_OUT, ErrorCodes.VOUCHER_SOLD_OUT);
         }
-        if (voucher.getStatus() != VoucherStatus.ACTIVE || !voucher.getExpiresAt().isAfter(now)) {
+        if (voucher.getStatus() != VoucherStatus.ACTIVE || !voucher.getSaleEndsAt().isAfter(now)) {
             throw new BusinessRuleException(ErrorMessages.VOUCHER_UNAVAILABLE, ErrorCodes.VOUCHER_UNAVAILABLE);
         }
     }

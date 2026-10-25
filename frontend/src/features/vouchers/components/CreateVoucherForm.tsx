@@ -38,9 +38,14 @@ export function CreateVoucherForm({ onCreated }: CreateVoucherFormProps) {
             {(props) => <Input {...props} dir="ltr" inputMode="numeric" autoComplete="off" />}
           </FormField>
         </div>
-        <FormField control={form.control} name="expiresAt" label={t('form.expiresAt')}>
-          {(props) => <Input {...props} type="datetime-local" dir="ltr" />}
-        </FormField>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormField control={form.control} name="saleEndsAt" label={t('form.saleEndsAt')}>
+            {(props) => <Input {...props} type="datetime-local" dir="ltr" />}
+          </FormField>
+          <FormField control={form.control} name="expiresAt" label={t('form.expiresAt')} description={t('form.expiresAtHint')}>
+            {(props) => <Input {...props} type="datetime-local" dir="ltr" />}
+          </FormField>
+        </div>
         <FormErrorMessage errorKey={errorKey} />
       </FieldGroup>
       <DialogFooter>

@@ -11,7 +11,8 @@
   },
   "purchaseStatus": {
     "UNUSED": "جاهزة للاستخدام",
-    "REDEEMED": "مستخدمة"
+    "REDEEMED": "مستخدمة",
+    "EXPIRED": "منتهية الصلاحية"
   },
   "stock": {
     "label": "المتبقي",
@@ -23,7 +24,8 @@
     "buy": "شراء",
     "bought": "اشتريت {{title}}",
     "save": "وفّر {{amount}}",
-    "expires": "حتى {{date}}",
+    "saleEnds": "ينتهي البيع {{date}}",
+    "validUntil": "صالحة حتى {{date}}",
     "limit_one": "الحد {{count}} لكل شخص",
     "limit_other": "الحد {{count}} لكل شخص",
     "loadError": "تعذر تحميل القسائم.",
@@ -70,7 +72,9 @@
     "quantity": "الكمية",
     "quantityHint": "إجمالي العدد المتاح للبيع",
     "perClientLimit": "الحد لكل عميل",
-    "expiresAt": "ينتهي البيع",
+    "saleEndsAt": "ينتهي البيع",
+    "expiresAt": "تنتهي الصلاحية",
+    "expiresAtHint": "اختياري. بعد هذا التاريخ لا يمكن استخدام القسائم المشتراة.",
     "cancel": "إلغاء",
     "create": "إنشاء القسيمة",
     "created": "تم إنشاء القسيمة"

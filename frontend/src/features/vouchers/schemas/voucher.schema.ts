@@ -17,7 +17,8 @@ export const voucherSchema = z.object({
   remaining: z.number().int(),
   perClientLimit: z.number().int(),
   status: voucherStatusSchema,
-  expiresAt: z.iso.datetime({ offset: true }),
+  saleEndsAt: z.iso.datetime({ offset: true }),
+  expiresAt: z.iso.datetime({ offset: true }).nullable(),
   version: z.number().int(),
   createdAt: z.iso.datetime({ offset: true }),
 })
@@ -33,6 +34,7 @@ export const voucherPurchaseSchema = z.object({
   transactionReference: z.string(),
   status: voucherPurchaseStatusSchema,
   redeemedAt: z.iso.datetime({ offset: true }).nullable(),
+  expiresAt: z.iso.datetime({ offset: true }).nullable(),
   createdAt: z.iso.datetime({ offset: true }),
 })
 

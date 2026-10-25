@@ -303,14 +303,15 @@ Table vouchers {
   remaining         int             [not null, note: 'Shared stock; check remaining >= 0']
   per_client_limit  int             [not null]
   status            voucher_status  [not null, default: 'ACTIVE']
-  expires_at        timestamptz     [not null]
+  sale_ends_at      timestamptz     [not null, note: 'Last moment the voucher can be bought']
+  expires_at        timestamptz     [note: 'Bought vouchers cannot be used after this; null means never']
   version           bigint          [not null, note: 'Optimistic lock']
   created_at        timestamptz     [not null]
   updated_at        timestamptz     [not null]
 
   indexes {
     (merchant_id, created_at)
-    (status, expires_at)
+    (status, sale_ends_at)
   }
 }
 

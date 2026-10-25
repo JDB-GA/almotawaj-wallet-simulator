@@ -38,7 +38,11 @@ export const voucherApi = {
   create: (values: CreateVoucherValues): Promise<Voucher> =>
     requestJson(VOUCHER_ENDPOINTS.merchantVouchers, voucherSchema, {
       method: 'POST',
-      body: { ...values, expiresAt: new Date(values.expiresAt).toISOString() },
+      body: {
+        ...values,
+        saleEndsAt: new Date(values.saleEndsAt).toISOString(),
+        expiresAt: values.expiresAt ? new Date(values.expiresAt).toISOString() : null,
+      },
     }),
 
   update: ({ voucherId, payload }: { voucherId: string; payload: UpdateVoucherPayload }): Promise<Voucher> =>

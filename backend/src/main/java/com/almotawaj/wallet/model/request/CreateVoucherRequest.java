@@ -45,7 +45,10 @@ public record CreateVoucherRequest(
         @Max(value = WalletLimits.VOUCHER_PER_CLIENT_MAX, message = ErrorMessages.VOUCHER_LIMIT_TOO_LARGE)
         Integer perClientLimit,
 
-        @NotNull(message = ErrorMessages.VOUCHER_EXPIRY_REQUIRED)
+        @NotNull(message = ErrorMessages.VOUCHER_SALE_END_REQUIRED)
+        @Future(message = ErrorMessages.VOUCHER_SALE_END_IN_PAST)
+        Instant saleEndsAt,
+
         @Future(message = ErrorMessages.VOUCHER_EXPIRY_IN_PAST)
         Instant expiresAt
 ) {

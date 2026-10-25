@@ -34,12 +34,17 @@ export const createVoucherSchema = z
     faceValue: amount,
     totalQuantity: wholeNumber(VOUCHER_QUANTITY_MIN, VOUCHER_QUANTITY_MAX, 'voucherQuantityInvalid'),
     perClientLimit: wholeNumber(VOUCHER_PER_CLIENT_MIN, VOUCHER_PER_CLIENT_MAX, 'voucherLimitInvalid'),
-    expiresAt: z
+    saleEndsAt: z
       .string()
       .min(1, validationKey('dateRequired'))
-      .refine((value) => new Date(value).getTime() > Date.now(), validationKey('voucherExpiryInPast')),
+      .refine((value) => new Date(value).getTime() > Date.now(), validationKey('voucherSaleEndInPast')),
+    expiresAt: z.string().refine((value) => !value || new Date(value).getTime() > Date.now(), validationKey('voucherExpiryInPast')),
   })
   .refine((values) => values.price <= values.faceValue, { path: ['price'], message: validationKey('voucherPriceAboveFaceValue') })
+  .refine((values) => !values.expiresAt || new Date(values.expiresAt) >= new Date(values.saleEndsAt), {
+    path: ['expiresAt'],
+    message: validationKey('voucherExpiryBeforeSaleEnd'),
+  })
 
 export const payoutFormSchema = z.object({
   items: z

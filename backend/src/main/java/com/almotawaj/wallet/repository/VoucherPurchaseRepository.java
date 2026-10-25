@@ -26,15 +26,17 @@ public interface VoucherPurchaseRepository extends JpaRepository<VoucherPurchase
     @Query("""
             select p from VoucherPurchase p join fetch p.voucher v
             where p.buyer.id = :buyerId and v.merchant.id = :merchantId and p.status = :status
+            and (v.expiresAt is null or v.expiresAt > :now)
             order by p.createdAt""")
-    List<VoucherPurchase> findUsable(UUID buyerId, UUID merchantId, VoucherPurchaseStatus status);
+    List<VoucherPurchase> findUsable(UUID buyerId, UUID merchantId, VoucherPurchaseStatus status, Instant now);
 
     @Modifying(flushAutomatically = true)
     @Query("""
             update VoucherPurchase p
             set p.status = :redeemed, p.redeemedCheckout = :checkout, p.redeemedAt = :now
             where p.id = :id and p.buyer.id = :buyerId and p.status = :unused
-            and p.voucher.id in (select v.id from Voucher v where v.merchant.id = :merchantId)""")
+            and p.voucher.id in (select v.id from Voucher v where v.merchant.id = :merchantId
+                and (v.expiresAt is null or v.expiresAt > :now))""")
     int redeem(UUID id, UUID buyerId, UUID merchantId, CheckoutSession checkout, Instant now,
                VoucherPurchaseStatus unused, VoucherPurchaseStatus redeemed);
 

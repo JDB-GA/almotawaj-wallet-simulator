@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Clock;
+import java.time.Instant;
 import java.util.UUID;
 
 @Slf4j
@@ -41,6 +42,7 @@ public class VoucherService {
     @Transactional
     public VoucherResponse create(UUID merchantId, CreateVoucherRequest request) {
         ensurePriceWithinFaceValue(request.price(), request.faceValue());
+        ensureExpiryNotBeforeSaleEnd(request.saleEndsAt(), request.expiresAt());
         Voucher voucher = new Voucher();
         voucher.setMerchant(provisioner.getOrCreate(merchantId).getUser());
         voucher.setTitle(request.title().strip());
@@ -49,6 +51,7 @@ public class VoucherService {
         voucher.setTotalQuantity(request.totalQuantity());
         voucher.setRemaining(request.totalQuantity());
         voucher.setPerClientLimit(request.perClientLimit());
+        voucher.setSaleEndsAt(request.saleEndsAt());
         voucher.setExpiresAt(request.expiresAt());
         voucherRepository.saveAndFlush(voucher);
         auditService.record(merchantId, AuditAction.VOUCHER_CREATED, AuditTargetType.VOUCHER, voucher.getId(), voucher.getTitle());
@@ -64,9 +67,11 @@ public class VoucherService {
             throw new ConflictException(ErrorMessages.VOUCHER_EDIT_CONFLICT, ErrorCodes.VOUCHER_EDIT_CONFLICT);
         }
         ensurePriceWithinFaceValue(request.price(), voucher.getFaceValue());
+        ensureExpiryNotBeforeSaleEnd(request.saleEndsAt(), request.expiresAt());
         voucher.setTitle(request.title().strip());
         voucher.setPrice(request.price());
         voucher.setStatus(request.status());
+        voucher.setSaleEndsAt(request.saleEndsAt());
         voucher.setExpiresAt(request.expiresAt());
         voucherRepository.saveAndFlush(voucher);
         auditService.record(merchantId, AuditAction.VOUCHER_UPDATED, AuditTargetType.VOUCHER, voucherId, voucher.getTitle());
@@ -101,6 +106,12 @@ public class VoucherService {
     private static void ensurePriceWithinFaceValue(BigDecimal price, BigDecimal faceValue) {
         if (price.compareTo(faceValue) > 0) {
             throw new BusinessRuleException(ErrorMessages.VOUCHER_PRICE_ABOVE_FACE_VALUE, ErrorCodes.VOUCHER_PRICE_ABOVE_FACE_VALUE);
+        }
+    }
+
+    private static void ensureExpiryNotBeforeSaleEnd(Instant saleEndsAt, Instant expiresAt) {
+        if (expiresAt != null && expiresAt.isBefore(saleEndsAt)) {
+            throw new BusinessRuleException(ErrorMessages.VOUCHER_EXPIRY_BEFORE_SALE_END, ErrorCodes.VOUCHER_EXPIRY_BEFORE_SALE_END);
         }
     }
 }

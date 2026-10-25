@@ -17,6 +17,7 @@ public record VoucherResponse(
         int remaining,
         int perClientLimit,
         VoucherStatus status,
+        Instant saleEndsAt,
         Instant expiresAt,
         long version,
         Instant createdAt
@@ -24,14 +25,14 @@ public record VoucherResponse(
     public static VoucherResponse from(Voucher voucher, String merchantName, Instant now) {
         return new VoucherResponse(voucher.getId(), merchantName, voucher.getTitle(), voucher.getPrice(), voucher.getFaceValue(),
                 voucher.getTotalQuantity(), voucher.getRemaining(), voucher.getPerClientLimit(), statusAt(voucher, now),
-                voucher.getExpiresAt(), voucher.getVersion(), voucher.getCreatedAt());
+                voucher.getSaleEndsAt(), voucher.getExpiresAt(), voucher.getVersion(), voucher.getCreatedAt());
     }
 
     private static VoucherStatus statusAt(Voucher voucher, Instant now) {
         if (voucher.getRemaining() == 0) {
             return VoucherStatus.SOLD_OUT;
         }
-        if (!voucher.getExpiresAt().isAfter(now)) {
+        if (!voucher.getSaleEndsAt().isAfter(now)) {
             return VoucherStatus.EXPIRED;
         }
         return voucher.getStatus();

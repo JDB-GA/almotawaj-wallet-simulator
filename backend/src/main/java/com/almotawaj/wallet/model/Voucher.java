@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Table(name = DatabaseTables.VOUCHERS, indexes = {
         @Index(columnList = "merchant_id, created_at"),
-        @Index(columnList = "status, expires_at")
+        @Index(columnList = "status, sale_ends_at")
 }, check = @CheckConstraint(name = "vouchers_remaining_not_negative", constraint = "remaining >= 0"))
 @Getter
 @Setter
@@ -53,6 +53,8 @@ public class Voucher {
     private VoucherStatus status = VoucherStatus.ACTIVE;
 
     @Column(nullable = false)
+    private Instant saleEndsAt;
+
     private Instant expiresAt;
 
     @Version

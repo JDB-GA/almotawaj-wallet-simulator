@@ -1,5 +1,5 @@
 import type { BadgeVariant } from '@/features/kyc/types/badge-variant.types'
-import type { PayoutBatchStatus, PayoutItemStatus, VoucherPurchaseStatus, VoucherStatus } from '../types/voucher.types'
+import type { PayoutBatchStatus, PayoutItemStatus, VoucherPurchaseDisplayStatus, VoucherStatus } from '../types/voucher.types'
 
 export const VOUCHER_ENDPOINTS = {
   available: '/api/vouchers',
@@ -50,9 +50,10 @@ export const PAYOUT_ITEM_BADGE_VARIANTS: Readonly<Record<PayoutItemStatus, Badge
   FAILED: 'destructive',
 }
 
-export const VOUCHER_PURCHASE_BADGE_VARIANTS: Readonly<Record<VoucherPurchaseStatus, BadgeVariant>> = {
+export const VOUCHER_PURCHASE_BADGE_VARIANTS: Readonly<Record<VoucherPurchaseDisplayStatus, BadgeVariant>> = {
   UNUSED: 'default',
   REDEEMED: 'secondary',
+  EXPIRED: 'outline',
 }
 
 export const VOUCHERS_PAGE_SIZE = 12
@@ -68,7 +69,7 @@ export const VOUCHER_PER_CLIENT_MIN = 1
 export const VOUCHER_PER_CLIENT_MAX = 100
 export const PAYOUT_ITEMS_MAX = 100
 export const LOW_STOCK_THRESHOLD = 5
-export const DEFAULT_VOUCHER_EXPIRY_DAYS = 30
+export const DEFAULT_VOUCHER_SALE_DAYS = 30
 export const QUANTITY_PLACEHOLDER = '100'
 export const WHOLE_NUMBER_PATTERN = /^\d+$/
 export const SHOP_TAB = 'shop'

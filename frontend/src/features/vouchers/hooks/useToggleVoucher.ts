@@ -18,6 +18,7 @@ export function useToggleVoucher() {
           title: voucher.title,
           price: voucher.price,
           status: voucher.status === 'PAUSED' ? 'ACTIVE' : 'PAUSED',
+          saleEndsAt: voucher.saleEndsAt,
           expiresAt: voucher.expiresAt,
           version: voucher.version,
         },

@@ -11,7 +11,8 @@
   },
   "purchaseStatus": {
     "UNUSED": "Ready to use",
-    "REDEEMED": "Used"
+    "REDEEMED": "Used",
+    "EXPIRED": "Expired"
   },
   "stock": {
     "label": "Stock left",
@@ -23,7 +24,8 @@
     "buy": "Buy",
     "bought": "You bought {{title}}",
     "save": "Save {{amount}}",
-    "expires": "Until {{date}}",
+    "saleEnds": "Sale ends {{date}}",
+    "validUntil": "Valid until {{date}}",
     "limit_one": "Max {{count}} per person",
     "limit_other": "Max {{count}} per person",
     "loadError": "Could not load vouchers.",
@@ -70,7 +72,9 @@
     "quantity": "Quantity",
     "quantityHint": "How many can be sold in total",
     "perClientLimit": "Max per client",
-    "expiresAt": "Sale ends",
+    "saleEndsAt": "Sale ends",
+    "expiresAt": "Expires at",
+    "expiresAtHint": "Optional. After this date bought vouchers can no longer be used.",
     "cancel": "Cancel",
     "create": "Create voucher",
     "created": "Voucher created"

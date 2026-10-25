@@ -47,8 +47,11 @@ export function VoucherCard({ voucher, isBuying, onBuy }: VoucherCardProps) {
         {saving > 0 && <Badge variant="secondary">{t('shop.save', { amount: formatMoney(saving, language) })}</Badge>}
         <StockMeter remaining={voucher.remaining} total={voucher.totalQuantity} />
         <p className="text-xs text-muted-foreground">
-          {t('shop.expires', { date: formatDate(voucher.expiresAt, language) })} · {t('shop.limit', { count: voucher.perClientLimit })}
+          {t('shop.saleEnds', { date: formatDate(voucher.saleEndsAt, language) })} · {t('shop.limit', { count: voucher.perClientLimit })}
         </p>
+        {voucher.expiresAt && (
+          <p className="text-xs text-muted-foreground">{t('shop.validUntil', { date: formatDate(voucher.expiresAt, language) })}</p>
+        )}
       </CardContent>
       <CardFooter>
         <Button className="w-full" disabled={soldOut || isBuying} aria-busy={isBuying} onClick={() => { onBuy(voucher.id); }}>

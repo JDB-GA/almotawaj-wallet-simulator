@@ -7,7 +7,7 @@ import { voucherApi } from '../api/voucher.api'
 import { VOUCHER_QUERY_KEYS } from '../constants/voucher.constants'
 import { createVoucherSchema } from '../schemas/voucher-form.schema'
 import type { CreateVoucherInput, CreateVoucherValues } from '../types/voucher.types'
-import { defaultExpiry } from '../utils/default-expiry'
+import { defaultSaleEnd } from '../utils/default-sale-end'
 
 const emptyValues = (): CreateVoucherInput => ({
   title: '',
@@ -15,7 +15,8 @@ const emptyValues = (): CreateVoucherInput => ({
   faceValue: '',
   totalQuantity: '',
   perClientLimit: '1',
-  expiresAt: defaultExpiry(),
+  saleEndsAt: defaultSaleEnd(),
+  expiresAt: '',
 })
 
 export function useCreateVoucherForm(onCreated: () => void) {

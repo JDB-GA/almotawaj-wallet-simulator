@@ -64,6 +64,7 @@ public final class ErrorCodes {
     public static final String VOUCHER_LIMIT_REACHED = "VOUCHER_LIMIT_REACHED";
     public static final String VOUCHER_EDIT_CONFLICT = "VOUCHER_EDIT_CONFLICT";
     public static final String VOUCHER_PRICE_ABOVE_FACE_VALUE = "VOUCHER_PRICE_ABOVE_FACE_VALUE";
+    public static final String VOUCHER_EXPIRY_BEFORE_SALE_END = "VOUCHER_EXPIRY_BEFORE_SALE_END";
     public static final String VOUCHER_NOT_USABLE = "VOUCHER_NOT_USABLE";
     public static final String PAYOUT_BATCH_NOT_FOUND = "PAYOUT_BATCH_NOT_FOUND";
     public static final String PAYOUT_RECIPIENT_DUPLICATE = "PAYOUT_RECIPIENT_DUPLICATE";

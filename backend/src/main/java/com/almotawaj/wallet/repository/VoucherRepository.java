@@ -22,16 +22,16 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
 
     @Query(value = """
             select v from Voucher v join fetch v.merchant
-            where v.status = :status and v.remaining > 0 and v.expiresAt > :now""",
+            where v.status = :status and v.remaining > 0 and v.saleEndsAt > :now""",
             countQuery = """
             select count(v) from Voucher v
-            where v.status = :status and v.remaining > 0 and v.expiresAt > :now""")
+            where v.status = :status and v.remaining > 0 and v.saleEndsAt > :now""")
     Page<Voucher> findAvailable(VoucherStatus status, Instant now, Pageable pageable);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("""
             update Voucher v set v.remaining = v.remaining - 1
-            where v.id = :id and v.remaining > 0 and v.status = :status and v.expiresAt > :now""")
+            where v.id = :id and v.remaining > 0 and v.status = :status and v.saleEndsAt > :now""")
     int takeOne(UUID id, VoucherStatus status, Instant now);
 
     @Query("select v.remaining from Voucher v where v.id = :id")

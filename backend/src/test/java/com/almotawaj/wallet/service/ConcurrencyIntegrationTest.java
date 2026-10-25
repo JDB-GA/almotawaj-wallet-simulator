@@ -168,10 +168,10 @@ class ConcurrencyIntegrationTest {
         Voucher voucher = voucher(5, 1);
         Instant expiry = Instant.now().plus(Duration.ofDays(2));
         vouchers.update(merchant.getId(), voucher.getId(),
-                new UpdateVoucherRequest("New title", new BigDecimal("40.000"), voucher.getStatus(), expiry, voucher.getVersion()));
+                new UpdateVoucherRequest("New title", new BigDecimal("40.000"), voucher.getStatus(), expiry, null, voucher.getVersion()));
 
         assertThatThrownBy(() -> vouchers.update(merchant.getId(), voucher.getId(),
-                new UpdateVoucherRequest("Stale title", new BigDecimal("30.000"), voucher.getStatus(), expiry, voucher.getVersion())))
+                new UpdateVoucherRequest("Stale title", new BigDecimal("30.000"), voucher.getStatus(), expiry, null, voucher.getVersion())))
                 .isInstanceOf(ConflictException.class);
         assertThat(voucherRepository.findById(voucher.getId()).orElseThrow().getTitle()).isEqualTo("New title");
     }
@@ -215,7 +215,7 @@ class ConcurrencyIntegrationTest {
         voucher.setTotalQuantity(quantity);
         voucher.setRemaining(quantity);
         voucher.setPerClientLimit(perClientLimit);
-        voucher.setExpiresAt(Instant.now().plus(Duration.ofDays(1)));
+        voucher.setSaleEndsAt(Instant.now().plus(Duration.ofDays(1)));
         return voucherRepository.saveAndFlush(voucher);
     }
 

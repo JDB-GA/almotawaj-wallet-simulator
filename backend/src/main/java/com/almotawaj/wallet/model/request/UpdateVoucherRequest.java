@@ -32,7 +32,10 @@ public record UpdateVoucherRequest(
         @NotNull(message = ErrorMessages.VOUCHER_STATUS_REQUIRED)
         VoucherStatus status,
 
-        @NotNull(message = ErrorMessages.VOUCHER_EXPIRY_REQUIRED)
+        @NotNull(message = ErrorMessages.VOUCHER_SALE_END_REQUIRED)
+        @Future(message = ErrorMessages.VOUCHER_SALE_END_IN_PAST)
+        Instant saleEndsAt,
+
         @Future(message = ErrorMessages.VOUCHER_EXPIRY_IN_PAST)
         Instant expiresAt,
 

@@ -68,7 +68,9 @@
   "voucherTitleTooLong": "يجب ألا يزيد العنوان عن {{voucherTitleMax}} حرفاً",
   "voucherQuantityInvalid": "أدخل عدداً صحيحاً من {{voucherQuantityMin}} إلى {{voucherQuantityMax}}",
   "voucherLimitInvalid": "أدخل عدداً صحيحاً من {{voucherLimitMin}} إلى {{voucherLimitMax}}",
-  "voucherExpiryInPast": "يجب أن ينتهي البيع في المستقبل",
+  "voucherSaleEndInPast": "يجب أن ينتهي البيع في المستقبل",
+  "voucherExpiryInPast": "يجب أن يكون تاريخ انتهاء الصلاحية في المستقبل",
+  "voucherExpiryBeforeSaleEnd": "لا يمكن أن تنتهي الصلاحية قبل انتهاء البيع",
   "voucherPriceAboveFaceValue": "لا يمكن أن يزيد السعر عن القيمة الاسمية",
   "payoutItemsRequired": "أضف مستلماً واحداً على الأقل",
   "payoutItemsTooMany": "يمكن أن تحتوي الدفعة على {{payoutItemsMax}} مستلماً كحد أقصى"

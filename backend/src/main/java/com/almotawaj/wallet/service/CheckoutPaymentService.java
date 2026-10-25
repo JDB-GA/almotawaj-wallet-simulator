@@ -52,7 +52,7 @@ public class CheckoutPaymentService {
     public List<UsableVoucherResponse> usableVouchers(UUID payerId, UUID sessionId) {
         CheckoutSession session = sessionRepository.findById(sessionId).orElseThrow(() ->
                 new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
-        return purchaseRepository.findUsable(payerId, session.getMerchant().getId(), VoucherPurchaseStatus.UNUSED).stream()
+        return purchaseRepository.findUsable(payerId, session.getMerchant().getId(), VoucherPurchaseStatus.UNUSED, clock.instant()).stream()
                 .map(UsableVoucherResponse::from)
                 .toList();
     }

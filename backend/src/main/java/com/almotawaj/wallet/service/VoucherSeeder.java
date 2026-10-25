@@ -35,7 +35,7 @@ public class VoucherSeeder {
         voucher.setTotalQuantity(seed.quantity());
         voucher.setRemaining(seed.quantity());
         voucher.setPerClientLimit(seed.perClientLimit());
-        voucher.setExpiresAt(clock.instant().plus(Duration.ofDays(SeedConstants.VOUCHER_EXPIRY_DAYS)));
+        voucher.setSaleEndsAt(clock.instant().plus(Duration.ofDays(SeedConstants.VOUCHER_EXPIRY_DAYS)));
         return voucher;
     }
 }

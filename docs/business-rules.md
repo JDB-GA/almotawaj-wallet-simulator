@@ -53,7 +53,7 @@ Admins with `USER_MANAGE` manage clients and merchants only; only the super admi
 
 ### Project 3
 
-30. A voucher has a price, a face value, a quantity, a per-client limit and an expiry date. Only an `ACTIVE`, unexpired voucher with stock left can be bought.
+30. A voucher has a price, a face value, a quantity, a per-client limit, a sale end date and an optional expiry date. Only an `ACTIVE` voucher whose sale has not ended and that has stock left can be bought. The expiry date, if set, cannot be before the sale end date.
 31. Buying a voucher takes one unit of stock with a single database update that only succeeds while stock is above zero, and debits the buyer's locked wallet in the same transaction. If the stock update fails the buyer gets `409 VOUCHER_SOLD_OUT` and nothing is charged. A database check also keeps stock at zero or above.
 32. Only KYC-approved clients buy vouchers, and never more than the voucher's per-client limit. Each purchase gets a unique code. The money goes to the merchant's wallet.
 33. A voucher carries a version number; an edit made from an out-of-date copy is rejected (`409`) instead of overwriting a newer change.
@@ -63,5 +63,5 @@ Admins with `USER_MANAGE` manage clients and merchants only; only the super admi
 37. Seeding gives the demo merchant four vouchers, including one with a single unit in stock for the race demonstration.
 38. Write endpoints are rate-limited per signed-in user and endpoint (per address for anonymous requests), so buyers behind the same network do not block each other during a sale.
 39. The Concurrency Lab (super admin only) runs races in throw-away sandbox accounts that are deleted after every run; real accounts are never touched.
-40. A bought voucher is used once, only when paying a checkout of the merchant that sold it. It is marked used with a single database update that only succeeds while it is unused, in the same transaction as the payment, so two tabs paying with the same voucher never both succeed. Its face value comes off the amount (any leftover is lost) and the client pays the rest. A refund returns only the cash part and makes the voucher usable again.
+40. A bought voucher is used once, only when paying a checkout of the merchant that sold it. It is marked used with a single database update that only succeeds while it is unused, in the same transaction as the payment, so two tabs paying with the same voucher never both succeed. Its face value comes off the amount (any leftover is lost) and the client pays the rest. A voucher past its expiry date cannot be used. A refund returns only the cash part and makes the voucher usable again.
 

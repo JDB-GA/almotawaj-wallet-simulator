@@ -19,6 +19,7 @@ export type VoucherStatus = z.infer<typeof voucherStatusSchema>
 export type PayoutBatchStatus = z.infer<typeof payoutBatchStatusSchema>
 export type PayoutItemStatus = z.infer<typeof payoutItemStatusSchema>
 export type VoucherPurchaseStatus = z.infer<typeof voucherPurchaseStatusSchema>
+export type VoucherPurchaseDisplayStatus = VoucherPurchaseStatus | 'EXPIRED'
 
 export type Voucher = z.infer<typeof voucherSchema>
 export type VoucherPage = z.infer<typeof voucherPageSchema>
@@ -38,6 +39,7 @@ export interface UpdateVoucherPayload {
   title: string
   price: number
   status: Extract<VoucherStatus, 'ACTIVE' | 'PAUSED'>
-  expiresAt: string
+  saleEndsAt: string
+  expiresAt: string | null
   version: number
 }

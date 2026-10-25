@@ -76,6 +76,7 @@ class VoucherRedemptionIntegrationTest {
 
     private User merchant;
     private User buyer;
+    private UUID voucherId;
     private UUID purchaseId;
 
     @BeforeEach
@@ -84,7 +85,8 @@ class VoucherRedemptionIntegrationTest {
         wallet(merchant, "0.000");
         buyer = user(UserRole.CLIENT);
         wallet(buyer, "100.000");
-        purchaseId = purchases.purchase(buyer.getId(), voucher(merchant).getId(), null).id();
+        voucherId = voucher(merchant).getId();
+        purchaseId = purchases.purchase(buyer.getId(), voucherId, null).id();
     }
 
     @AfterEach
@@ -151,6 +153,27 @@ class VoucherRedemptionIntegrationTest {
         assertThat(purchaseRepository.findById(purchaseId).orElseThrow().getStatus()).isEqualTo(VoucherPurchaseStatus.UNUSED);
     }
 
+    @Test
+    void expiredVoucher_isNotListedAndIsRejected() {
+        expireVoucherAt(Instant.now().minus(Duration.ofMinutes(1)));
+        CheckoutSession session = session(merchant, "20.000");
+
+        assertThat(payments.usableVouchers(buyer.getId(), session.getId())).isEmpty();
+        assertThatThrownBy(() -> payments.pay(buyer.getId(), session.getId(), purchaseId))
+                .isInstanceOf(BusinessRuleException.class)
+                .hasFieldOrPropertyWithValue("code", ErrorCodes.VOUCHER_NOT_USABLE);
+        assertThat(purchaseRepository.findById(purchaseId).orElseThrow().getStatus()).isEqualTo(VoucherPurchaseStatus.UNUSED);
+    }
+
+    @Test
+    void voucherBeforeItsExpiry_canStillBeUsed() {
+        expireVoucherAt(Instant.now().plus(Duration.ofDays(1)));
+        CheckoutSession session = session(merchant, "20.000");
+
+        assertThat(payments.usableVouchers(buyer.getId(), session.getId())).extracting(UsableVoucherResponse::id).containsExactly(purchaseId);
+        assertThat(payments.pay(buyer.getId(), session.getId(), purchaseId).status()).isEqualTo(CheckoutStatus.PAID);
+    }
+
     @RepeatedTest(20)
     void sameVoucherInManyTabsAtOnce_isUsedExactlyOnce() throws Exception {
         List<UUID> sessionIds = new ArrayList<>();
@@ -212,6 +235,12 @@ class VoucherRedemptionIntegrationTest {
         return sessionRepository.saveAndFlush(session);
     }
 
+    private void expireVoucherAt(Instant expiresAt) {
+        Voucher voucher = voucherRepository.findById(voucherId).orElseThrow();
+        voucher.setExpiresAt(expiresAt);
+        voucherRepository.saveAndFlush(voucher);
+    }
+
     private Voucher voucher(User owner) {
         Voucher voucher = new Voucher();
         voucher.setMerchant(owner);
@@ -221,7 +250,7 @@ class VoucherRedemptionIntegrationTest {
         voucher.setTotalQuantity(5);
         voucher.setRemaining(5);
         voucher.setPerClientLimit(5);
-        voucher.setExpiresAt(Instant.now().plus(Duration.ofDays(1)));
+        voucher.setSaleEndsAt(Instant.now().plus(Duration.ofDays(1)));
         return voucherRepository.saveAndFlush(voucher);
     }
 

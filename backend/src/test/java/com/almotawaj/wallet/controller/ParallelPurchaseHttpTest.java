@@ -104,7 +104,7 @@ class ParallelPurchaseHttpTest {
         voucher.setTotalQuantity(1);
         voucher.setRemaining(1);
         voucher.setPerClientLimit(1);
-        voucher.setExpiresAt(Instant.now().plus(Duration.ofDays(1)));
+        voucher.setSaleEndsAt(Instant.now().plus(Duration.ofDays(1)));
         return voucherRepository.saveAndFlush(voucher);
     }
 

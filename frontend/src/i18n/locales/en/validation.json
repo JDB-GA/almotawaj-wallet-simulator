@@ -68,7 +68,9 @@
   "voucherTitleTooLong": "Title must be at most {{voucherTitleMax}} characters",
   "voucherQuantityInvalid": "Enter a whole number from {{voucherQuantityMin}} to {{voucherQuantityMax}}",
   "voucherLimitInvalid": "Enter a whole number from {{voucherLimitMin}} to {{voucherLimitMax}}",
-  "voucherExpiryInPast": "The sale must end in the future",
+  "voucherSaleEndInPast": "The sale must end in the future",
+  "voucherExpiryInPast": "The expiry date must be in the future",
+  "voucherExpiryBeforeSaleEnd": "The expiry date cannot be before the sale ends",
   "voucherPriceAboveFaceValue": "Price cannot be higher than the face value",
   "payoutItemsRequired": "Add at least one recipient",
   "payoutItemsTooMany": "A payout can have at most {{payoutItemsMax}} recipients"

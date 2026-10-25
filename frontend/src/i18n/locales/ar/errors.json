@@ -64,6 +64,7 @@
   "VOUCHER_LIMIT_REACHED": "اشتريت الحد الأقصى المسموح من هذه القسيمة",
   "VOUCHER_EDIT_CONFLICT": "عدّل شخص آخر هذه القسيمة. أعد التحميل وحاول مجدداً",
   "VOUCHER_PRICE_ABOVE_FACE_VALUE": "لا يمكن أن يزيد السعر عن القيمة الاسمية",
+  "VOUCHER_EXPIRY_BEFORE_SALE_END": "لا يمكن أن يكون تاريخ انتهاء الصلاحية قبل تاريخ انتهاء البيع",
   "PAYOUT_BATCH_NOT_FOUND": "لم يتم العثور على هذه الدفعة",
   "PAYOUT_RECIPIENT_DUPLICATE": "يمكن أن يظهر كل مستلم مرة واحدة فقط",
   "IDEMPOTENCY_KEY_REUSED": "تم استخدام هذا الطلب لغرض آخر"

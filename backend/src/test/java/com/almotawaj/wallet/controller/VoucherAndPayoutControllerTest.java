@@ -126,7 +126,7 @@ class VoucherAndPayoutControllerTest {
     void staleVoucherEdit_returns409() throws Exception {
         Voucher voucher = voucher(3);
         String body = """
-                {"title":"Renamed","price":"40.000","status":"ACTIVE","expiresAt":"%s","version":%d}"""
+                {"title":"Renamed","price":"40.000","status":"ACTIVE","saleEndsAt":"%s","version":%d}"""
                 .formatted(Instant.now().plus(Duration.ofDays(3)), voucher.getVersion() + 5);
 
         mvc.perform(put("/api/merchant/vouchers/{id}", voucher.getId()).cookie(cookie(merchant))
@@ -164,7 +164,7 @@ class VoucherAndPayoutControllerTest {
 
     private String voucherJson(String price, String faceValue) {
         return """
-                {"title":"Gift card","price":"%s","faceValue":"%s","totalQuantity":10,"perClientLimit":2,"expiresAt":"%s"}"""
+                {"title":"Gift card","price":"%s","faceValue":"%s","totalQuantity":10,"perClientLimit":2,"saleEndsAt":"%s"}"""
                 .formatted(price, faceValue, Instant.now().plus(Duration.ofDays(3)));
     }
 
@@ -177,7 +177,7 @@ class VoucherAndPayoutControllerTest {
         voucher.setTotalQuantity(Math.max(remaining, 1));
         voucher.setRemaining(remaining);
         voucher.setPerClientLimit(5);
-        voucher.setExpiresAt(Instant.now().plus(Duration.ofDays(1)));
+        voucher.setSaleEndsAt(Instant.now().plus(Duration.ofDays(1)));
         return voucherRepository.saveAndFlush(voucher);
     }
 

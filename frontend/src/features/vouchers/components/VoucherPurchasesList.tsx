@@ -13,6 +13,10 @@ import { formatMoney } from '@/features/wallet/utils/format-money'
 import { useLanguage } from '@/hooks/useLanguage'
 import { VOUCHER_PURCHASE_BADGE_VARIANTS } from '../constants/voucher.constants'
 import { useVoucherPurchases } from '../hooks/useVoucherPurchases'
+import type { VoucherPurchase, VoucherPurchaseDisplayStatus } from '../types/voucher.types'
+
+const displayStatus = (purchase: VoucherPurchase): VoucherPurchaseDisplayStatus =>
+  purchase.status === 'UNUSED' && purchase.expiresAt && new Date(purchase.expiresAt).getTime() <= Date.now() ? 'EXPIRED' : purchase.status
 
 export function VoucherPurchasesList() {
   const { t } = useTranslation('vouchers')
@@ -46,49 +50,57 @@ export function VoucherPurchasesList() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.content.map((purchase) => (
-            <TableRow key={purchase.id}>
-              <TableCell data-label={t('mine.date')} className="whitespace-nowrap">
-                {formatDateTime(purchase.createdAt, language)}
-              </TableCell>
-              <TableCell data-label={t('mine.voucher')}>
-                <div className="flex flex-col">
-                  <bdi dir="auto" className="font-medium">
-                    {purchase.title}
+          {data.content.map((purchase) => {
+            const status = displayStatus(purchase)
+            return (
+              <TableRow key={purchase.id}>
+                <TableCell data-label={t('mine.date')} className="whitespace-nowrap">
+                  {formatDateTime(purchase.createdAt, language)}
+                </TableCell>
+                <TableCell data-label={t('mine.voucher')}>
+                  <div className="flex flex-col">
+                    <bdi dir="auto" className="font-medium">
+                      {purchase.title}
+                    </bdi>
+                    <bdi dir="auto" className="text-xs text-muted-foreground">
+                      {purchase.merchantName}
+                    </bdi>
+                  </div>
+                </TableCell>
+                <TableCell data-label={t('mine.code')}>
+                  <div className="flex items-center gap-1">
+                    <bdi dir="ltr" className="font-mono text-xs font-medium">
+                      {purchase.code}
+                    </bdi>
+                    <CopyButton value={purchase.code} label={t('mine.copy')} successMessage={t('mine.copied')} failureMessage={t('mine.copyFailed')} />
+                  </div>
+                </TableCell>
+                <TableCell data-label={t('mine.status')}>
+                  <div className="flex flex-col gap-1">
+                    <Badge variant={VOUCHER_PURCHASE_BADGE_VARIANTS[status]}>{t(`purchaseStatus.${status}`)}</Badge>
+                    {purchase.redeemedAt && (
+                      <span className="text-xs text-muted-foreground">{formatDateTime(purchase.redeemedAt, language)}</span>
+                    )}
+                    {!purchase.redeemedAt && purchase.expiresAt && (
+                      <span className="text-xs text-muted-foreground">
+                        {t('shop.validUntil', { date: formatDateTime(purchase.expiresAt, language) })}
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell data-label={t('mine.value')} className="text-end">
+                  <bdi dir="ltr" className="font-semibold tabular-nums text-primary">
+                    {formatMoney(purchase.faceValue, language)}
                   </bdi>
-                  <bdi dir="auto" className="text-xs text-muted-foreground">
-                    {purchase.merchantName}
+                </TableCell>
+                <TableCell data-label={t('mine.paid')} className="text-end">
+                  <bdi dir="ltr" className="font-medium tabular-nums">
+                    {formatMoney(purchase.price, language)}
                   </bdi>
-                </div>
-              </TableCell>
-              <TableCell data-label={t('mine.code')}>
-                <div className="flex items-center gap-1">
-                  <bdi dir="ltr" className="font-mono text-xs font-medium">
-                    {purchase.code}
-                  </bdi>
-                  <CopyButton value={purchase.code} label={t('mine.copy')} successMessage={t('mine.copied')} failureMessage={t('mine.copyFailed')} />
-                </div>
-              </TableCell>
-              <TableCell data-label={t('mine.status')}>
-                <div className="flex flex-col gap-1">
-                  <Badge variant={VOUCHER_PURCHASE_BADGE_VARIANTS[purchase.status]}>{t(`purchaseStatus.${purchase.status}`)}</Badge>
-                  {purchase.redeemedAt && (
-                    <span className="text-xs text-muted-foreground">{formatDateTime(purchase.redeemedAt, language)}</span>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell data-label={t('mine.value')} className="text-end">
-                <bdi dir="ltr" className="font-semibold tabular-nums text-primary">
-                  {formatMoney(purchase.faceValue, language)}
-                </bdi>
-              </TableCell>
-              <TableCell data-label={t('mine.paid')} className="text-end">
-                <bdi dir="ltr" className="font-medium tabular-nums">
-                  {formatMoney(purchase.price, language)}
-                </bdi>
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <PaginationControls page={data.page} totalPages={data.totalPages} disabled={isPlaceholderData} onPageChange={setPage} />
