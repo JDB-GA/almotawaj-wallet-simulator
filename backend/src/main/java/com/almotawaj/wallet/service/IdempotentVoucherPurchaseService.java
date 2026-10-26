@@ -13,16 +13,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
 public class IdempotentVoucherPurchaseService {
     private final VoucherPurchaseService purchaseService;
     private final IdempotencyRecordRepository idempotencyRepository;
+    private final ConcurrentMap<UUID, ReentrantLock> voucherLocks = new ConcurrentHashMap<>();
 
     public VoucherPurchaseResponse purchase(UUID buyerId, UUID voucherId, String idempotencyKey) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
-            return purchaseService.purchase(buyerId, voucherId, null);
+            return buy(buyerId, voucherId, null);
         }
         String key = idempotencyKey.strip();
         Optional<IdempotencyRecord> existing = find(buyerId, key);
@@ -30,9 +34,19 @@ public class IdempotentVoucherPurchaseService {
             return replay(buyerId, voucherId, existing.get());
         }
         try {
-            return purchaseService.purchase(buyerId, voucherId, key);
+            return buy(buyerId, voucherId, key);
         } catch (DataIntegrityViolationException e) {
             return find(buyerId, key).map(record -> replay(buyerId, voucherId, record)).orElseThrow(() -> e);
+        }
+    }
+
+    private VoucherPurchaseResponse buy(UUID buyerId, UUID voucherId, String key) {
+        ReentrantLock lock = voucherLocks.computeIfAbsent(voucherId, id -> new ReentrantLock());
+        lock.lock();
+        try {
+            return purchaseService.purchase(buyerId, voucherId, key);
+        } finally {
+            lock.unlock();
         }
     }
 

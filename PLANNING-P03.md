@@ -6,8 +6,8 @@ Already in P02: 11 entities, wallet locking on transfers, `@Async` emails, SSE n
 
 ## Work and progress
 
-| #   | Task                                                                                                           | Done when                                           | Status |
-| --- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------ |
+| #   | Task                                                                                                           | Done when                                           | Status  |
+| --- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------- |
 | 1   | **Bank-style PDFs**: letterhead, page X of Y, opening/closing balance, debit and credit columns, IBM Plex font | statement looks like a bank's, EN + AR              | ✅ Done |
 | 2   | **5 new entities**: `Voucher`, `VoucherPurchase`, `PayoutBatch`, `PayoutItem`, `IdempotencyRecord` (16 total)  | ERD + seed data updated                             | ✅ Done |
 | 3   | **Vouchers**: merchant sells limited stock, clients buy with wallet balance                                    | last voucher: one buyer gets `201`, the other `409` | ✅ Done |
@@ -16,20 +16,24 @@ Already in P02: 11 entities, wallet locking on transfers, `@Async` emails, SSE n
 | 6   | **Tests + logging**                                                                                            | race tests pass 50 runs in a row                    | ✅ Done |
 | 7   | **Frontend pages** + live updates                                                                              | shop, merchant vouchers, bulk payouts               | ✅ Done |
 | 8   | **Concurrency Lab** (simulation page)                                                                          | safe vs unsafe race visible on a thread timeline    | ✅ Done |
-| 9   | **Docs**: README P03 section, Swagger, user stories, diagrams                                                  | all requirements ticked                             | 🔄 In progress |
+| 9   | **Docs**: README P03 section, Swagger, user stories, diagrams                                                  | all requirements ticked                             | ✅ Done |
+| 10  | **Use vouchers at checkout** + **expiry date**                                                                 | one voucher, two tabs: one payment succeeds         | ✅ Done |
+| 11  | **Java concurrency tools**: `ReentrantLock` per voucher, `CompletableFuture` payouts, own `@Async` pool        | 208 tests pass                                      | ✅ Done |
 
 ## The race and the fix
 
-| Problem                                 | Fix                                                          | Why                                          |
-| --------------------------------------- | ------------------------------------------------------------ | -------------------------------------------- |
-| 2 buyers, 1 voucher left                | `UPDATE … SET remaining = remaining - 1 WHERE remaining > 0` | atomic in the database, works across servers |
-| 5 threads debit one wallet              | existing wallet lock (`PESSIMISTIC_WRITE`)                   | balance can't go negative                    |
-| Same request sent twice                 | unique key in the database                                   | second request returns the first result      |
-| Merchant edits a voucher while it sells | `@Version` (optimistic lock)                                 | stale edit is rejected                       |
+| Problem                                 | Fix                                                          | Why                                               |
+| --------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| 2 buyers, 1 voucher left                | `UPDATE … SET remaining = remaining - 1 WHERE remaining > 0` | atomic in the database, works across servers      |
+| 5 threads debit one wallet              | existing wallet lock (`PESSIMISTIC_WRITE`)                   | balance can't go negative                         |
+| Same request sent twice                 | unique key in the database                                   | second request returns the first result           |
+| Merchant edits a voucher while it sells | `@Version` (optimistic lock)                                 | stale edit is rejected                            |
+| One voucher used in two tabs            | `UPDATE … SET status = 'REDEEMED' WHERE status = 'UNUSED'`   | only one payment can use it                       |
+| Buyers of one voucher on one server     | `ReentrantLock` per voucher in front of the update           | queues them in Java; the database stays the guard |
 
 ## Concurrency tools used
 
-`ExecutorService` (pool of 5) · `Callable` + `Future` · `CountDownLatch` · `AtomicInteger` · `ConcurrentHashMap` · `@Async` · transactions · pessimistic and optimistic locking
+`ExecutorService` (pool of 5) · `CompletableFuture` · `ReentrantLock` · `CountDownLatch` · `AtomicInteger` · `ConcurrentHashMap` · `@Async` · transactions · pessimistic and optimistic locking
 
 ## New endpoints
 

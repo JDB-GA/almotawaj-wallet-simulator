@@ -20,6 +20,7 @@ public final class WalletLimits {
     public static final String PAYOUT_MAX = "5000.000";
     public static final int PAYOUT_ITEMS_MAX = 100;
     public static final int PAYOUT_THREADS = 5;
+    public static final int ASYNC_THREADS = 4;
 
     private WalletLimits() {
     }

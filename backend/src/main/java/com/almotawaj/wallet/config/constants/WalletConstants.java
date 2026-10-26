@@ -35,6 +35,8 @@ public final class WalletConstants {
     public static final String PAYOUT_PROCESSING_ERROR = "PROCESSING_ERROR";
     public static final String PAYOUT_THREAD_NAME = "payout-%d";
     public static final String PAYOUT_EXECUTOR = "payoutExecutor";
+    public static final String ASYNC_THREAD_NAME = "async-%d";
+    public static final String ASYNC_EXECUTOR = "taskExecutor";
     public static final String IDEMPOTENCY_HEADER = "Idempotency-Key";
     public static final String IDEMPOTENCY_VOUCHER_PURCHASE = "VOUCHER_PURCHASE";
     public static final int IDEMPOTENCY_CREATED_STATUS = 201;

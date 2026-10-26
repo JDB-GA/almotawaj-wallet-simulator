@@ -20,10 +20,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -63,12 +61,12 @@ public class PayoutRunner {
         AtomicInteger failed = new AtomicInteger();
         log.info(LogMessages.PAYOUT_BATCH_STARTED, batchId, WalletLimits.PAYOUT_THREADS);
 
-        List<Future<PayoutItemStatus>> futures = itemIds.stream()
-                .map(itemId -> executor.submit(payOne(batchId, itemId, merchantId, total, paid, failed, observer)))
+        List<CompletableFuture<PayoutItemStatus>> futures = itemIds.stream()
+                .map(itemId -> CompletableFuture
+                        .supplyAsync(() -> payOne(batchId, itemId, merchantId, total, paid, failed, observer), executor)
+                        .exceptionally(error -> crashed(batchId, itemId, merchantId, total, paid, failed, error)))
                 .toList();
-        for (int index = 0; index < futures.size(); index++) {
-            await(futures.get(index), batchId, itemIds.get(index), merchantId, total, paid, failed);
-        }
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
 
         PayoutBatch batch = processor.complete(batchId);
         hub.send(merchantId, NotificationConstants.PAYOUT_COMPLETED,
@@ -78,39 +76,26 @@ public class PayoutRunner {
         return batch;
     }
 
-    private Callable<PayoutItemStatus> payOne(UUID batchId, UUID itemId, UUID merchantId, int total,
-                                              AtomicInteger paid, AtomicInteger failed, PayoutItemObserver observer) {
-        return () -> {
-            long startNanos = System.nanoTime();
-            if (observer != PayoutItemObserver.NONE) {
-                SimulationTrace.start(startNanos);
-            }
-            PayoutItemStatus status = processor.process(itemId);
-            observer.onItemProcessed(itemId, Thread.currentThread().getName(), startNanos, System.nanoTime(), status,
-                    SimulationTrace.stop());
-            report(batchId, merchantId, total, status == PayoutItemStatus.PAID ? paid.incrementAndGet() : paid.get(),
-                    status == PayoutItemStatus.FAILED ? failed.incrementAndGet() : failed.get());
-            return status;
-        };
-    }
-
-    private void await(Future<PayoutItemStatus> future, UUID batchId, UUID itemId, UUID merchantId, int total,
-                       AtomicInteger paid, AtomicInteger failed) {
-        try {
-            future.get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            crashed(batchId, itemId, merchantId, total, paid, failed, e);
-        } catch (ExecutionException e) {
-            crashed(batchId, itemId, merchantId, total, paid, failed, e);
+    private PayoutItemStatus payOne(UUID batchId, UUID itemId, UUID merchantId, int total,
+                                    AtomicInteger paid, AtomicInteger failed, PayoutItemObserver observer) {
+        long startNanos = System.nanoTime();
+        if (observer != PayoutItemObserver.NONE) {
+            SimulationTrace.start(startNanos);
         }
+        PayoutItemStatus status = processor.process(itemId);
+        observer.onItemProcessed(itemId, Thread.currentThread().getName(), startNanos, System.nanoTime(), status,
+                SimulationTrace.stop());
+        report(batchId, merchantId, total, status == PayoutItemStatus.PAID ? paid.incrementAndGet() : paid.get(),
+                status == PayoutItemStatus.FAILED ? failed.incrementAndGet() : failed.get());
+        return status;
     }
 
-    private void crashed(UUID batchId, UUID itemId, UUID merchantId, int total, AtomicInteger paid, AtomicInteger failed,
-                         Exception cause) {
+    private PayoutItemStatus crashed(UUID batchId, UUID itemId, UUID merchantId, int total, AtomicInteger paid,
+                                     AtomicInteger failed, Throwable cause) {
         log.error(LogMessages.PAYOUT_ITEM_CRASHED, itemId, batchId, cause);
         processor.markCrashed(itemId);
         report(batchId, merchantId, total, paid.get(), failed.incrementAndGet());
+        return PayoutItemStatus.FAILED;
     }
 
     private void report(UUID batchId, UUID merchantId, int total, int paidCount, int failedCount) {

@@ -69,13 +69,13 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 
 | Area | What changed |
 | --- | --- |
-| New functionality | Merchant vouchers (create, edit, pause, sell), voucher purchases with codes, bulk payouts, idempotent purchases, bank-style PDF statements, Concurrency Lab |
+| New functionality | Merchant vouchers (create, edit, pause, sell), voucher purchases with codes, bulk payouts, idempotent purchases, bank-style PDF statements, vouchers used at checkout, voucher expiry, Concurrency Lab |
 | New models | `Voucher`, `VoucherPurchase`, `PayoutBatch`, `PayoutItem`, `IdempotencyRecord` (16 entities in total, see the [ERD](docs/erd.dbml)) |
 | Concurrency-sensitive workflow | Buying the last units of a voucher; paying many people from one merchant wallet at once |
 | Race condition addressed | Two buyers both read "1 left" and both buy; parallel payouts each read the same balance and overdraw it; a payout counter loses increments |
-| Concurrency techniques | Atomic conditional `UPDATE`, pessimistic row locks, optimistic locking (`@Version`), unique constraints, `ExecutorService` with `Callable`/`Future`, `AtomicInteger`, `CountDownLatch` |
+| Concurrency techniques | Atomic conditional `UPDATE`, pessimistic row locks, optimistic locking (`@Version`), unique constraints, `ExecutorService`, `CompletableFuture`, `ReentrantLock` per voucher, `ConcurrentHashMap`, `AtomicInteger`, `CountDownLatch` |
 | Database consistency | Every purchase and payout item is one transaction: stock, both wallets, the ledger and the purchase or item row commit together or not at all; a `CHECK (remaining >= 0)` constraint is the last line of defence |
-| Asynchronous processing | Payout batches return `202` and run in the background (`@Async` + a 5-thread pool); live progress and stock changes go out over Server-Sent Events after commit |
+| Asynchronous processing | Payout batches return `202` and run in the background (`@Async` on its own 4-thread pool, items on a 5-thread pool with `CompletableFuture`); live progress and stock changes go out over Server-Sent Events after commit |
 
 ### Diagrams
 
@@ -102,9 +102,10 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 | Lost payout counters | `UPDATE payout_batches SET paid_count = paid_count + 1`, plus `AtomicInteger` for the live progress in memory |
 | Stale voucher edits | `@Version`: an edit made from an old copy is rejected with `409` instead of overwriting |
 | Double clicks and retries | `Idempotency-Key` with a unique `(user, key)` constraint: the second request gets the first purchase back |
+| Buyers of the same voucher on one server | A `ReentrantLock` per voucher queues them before the database update |
 | Using one voucher in two tabs | `UPDATE voucher_purchases SET status = 'REDEEMED' WHERE id = ? AND status = 'UNUSED'` in the payment transaction; `0` rows means already used (`422`) |
 
-**Why this approach.** The database is the only thing all server instances share, so the protection lives there: a Java `synchronized` block or lock would only protect one JVM. The atomic update is the cheapest correct fix for a counter (no waiting on a read lock); row locks are used where a read must be followed by a dependent write (balances); optimistic locking fits edits, which rarely collide and should fail loudly rather than block.
+**Why this approach.** The database is the only thing all server instances share, so the protection lives there: Java locks only protect one JVM, so they sit in front of the database checks, never instead of them. The atomic update is the cheapest correct fix for a counter (no waiting on a read lock); row locks are used where a read must be followed by a dependent write (balances); optimistic locking fits edits, which rarely collide and should fail loudly rather than block.
 
 ### Testing
 
@@ -124,7 +125,7 @@ Request A → 201 Created   {"code":"VCH-JKTQ-CAW8-SLW9", ...}
 Request B → 409 Conflict  {"code":"VOUCHER_SOLD_OUT", "detail":"This voucher is sold out"}
 ```
 
-Run them with `./mvnw test` in `backend/` (181 tests). To see it visually, sign in as the super admin and open **Concurrency Lab**.
+Run them with `./mvnw test` in `backend/` (208 tests). To see it visually, sign in as the super admin and open **Concurrency Lab**.
 
 ### Updated API
 
@@ -153,10 +154,9 @@ Full details, errors and live events: [`docs/api.md`](docs/api.md#vouchers-and-p
 
 ### Future Improvements
 
-- Merchant redemption of voucher codes (mark a code as used exactly once – another atomic update).
 - Free coupons (price 0, "claim" instead of "buy").
 - Idempotency keys on transfers and payouts too.
-- Payout recipients from a CSV upload, and `CompletableFuture` chaining to email a summary when a batch finishes.
+- Payout recipients from a CSV upload.
 - A shared message broker for live events, so notifications reach users connected to any Cloud Run instance.
 
 ### Credits & External Resources
