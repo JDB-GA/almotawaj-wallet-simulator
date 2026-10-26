@@ -9,9 +9,10 @@ interface AuthLayoutProps extends PropsWithChildren {
   title: string
   description: string
   footer: ReactNode
+  illustration?: ReactNode
 }
 
-export function AuthLayout({ title, description, footer, children }: AuthLayoutProps) {
+export function AuthLayout({ title, description, footer, illustration, children }: AuthLayoutProps) {
   const { t } = useTranslation()
 
   return (
@@ -27,6 +28,7 @@ export function AuthLayout({ title, description, footer, children }: AuthLayoutP
         </div>
         <Card>
           <CardHeader className="text-center">
+            {illustration}
             <CardTitle className="text-xl">
               <h1>{title}</h1>
             </CardTitle>
