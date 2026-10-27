@@ -1,9 +1,9 @@
 package com.almotawaj.wallet.config.security;
 
 import com.almotawaj.wallet.config.constants.SecurityConstants;
-import com.almotawaj.wallet.model.Permission;
-import com.almotawaj.wallet.model.User;
-import com.almotawaj.wallet.model.UserStatus;
+import com.almotawaj.wallet.user.model.Permission;
+import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.user.model.UserStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

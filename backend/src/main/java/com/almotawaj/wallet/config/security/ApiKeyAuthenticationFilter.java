@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.config.security;
 
+import com.almotawaj.wallet.checkout.service.MerchantApiKeyService;
 import com.almotawaj.wallet.config.constants.ApiPaths;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
-import com.almotawaj.wallet.service.MerchantApiKeyService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

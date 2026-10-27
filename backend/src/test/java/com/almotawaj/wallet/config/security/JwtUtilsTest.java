@@ -1,6 +1,6 @@
 package com.almotawaj.wallet.config.security;
 
-import com.almotawaj.wallet.model.User;
+import com.almotawaj.wallet.user.model.User;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

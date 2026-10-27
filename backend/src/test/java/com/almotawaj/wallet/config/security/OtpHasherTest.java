@@ -1,6 +1,6 @@
 package com.almotawaj.wallet.config.security;
 
-import com.almotawaj.wallet.model.OtpPurpose;
+import com.almotawaj.wallet.auth.model.OtpPurpose;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

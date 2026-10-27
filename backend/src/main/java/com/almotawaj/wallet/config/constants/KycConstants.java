@@ -1,7 +1,7 @@
 package com.almotawaj.wallet.config.constants;
 
-import com.almotawaj.wallet.model.FileType;
-import com.almotawaj.wallet.model.KycApplicationStatus;
+import com.almotawaj.wallet.common.model.FileType;
+import com.almotawaj.wallet.kyc.model.KycApplicationStatus;
 
 import java.util.List;
 import java.util.Set;

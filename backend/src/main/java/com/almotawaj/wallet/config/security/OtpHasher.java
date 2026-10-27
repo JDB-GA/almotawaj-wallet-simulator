@@ -1,7 +1,7 @@
 package com.almotawaj.wallet.config.security;
 
+import com.almotawaj.wallet.auth.model.OtpPurpose;
 import com.almotawaj.wallet.config.constants.OtpConstants;
-import com.almotawaj.wallet.model.OtpPurpose;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

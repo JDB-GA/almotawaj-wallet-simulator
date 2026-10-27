@@ -1,0 +1,24 @@
+package com.almotawaj.wallet.checkout.model.response;
+
+import com.almotawaj.wallet.checkout.model.CheckoutStatus;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
+
+public record CheckoutSessionResponse(
+        UUID id,
+        String orderReference,
+        BigDecimal amount,
+        BigDecimal voucherDiscount,
+        String description,
+        CheckoutStatus status,
+        String payerName,
+        String checkoutUrl,
+        String returnUrl,
+        Instant expiresAt,
+        Instant paidAt,
+        Instant refundedAt,
+        Instant createdAt
+) {
+}

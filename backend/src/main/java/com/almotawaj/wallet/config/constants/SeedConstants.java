@@ -1,10 +1,10 @@
 package com.almotawaj.wallet.config.constants;
 
-import com.almotawaj.wallet.model.KycApplicationStatus;
-import com.almotawaj.wallet.model.Permission;
-import com.almotawaj.wallet.model.SeedAccount;
-import com.almotawaj.wallet.model.SeedVoucher;
-import com.almotawaj.wallet.model.UserRole;
+import com.almotawaj.wallet.kyc.model.KycApplicationStatus;
+import com.almotawaj.wallet.seed.model.SeedAccount;
+import com.almotawaj.wallet.seed.model.SeedVoucher;
+import com.almotawaj.wallet.user.model.Permission;
+import com.almotawaj.wallet.user.model.UserRole;
 
 import java.time.LocalDate;
 import java.util.List;

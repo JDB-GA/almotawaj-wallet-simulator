@@ -1,7 +1,7 @@
 package com.almotawaj.wallet.util;
 
 import com.almotawaj.wallet.config.constants.WalletConstants;
-import com.almotawaj.wallet.model.TopUpSource;
+import com.almotawaj.wallet.wallet.model.TopUpSource;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

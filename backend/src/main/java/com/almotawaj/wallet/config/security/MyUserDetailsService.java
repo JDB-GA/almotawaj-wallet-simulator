@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.config.security;
 
 import com.almotawaj.wallet.config.constants.ErrorMessages;
-import com.almotawaj.wallet.model.User;
-import com.almotawaj.wallet.repository.UserRepository;
+import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.user.repository.UserRepository;
 import com.almotawaj.wallet.util.LoginIdentifier;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
