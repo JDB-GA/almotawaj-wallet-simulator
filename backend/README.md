@@ -17,7 +17,7 @@ cp src/main/resources/application-dev.properties.example src/main/resources/appl
 Fill in `application-dev.properties` (it is gitignored – never commit it):
 
 | Key                           | Value                                                              |
-| ----------------------------- | ------------------------------------------------------------------ |
+|-------------------------------|--------------------------------------------------------------------|
 | `spring.datasource.password`  | your PostgreSQL password                                           |
 | `jwt-secret`                  | `openssl rand -hex 32`                                             |
 | `otp-secret`                  | another `openssl rand -hex 32` (different from `jwt-secret`)       |
@@ -38,7 +38,7 @@ Tests use the `test` profile with an in-memory H2 database, so they never touch 
 ## Profiles
 
 | Profile         | Database           | Configuration                                                  |
-| --------------- | ------------------ | -------------------------------------------------------------- |
+|-----------------|--------------------|----------------------------------------------------------------|
 | `dev` (default) | local PostgreSQL   | `application-dev.properties` (untracked)                       |
 | `test`          | in-memory H2       | `src/test/resources/application-test.properties`               |
 | `prod`          | Managed PostgreSQL | environment variables, see [deployment](../docs/deployment.md) |
@@ -48,7 +48,8 @@ Tests use the `test` profile with an in-memory H2 database, so they never touch 
 Seeding is a single protected request, so it works on an empty database with no admin account.
 
 1. Generate a token: `openssl rand -hex 32`.
-2. Set `SEED_TOKEN` to it and `SEED_PASSWORD` to the password the demo accounts should use (in dev: `seed-token` / `seed-password`).
+2. Set `SEED_TOKEN` to it and `SEED_PASSWORD` to the password the demo accounts should use (in dev: `seed-token` /
+   `seed-password`).
 3. Call it from Postman, or in Swagger click **Authorize** and paste the token under `seedToken`:
 
 ```http
@@ -56,10 +57,11 @@ POST /api/seed
 Authorization: Bearer <SEED_TOKEN>
 ```
 
-`201` means the demo data exists. Running it again changes nothing. Without `SEED_TOKEN` the endpoint returns `404`; a wrong token returns `403`.
+`201` means the demo data exists. Running it again changes nothing. Without `SEED_TOKEN` the endpoint returns `404`; a
+wrong token returns `403`.
 
 | Email                    | Mobile   | Role          | Demo state                                     |
-| ------------------------ | -------- | ------------- | ---------------------------------------------- |
+|--------------------------|----------|---------------|------------------------------------------------|
 | `admin@almotawaj.com`    | 30000001 | `SUPER_ADMIN` | –                                              |
 | `reviewer@almotawaj.com` | 30000004 | `ADMIN`       | `KYC_REVIEW`, `USER_MANAGE`, `STATISTICS_VIEW` |
 | `merchant@almotawaj.com` | 30000003 | `MERCHANT`    | –                                              |
@@ -69,38 +71,52 @@ Authorization: Bearer <SEED_TOKEN>
 
 All accounts use `SEED_PASSWORD` and have verified emails. Seeded KYC applications have no document files.
 
-The merchant also gets four vouchers for the Project 3 demo: Coffee Gift Card (50), Dinner for Two (10), Cinema Ticket (100) and **Spa Day - Last One (1 in stock)**, which is the one to race for. Seeding again never duplicates them.
+The merchant also gets four vouchers for the Project 3 demo: Coffee Gift Card (50), Dinner for Two (10), Cinema Ticket
+(100) and **Spa Day - Last One (1 in stock)**, which is the one to race for. Seeding again never duplicates them.
 
-`DELETE /api/admin/seed-data` (super admin) removes only the demo accounts with their wallets, transactions, payment requests, verification records and documents. Other accounts keep their data.
+`DELETE /api/admin/seed-data` (super admin) removes only the demo accounts with their wallets, transactions, payment
+requests, verification records and documents. Other accounts keep their data.
 
 ## Structure
 
 ```
 src/main/java/com/almotawaj/wallet
-├── config/       security, CORS, rate limiting, OpenAPI, constants (paths, messages, docs)
-├── controller/   REST controllers (thin – no business logic)
-├── service/      business rules, policies, emails, file storage, notifications, payment gateway (pdf/ renders receipts and statements)
-├── repository/   Spring Data JPA repositories and specifications
-├── model/        entities, enums, request/response DTOs
-├── event/        domain events (KYC reviewed, money received) handled after commit
-├── exception/    domain exceptions and the global handler
-└── util/         IBAN and login identifier helpers
+├── auth/            login, register, email verification, OTP, passwords
+├── user/            users, roles, permissions, profiles, admin user management
+├── wallet/          wallets, top-ups, transfers, ledger, wallet locks (service/pdf/ renders receipts and statements)
+├── voucher/         vouchers, purchases, idempotency
+├── payout/          bulk payouts on a thread pool
+├── checkout/        payment gateway: checkout sessions, API keys, webhooks
+├── paymentrequest/  money requests between users
+├── kyc/             KYC applications and reviews
+├── statistics/      admin statistics
+├── audit/           audit log
+├── notification/    real-time SSE notifications
+├── email/           email sending
+├── seed/            seed data and cleanup
+├── simulation/      Concurrency Lab
+├── common/          shared file storage and page response
+├── config/          security, CORS, rate limiting, OpenAPI, async pools, constants (paths, messages, docs)
+├── exception/       domain exceptions and the global handler
+└── util/            IBAN and login identifier helpers
 ```
 
-Conventions: every path, error code, message and Swagger text is a constant in `config/constants`; controllers only map requests to services; files stay at or under 120 lines.
+Each feature folder is split by layer: `controller/` (thin, no business logic), `service/`, `repository/`, `model/`
+(entities, enums, `request/` and `response/` DTOs) and `event/` (domain events handled after commit).
+
+Conventions: every path, error code, message and Swagger text is a constant in `config/constants`; controllers only map
+requests to services; files stay at or under 120 lines.
 
 ## Code documentation
 
 The public methods of the main services are documented with JavaDoc:
 
-| Area                     | File                                                                                      |
-| ------------------------ | ----------------------------------------------------------------------------------------- |
-| Authentication           | [`UserService.java`](src/main/java/com/almotawaj/wallet/service/UserService.java)         |
-| Wallet                   | [`WalletService.java`](src/main/java/com/almotawaj/wallet/service/WalletService.java)     |
-| Transactions (transfers) | [`TransferService.java`](src/main/java/com/almotawaj/wallet/service/TransferService.java) |
-
-Generate the HTML documentation with `./mvnw javadoc:javadoc`; it is written to `target/reports/apidocs`.
-
+| Area                     | File                                                                                             |
+|--------------------------|--------------------------------------------------------------------------------------------------|
+| Authentication           | [`UserService.java`](src/main/java/com/almotawaj/wallet/auth/service/UserService.java)           |
+| Wallet                   | [`WalletService.java`](src/main/java/com/almotawaj/wallet/wallet/service/WalletService.java)     |
+| Transactions (transfers) | [`TransferService.java`](src/main/java/com/almotawaj/wallet/wallet/service/TransferService.java) |
 ## Tests
 
-`./mvnw test` runs service, policy, security and repository-backed tests on the `test` profile. They never touch PostgreSQL.
+`./mvnw test` runs service, policy, security and repository-backed tests on the `test` profile. They never touch
+PostgreSQL.

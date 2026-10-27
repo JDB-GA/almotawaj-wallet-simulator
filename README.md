@@ -61,7 +61,7 @@ Monorepo:
 | [`PLANNING-P03.md`](PLANNING-P03.md)                         | Project 3 plan: tasks, concurrency fixes, endpoints and tests                                                  |
 | [`CREDITS.md`](CREDITS.md)                           | Credits and external resources for Projects 2 and 3                                                            |
 
-JavaDoc is used on the main services: [`UserService.java`](backend/src/main/java/com/almotawaj/wallet/service/UserService.java) (authentication), [`WalletService.java`](backend/src/main/java/com/almotawaj/wallet/service/WalletService.java) (wallet) and [`TransferService.java`](backend/src/main/java/com/almotawaj/wallet/service/TransferService.java) (transactions).
+JavaDoc is used on the main services: [`UserService.java`](backend/src/main/java/com/almotawaj/wallet/auth/service/UserService.java) (authentication), [`WalletService.java`](backend/src/main/java/com/almotawaj/wallet/wallet/service/WalletService.java) (wallet) and [`TransferService.java`](backend/src/main/java/com/almotawaj/wallet/wallet/service/TransferService.java) (transactions).
 
 ## Project 3 Changes
 
