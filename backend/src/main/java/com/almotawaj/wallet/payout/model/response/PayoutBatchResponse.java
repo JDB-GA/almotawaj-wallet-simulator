@@ -19,6 +19,7 @@ public record PayoutBatchResponse(
         Instant completedAt,
         List<PayoutItemResponse> items
 ) {
+    // Maps the PayoutBatch entity and its items into this PayoutBatchResponse record
     public static PayoutBatchResponse from(PayoutBatch batch, List<PayoutItemResponse> items) {
         return new PayoutBatchResponse(batch.getId(), batch.getStatus(), batch.getItemCount(), batch.getPaidCount(),
                 batch.getFailedCount(), batch.getTotalAmount(), batch.getCreatedAt(), batch.getCompletedAt(), items);

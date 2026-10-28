@@ -46,8 +46,11 @@ public class PayoutService {
     private final RecipientResolver recipientResolver;
     private final WalletHolderNames names;
     private final AuditService auditService;
-    // Event Publisher from SpringFramework (You have to use listener in the place that you want to trigger)
-    // Spring’s message sender. publishEvent(event) announces something happened
+
+    /*
+     * Event Publisher from SpringFramework (You have to use listener in the place that you want to trigger)
+     * Spring’s message sender. publishEvent(event) announces something happened
+     */
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -60,17 +63,21 @@ public class PayoutService {
         BigDecimal total = BigDecimal.ZERO;
 
 
-        // Loop throw CreatePayoutRequest(the request the items)
-        // Will resolve each recipient using the PayoutItemRequest (each item is a line)
+        /*
+         * Loop throw CreatePayoutRequest(the request the items)
+         * Will resolve each recipient using the PayoutItemRequest (each item is a line)
+         */
         for (PayoutItemRequest line : request.items()) {
             User recipient = recipientResolver.resolve(merchantId, line.recipient());
             if (!recipients.add(recipient.getId())) {
                 throw new BusinessRuleException(ErrorMessages.PAYOUT_RECIPIENT_DUPLICATE, ErrorCodes.PAYOUT_RECIPIENT_DUPLICATE);
             }
 
-            // Create payout item object and set recipient and amount
-            // Then add it to the array list of payout items
-            // add the amount in the batch total
+            /*
+             * Create payout item object and set recipient and amount
+             * Then add it to the array list of payout items
+             * add the amount in the batch total
+             */
             PayoutItem item = new PayoutItem();
             item.setRecipient(recipient);
             item.setAmount(line.amount());
@@ -85,32 +92,45 @@ public class PayoutService {
         batch.setTotalAmount(total);
         batchRepository.save(batch);
 
-        // set the batch id for each payout item after saving the batch record
+        // Set the batch id for each payout item after saving the batch record
         items.forEach(item -> item.setBatch(batch));
-        // save items and flush (Flushes all pending changes to the database)
+
+        // Save items and flush (Flushes all pending changes to the database)
         itemRepository.saveAll(items);
         batchRepository.flush();
 
         auditService.record(merchantId, AuditAction.PAYOUT_BATCH_CREATED, AuditTargetType.PAYOUT_BATCH, batch.getId(), null);
 
-        // Event Publisher
+        // Event Publisher: publishes the event so that PayoutRunner will listen to this event and apply the needed operations
         eventPublisher.publishEvent(new PayoutBatchCreatedEvent(batch.getId()));
         log.info(LogMessages.PAYOUT_BATCH_CREATED, merchantId, batch.getId(), items.size());
+
+        // Map it as PayoutBatchResponse
         return PayoutBatchResponse.from(batch, items.stream().map(this::toItemResponse).toList());
     }
 
+
+    /*
+     * Finds the batch by BatchId and MerchantId
+     * Finds payout items using the BatchId
+     * Forms & Returns PayoutBatchResponse
+     */
     @Transactional(readOnly = true)
     public PayoutBatchResponse get(UUID merchantId, UUID batchId) {
         PayoutBatch batch = batchRepository.findByIdAndMerchantId(batchId, merchantId).orElseThrow(() ->
                 new InformationNotFoundException(ErrorMessages.PAYOUT_BATCH_NOT_FOUND, ErrorCodes.PAYOUT_BATCH_NOT_FOUND));
-        return PayoutBatchResponse.from(batch, itemRepository.findByBatchId(batchId).stream().map(this::toItemResponse).toList());
+        List<PayoutItemResponse> items = itemRepository.findByBatchId(batchId).stream().map(this::toItemResponse).toList();
+
+        return PayoutBatchResponse.from(batch, items);
     }
 
+    // Lists the merchant's paginated payout batches without their items
     @Transactional(readOnly = true)
     public PageResponse<PayoutBatchResponse> list(UUID merchantId, Pageable pageable) {
         return PageResponse.from(batchRepository.findByMerchantId(merchantId, pageable), batch -> PayoutBatchResponse.from(batch, List.of()));
     }
 
+    // Maps a PayoutItem to its response, with the recipient's name masked
     private PayoutItemResponse toItemResponse(PayoutItem item) {
         return PayoutItemResponse.from(item, names.maskedName(item.getRecipient()));
     }

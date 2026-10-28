@@ -62,6 +62,11 @@ public class VoucherService {
         return toResponse(voucher);
     }
 
+    /*
+     * Optimistic lock: the edit form sends the version it loaded.
+     * If another edit saved first, the versions differ and we return 409 instead of overwriting it.
+     * Hibernate also checks @Version on save, in case two edits pass this check at the same moment.
+     */
     @Transactional
     public VoucherResponse update(UUID merchantId, UUID voucherId, UpdateVoucherRequest request) {
         Voucher voucher = voucherRepository.findByIdAndMerchantId(voucherId, merchantId).orElseThrow(VoucherService::notFound);

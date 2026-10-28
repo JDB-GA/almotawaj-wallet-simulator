@@ -50,6 +50,10 @@ public class PayoutItemProcessor {
     private final EntityManager entityManager;
     private final Clock clock;
 
+    /*
+     * Pays one payout item in its own transaction, on a payout-N thread
+     * Each item commits or rolls back alone, so one failure does not undo the others
+     */
     @Transactional
     public PayoutItemStatus process(UUID itemId) {
         PayoutItem item = itemRepository.findById(itemId).orElseThrow();
@@ -60,10 +64,12 @@ public class PayoutItemProcessor {
         }
         Wallet merchantWallet = provisioner.getOrCreate(item.getBatch().getMerchant().getId());
         Wallet recipientWallet = provisioner.getOrCreate(recipient.getId());
+        // Lock the merchant's and recipient's wallets (smaller ID first), so parallel items can't overspend the merchant
         WalletLocker.LockedPair locked = walletLocker.lockPair(merchantWallet.getId(), recipientWallet.getId());
         Wallet merchant = locked.source();
         Wallet receiver = locked.target();
         SimulationTrace.mark(SimulationStepType.LOCKED, merchant.getBalance());
+        // Check the balance only after locking, so it can't change before we pay
         if (merchant.getBalance().compareTo(item.getAmount()) < 0) {
             return fail(item, batchId, WalletConstants.PAYOUT_INSUFFICIENT_BALANCE);
         }
@@ -76,6 +82,7 @@ public class PayoutItemProcessor {
         item.setStatus(PayoutItemStatus.PAID);
         item.setProcessedAt(clock.instant());
         itemRepository.saveAndFlush(item);
+        // Atomic update (paid_count = paid_count + 1), safe when many threads finish at once
         batchRepository.incrementPaid(batchId);
         eventPublisher.publishEvent(new MoneyReceivedEvent(recipient.getId(), item.getAmount(), merchantDetails.name(),
                 credit.getReference()));
@@ -83,15 +90,18 @@ public class PayoutItemProcessor {
         return PayoutItemStatus.PAID;
     }
 
+    // Marks an item as failed when payOne threw an unexpected error
     @Transactional
     public void markCrashed(UUID itemId) {
         PayoutItem item = itemRepository.findById(itemId).orElseThrow();
         fail(item, item.getBatch().getId(), WalletConstants.PAYOUT_PROCESSING_ERROR);
     }
 
+    // Sets the final batch status once every item has finished: COMPLETED or PARTIALLY_FAILED
     @Transactional
     public PayoutBatch complete(UUID batchId) {
         PayoutBatch batch = batchRepository.findById(batchId).orElseThrow();
+        // Reload the counts from the database, since other threads updated them
         entityManager.refresh(batch);
         batch.setStatus(batch.getFailedCount() == 0 ? PayoutBatchStatus.COMPLETED : PayoutBatchStatus.PARTIALLY_FAILED);
         batch.setCompletedAt(clock.instant());

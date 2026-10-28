@@ -16,6 +16,7 @@ public record PayoutItemResponse(
         String transactionReference,
         Instant processedAt
 ) {
+    // Maps the PayoutItem entity and the masked recipientName into this PayoutItemResponse record
     public static PayoutItemResponse from(PayoutItem item, String recipientName) {
         return new PayoutItemResponse(item.getId(), recipientName, item.getAmount(), item.getStatus(), item.getFailureReason(),
                 item.getTransaction() == null ? null : item.getTransaction().getReference(), item.getProcessedAt());

@@ -66,11 +66,13 @@ public class CheckoutPaymentService {
 
     @Transactional
     public CheckoutViewResponse pay(UUID payerId, UUID sessionId, UUID voucherId) {
+        // Pessimistic lock on the session (SELECT ... FOR UPDATE), so two tabs can't both pay it
         CheckoutSession session = sessionRepository.findByIdForUpdate(sessionId).orElseThrow(() ->
                 new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
         Instant now = clock.instant();
         ensurePayable(session, now);
         User merchant = session.getMerchant();
+        // Lock the payer's and merchant's wallets (smaller ID first) before checking the balance
         WalletLocker.LockedPair locked = walletLocker.lockPair(provisioner.getOrCreate(payerId).getId(),
                 provisioner.getOrCreate(merchant.getId()).getId());
         Wallet payerWallet = locked.source();
@@ -100,6 +102,7 @@ public class CheckoutPaymentService {
     }
 
     private BigDecimal redeem(UUID voucherId, UUID payerId, CheckoutSession session, Instant now) {
+        // Atomic update (WHERE status = 'UNUSED'), so a voucher can only be redeemed once; 0 rows means already used
         int redeemed = purchaseRepository.redeem(voucherId, payerId, session.getMerchant().getId(), session, now,
                 VoucherPurchaseStatus.UNUSED, VoucherPurchaseStatus.REDEEMED);
         if (redeemed == 0) {

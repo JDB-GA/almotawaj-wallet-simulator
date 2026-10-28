@@ -28,6 +28,7 @@ public interface CheckoutSessionRepository extends JpaRepository<CheckoutSession
     @EntityGraph(attributePaths = "merchant")
     Optional<CheckoutSession> findWithMerchantById(UUID id);
 
+    // Locks to prevent paying twice
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select s from CheckoutSession s where s.id = :id")
     Optional<CheckoutSession> findByIdForUpdate(UUID id);

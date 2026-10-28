@@ -12,9 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 public class PayoutExecutorConfig {
-    // ExecutorService
-    // A thread pool. You hand it tasks, and its threads run them
-    // It reuses threads instead of creating a new one per task
+    /*
+     * ExecutorService
+     * A thread pool. You hand it tasks, and its threads run them
+     * It reuses threads instead of creating a new one per task
+     */
     @Bean(name = WalletConstants.PAYOUT_EXECUTOR, destroyMethod = WalletConstants.EXECUTOR_SHUTDOWN_METHOD)
     public ExecutorService payoutExecutor() {
         AtomicInteger counter = new AtomicInteger();

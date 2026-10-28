@@ -15,12 +15,14 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class NotificationListener {
     private final NotificationHub hub;
 
+    // Listens to MoneyReceivedEvent record
     @TransactionalEventListener
     public void onMoneyReceived(MoneyReceivedEvent event) {
         hub.send(event.recipientUserId(), NotificationConstants.MONEY_RECEIVED,
                 new MoneyReceivedNotification(event.amount(), event.senderName(), event.reference()));
     }
 
+    // Listens to VoucherSoldEvent record
     @TransactionalEventListener
     public void onVoucherSold(VoucherSoldEvent event) {
         hub.send(event.merchantId(), NotificationConstants.VOUCHER_SOLD,

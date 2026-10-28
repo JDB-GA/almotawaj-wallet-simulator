@@ -24,10 +24,15 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
             select v from Voucher v join fetch v.merchant
             where v.status = :status and v.remaining > 0 and v.saleEndsAt > :now""",
             countQuery = """
-            select count(v) from Voucher v
-            where v.status = :status and v.remaining > 0 and v.saleEndsAt > :now""")
+                    select count(v) from Voucher v
+                    where v.status = :status and v.remaining > 0 and v.saleEndsAt > :now""")
     Page<Voucher> findAvailable(VoucherStatus status, Instant now, Pageable pageable);
 
+    /*
+     * takeOne: takes one voucher from stock in a single atomic UPDATE.
+     * The database locks the row, so the check (remaining > 0) and the subtraction happen together.
+     * Returns 1 if a voucher was taken, 0 if it is sold out, inactive or expired (the service then returns 409).
+     */
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("""
             update Voucher v set v.remaining = v.remaining - 1
@@ -37,6 +42,10 @@ public interface VoucherRepository extends JpaRepository<Voucher, UUID> {
     @Query("select v.remaining from Voucher v where v.id = :id")
     int readRemaining(UUID id);
 
+    /*
+     * Flush: write my pending changes to the database before the UPDATE runs.
+     * Clear: forget cached entities after the UPDATE, so the next read gets fresh data.
+     */
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update Voucher v set v.remaining = :remaining where v.id = :id")
     void overwriteRemaining(UUID id, int remaining);

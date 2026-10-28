@@ -84,6 +84,7 @@ Project 3 extends the same wallet so that it stays correct when many people act 
 | The last voucher race | [`docs/p03-voucher-race-flow.png`](docs/p03-voucher-race-flow.png) |
 | Bulk payout on a thread pool | [`docs/p03-bulk-payout-flow.png`](docs/p03-bulk-payout-flow.png) |
 | Charged once with an Idempotency-Key | [`docs/p03-idempotency-flow.png`](docs/p03-idempotency-flow.png) |
+| Wallet deadlock and the smaller-ID-first fix | [`docs/p03-wallet-deadlock-flow.png`](docs/p03-wallet-deadlock-flow.png) |
 
 ![The last voucher race](docs/p03-voucher-race-flow.png)
 

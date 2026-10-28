@@ -6,6 +6,7 @@ import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.ConflictException;
 import com.almotawaj.wallet.payout.model.PayoutBatch;
 import com.almotawaj.wallet.payout.model.PayoutItemStatus;
+import com.almotawaj.wallet.payout.service.PayoutItemObserver;
 import com.almotawaj.wallet.payout.service.PayoutRunner;
 import com.almotawaj.wallet.simulation.model.SimulationMode;
 import com.almotawaj.wallet.simulation.model.SimulationOutcome;
@@ -81,13 +82,7 @@ public class SimulationService {
             List<SimulationAttempt> attempts = new ArrayList<>();
             long origin = System.nanoTime();
             log.info(LogMessages.SIMULATION_STARTED, batchId, request.recipients());
-            PayoutBatch batch = payoutRunner.run(batchId, (itemId, thread, start, end, status, steps) -> {
-                synchronized (attempts) {
-                    attempts.add(new SimulationAttempt(indexes.get(itemId), thread, millis(origin, start), millis(origin, end),
-                            status == PayoutItemStatus.PAID ? SimulationOutcome.PAID : SimulationOutcome.FAILED, null,
-                            shift(steps, millis(origin, start))));
-                }
-            });
+            PayoutBatch batch = payoutRunner.run(batchId, recordAttempts(indexes, attempts, origin));
             attempts.sort(Comparator.comparingInt(SimulationAttempt::index));
             int threads = (int) attempts.stream().map(SimulationAttempt::thread).distinct().count();
             PayoutRaceResult result = new PayoutRaceResult(request.recipients(), request.amount(), request.merchantBalance(),
@@ -98,6 +93,17 @@ public class SimulationService {
         } finally {
             sandbox.cleanUp(userIds);
         }
+    }
+
+    // Records each processed payout item as a simulation attempt
+    private static PayoutItemObserver recordAttempts(Map<UUID, Integer> indexes, List<SimulationAttempt> attempts, long origin) {
+        return (itemId, thread, start, end, status, steps) -> {
+            synchronized (attempts) {
+                attempts.add(new SimulationAttempt(indexes.get(itemId), thread, millis(origin, start), millis(origin, end),
+                        status == PayoutItemStatus.PAID ? SimulationOutcome.PAID : SimulationOutcome.FAILED, null,
+                        shift(steps, millis(origin, start))));
+            }
+        };
     }
 
     private Callable<SimulationOutcome> attempt(SimulationMode mode, UUID buyerId, UUID voucherId) {
