@@ -1,8 +1,8 @@
-# Planning – P03
+# Planning: Phase 03
 
 **Goal:** when many people touch the same money or stock at once, the result is always correct.
 
-Already in P02: 11 entities, wallet locking on transfers, `@Async` emails, SSE notifications.
+Already in Phase 02: 11 entities, wallet locking on transfers, `@Async` emails, SSE notifications.
 
 ## Work and progress
 
@@ -16,7 +16,7 @@ Already in P02: 11 entities, wallet locking on transfers, `@Async` emails, SSE n
 | 6   | **Tests + logging**                                                                                            | race tests pass 50 runs in a row                    | ✅ Done |
 | 7   | **Frontend pages** + live updates                                                                              | shop, merchant vouchers, bulk payouts               | ✅ Done |
 | 8   | **Concurrency Lab** (simulation page)                                                                          | safe vs unsafe race visible on a thread timeline    | ✅ Done |
-| 9   | **Docs**: README P03 section, Swagger, user stories, diagrams                                                  | all requirements ticked                             | ✅ Done |
+| 9   | **Docs**: README Phase 03 section, Swagger, user stories, diagrams                                                  | all requirements ticked                             | ✅ Done |
 | 10  | **Use vouchers at checkout** + **expiry date**                                                                 | one voucher, two tabs: one payment succeeds         | ✅ Done |
 | 11  | **Java concurrency tools**: `ReentrantLock` per voucher, `CompletableFuture` payouts, own `@Async` pool        | 208 tests pass                                      | ✅ Done |
 

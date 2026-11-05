@@ -14,7 +14,7 @@ createdb -U postgres digital-wallet
 cp src/main/resources/application-dev.properties.example src/main/resources/application-dev.properties
 ```
 
-Fill in `application-dev.properties` (it is gitignored – never commit it):
+Fill in `application-dev.properties` (it is gitignored: never commit it):
 
 | Key                           | Value                                                              |
 |-------------------------------|--------------------------------------------------------------------|
@@ -41,7 +41,7 @@ Tests use the `test` profile with an in-memory H2 database, so they never touch 
 |-----------------|--------------------|----------------------------------------------------------------|
 | `dev` (default) | local PostgreSQL   | `application-dev.properties` (untracked)                       |
 | `test`          | in-memory H2       | `src/test/resources/application-test.properties`               |
-| `prod`          | Managed PostgreSQL | environment variables, see [deployment](../docs/deployment.md) |
+| `prod`          | Managed PostgreSQL | environment variables, see [deployment](../docs/deployment/deployment.md) |
 
 ## Seeding
 
@@ -62,16 +62,16 @@ wrong token returns `403`.
 
 | Email                    | Mobile   | Role          | Demo state                                     |
 |--------------------------|----------|---------------|------------------------------------------------|
-| `admin@almotawaj.com`    | 30000001 | `SUPER_ADMIN` | –                                              |
+| `admin@almotawaj.com`    | 30000001 | `SUPER_ADMIN` |:                                              |
 | `reviewer@almotawaj.com` | 30000004 | `ADMIN`       | `KYC_REVIEW`, `USER_MANAGE`, `STATISTICS_VIEW` |
-| `merchant@almotawaj.com` | 30000003 | `MERCHANT`    | –                                              |
+| `merchant@almotawaj.com` | 30000003 | `MERCHANT`    |:                                              |
 | `client@almotawaj.com`   | 30000002 | `CLIENT`      | KYC pending                                    |
 | `illia@almotawaj.com`    | 30000005 | `CLIENT`      | KYC approved                                   |
 | `salman@almotawaj.com`   | 30000006 | `CLIENT`      | KYC rejected with a reason                     |
 
 All accounts use `SEED_PASSWORD` and have verified emails. Seeded KYC applications have no document files.
 
-The merchant also gets four vouchers for the Project 3 demo: Coffee Gift Card (50), Dinner for Two (10), Cinema Ticket
+The merchant also gets four vouchers for the Phase 03 demo: Coffee Gift Card (50), Dinner for Two (10), Cinema Ticket
 (100) and **Spa Day - Last One (1 in stock)**, which is the one to race for. Seeding again never duplicates them.
 
 `DELETE /api/admin/seed-data` (super admin) removes only the demo accounts with their wallets, transactions, payment

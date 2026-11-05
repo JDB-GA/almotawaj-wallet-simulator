@@ -33,7 +33,7 @@ Put the key in `.env` before starting (the file is gitignored), then open http:/
 | `WALLET_SIGNING_SECRET` | none                    | Signing secret from **API Keys**; without it callbacks are refused |
 | `PORT`                  | `4000`                  | Local port                                                         |
 
-For local callbacks, set the callback URL to `http://localhost:4000/webhooks/wallet` on **API Keys** and add `webhook-allow-private-hosts=true` to the backend's `application-dev.properties`. Deploying to Vercel is in the [deployment guide](../../docs/deployment.md#sample-shop--vercel).
+For local callbacks, set the callback URL to `http://localhost:4000/webhooks/wallet` on **API Keys** and add `webhook-allow-private-hosts=true` to the backend's `application-dev.properties`. Deploying to Vercel is in the [deployment guide](../../docs/deployment/deployment.md#sample-shop--vercel).
 
 ## Code
 

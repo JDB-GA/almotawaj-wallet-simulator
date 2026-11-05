@@ -1,14 +1,14 @@
 # Deployment
 
-[← Back to the README](../README.md)
+[← Back to the README](../../README.md)
 
-![Deployment architecture](deployment-architecture.jpg)
+![Deployment architecture](../images/deployment-architecture.jpg)
 
-## Server Deployment – Google Cloud Run
+## Server Deployment: Google Cloud Run
 
 The API runs on **Cloud Run** as service `wallet-api` in project `almotawaj-wallet`, region `europe-west4` (Netherlands, a few milliseconds from the Frankfurt database, and one of the regions that supports Cloud Run custom domains), on the custom domain `api.almotawaj.com`. Cloud Build packs `/backend` into a container, so there is no Dockerfile. `application-prod.properties` ships inside the build; Cloud Run only provides the values it reads: plain settings as environment variables, secrets from **Secret Manager**.
 
-### Database – Neon
+### Database: Neon
 
 Neon is serverless PostgreSQL: it suspends after about 5 idle minutes and wakes in about a second, so the free plan covers the demo. Cloud SQL would run 24/7 at roughly $9–10 a month.
 
@@ -111,9 +111,9 @@ Until then the API is reachable at its `*.run.app` URL (`gcloud run services des
 | `MAIL_FROM`                    | env var        | verified Resend sender                                                                     |
 | `MAIL_LOGO_URL`                | env var        | optional logo URL for emails                                                               |
 | `APP_URL`                      | env var        | `https://wallet.almotawaj.com` (email links)                                               |
-| `STORAGE_ROOT`                 | –              | leave unset: default `/data/uploads` is the mounted bucket                                 |
-| `SEED_TOKEN` / `SEED_PASSWORD` | Secret Manager | optional, enables `POST /api/seed` (see the [backend guide](../backend/README.md#seeding)) |
-| `WEBHOOK_ALLOW_PRIVATE_HOSTS`  | –              | leave unset in production; `true` only allows callbacks to local addresses in development  |
+| `STORAGE_ROOT`                 |:              | leave unset: default `/data/uploads` is the mounted bucket                                 |
+| `SEED_TOKEN` / `SEED_PASSWORD` | Secret Manager | optional, enables `POST /api/seed` (see the [backend guide](../../backend/README.md#seeding)) |
+| `WEBHOOK_ALLOW_PRIVATE_HOSTS`  |:              | leave unset in production; `true` only allows callbacks to local addresses in development  |
 
 Cloud Run sets `PORT` itself. The bucket mount needs the `gen2` execution environment.
 
@@ -142,7 +142,7 @@ gcloud secrets versions access latest --secret SEED_PASSWORD
 curl -X POST https://api.almotawaj.com/api/seed -H "Authorization: Bearer $(gcloud secrets versions access latest --secret SEED_TOKEN)"
 ```
 
-`201` means the demo accounts exist; every one of them signs in with `SEED_PASSWORD` (accounts listed in the [backend guide](../backend/README.md#seeding)). To switch seeding off, remove the secret from the service: `gcloud run services update wallet-api --region europe-west4 --remove-secrets SEED_TOKEN`.
+`201` means the demo accounts exist; every one of them signs in with `SEED_PASSWORD` (accounts listed in the [backend guide](../../backend/README.md#seeding)). To switch seeding off, remove the secret from the service: `gcloud run services update wallet-api --region europe-west4 --remove-secrets SEED_TOKEN`.
 
 **Redeploy after code changes:** run the deploy command from step 5 again. Settings and secrets stay unless the command changes them, so a code-only redeploy can be shortened to:
 
@@ -177,13 +177,13 @@ Rotating `JWT_SECRET` signs everyone out; rotating `DB_PASSWORD` must happen in 
 
 The API connects to the direct host (no `-pooler`) with `sslmode=require`; the database name is `neondb` and the role `neondb_owner`.
 
-## Web App – Vercel
+## Web App: Vercel
 
 Root directory `frontend`, ignored build step: _only build production_, domain `wallet.almotawaj.com`): set `VITE_API_URL=https://api.almotawaj.com`. `frontend/vercel.json` provides the SPA rewrite and security headers (CSP, HSTS, frame, referrer and permissions policies). API and web app share `almotawaj.com`, so the `SameSite=Strict` cookie works across them.
 
-## Sample shop – Vercel
+## Sample shop: Vercel
 
-The [sample shop](../examples/demo-shop/README.md) is a second Vercel project from the same repository, on `demo-shop.almotawaj.com`. It is a merchant website of its own: its server calls `https://api.almotawaj.com` with an API key, and customers are redirected to `wallet.almotawaj.com` to pay.
+The [sample shop](../../examples/demo-shop/README.md) is a second Vercel project from the same repository, on `demo-shop.almotawaj.com`. It is a merchant website of its own: its server calls `https://api.almotawaj.com` with an API key, and customers are redirected to `wallet.almotawaj.com` to pay.
 
 1. On `wallet.almotawaj.com`, sign in as the merchant, create an API key on **API Keys**, set the callback URL to `https://demo-shop.almotawaj.com/webhooks/wallet` and copy the signing secret.
 2. In Vercel, add a new project from this repository with root directory `examples/demo-shop` and framework preset **Other**. Leave the build and output settings empty: Vercel detects `src/server.ts` and runs it as a function.
