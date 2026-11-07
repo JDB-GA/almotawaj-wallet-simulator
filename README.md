@@ -9,7 +9,7 @@ A bilingual (English / Arabic) digital wallet for Bahrain. Clients register, ver
 | Swagger UI  | https://api.almotawaj.com/swagger-ui.html                                                                                 |
 | Sample shop | https://demo-shop.almotawaj.com: a merchant website that takes payments through the gateway                              |
 | ERD         | [dbdiagram.io](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8) · source: [`docs/reference/erd.dbml`](docs/reference/erd.dbml) |
-| Planning    | Phase 02: [`docs/phase-02/planning.md`](docs/phase-02/planning.md) · [`docs/phase-02/user-stories.md`](docs/phase-02/user-stories.md) · Phase 03: [`docs/phase-03/planning.md`](docs/phase-03/planning.md) · [`docs/phase-03/user-stories.md`](docs/phase-03/user-stories.md)                               |
+| Planning    | Phase 02: [`docs/phase-02/planning.md`](docs/phase-02/planning.md) · [`docs/phase-02/user-stories.md`](docs/phase-02/user-stories.md) · Phase 03: [`docs/phase-03/planning.md`](docs/phase-03/planning.md) · [`docs/phase-03/user-stories.md`](docs/phase-03/user-stories.md) · Phase 04: [`docs/phase-04/planning.md`](docs/phase-04/planning.md) · [`docs/phase-04/user-stories.md`](docs/phase-04/user-stories.md) |
 | Trello      | https://trello.com/b/81cjvTR6/project-02-jdb                                                                              |
 
 Monorepo:
@@ -61,6 +61,8 @@ Monorepo:
 | [`docs/reference/erd.dbml`](docs/reference/erd.dbml)                     | Database schema ([diagram](https://dbdiagram.io/d/Digital-Wallet-6aba3c4e0f25a52d012826f8))                    |
 | [`docs/phase-02/planning.md`](docs/phase-02/planning.md)                         | Process, timeline, requirement coverage and next steps                                                         |
 | [`docs/phase-03/planning.md`](docs/phase-03/planning.md)                         | Phase 03 plan: tasks, concurrency fixes, endpoints and tests                                                  |
+| [`docs/phase-04/planning.md`](docs/phase-04/planning.md) | Phase 04 plan: 5 days, requirements and progress |
+| [`docs/phase-04/user-stories.md`](docs/phase-04/user-stories.md) | Phase 04 operational user stories |
 | [`docs/project/credits.md`](docs/project/credits.md)                           | Credits and external resources for Phases 02 and 03                                                            |
 
 JavaDoc is used on the main services: [`UserService.java`](backend/src/main/java/com/almotawaj/wallet/auth/service/UserService.java) (authentication), [`WalletService.java`](backend/src/main/java/com/almotawaj/wallet/wallet/service/WalletService.java) (wallet) and [`TransferService.java`](backend/src/main/java/com/almotawaj/wallet/wallet/service/TransferService.java) (transactions).
