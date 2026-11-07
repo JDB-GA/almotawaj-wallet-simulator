@@ -6,10 +6,10 @@
 
 ## Before Day 1
 
-- [ ] Docker Desktop installed
-- [ ] AWS account with a billing alert
-- [ ] AWS CLI configured locally
-- [ ] Branch `feature-microservices`
+- [X] Docker Desktop installed
+- [X] AWS account with a billing alert
+- [X] AWS CLI configured locally
+- [X] Branch `feature-microservices`
 
 ## Day 1: Services (Req 1, 2, 3, 4, 7)
 
