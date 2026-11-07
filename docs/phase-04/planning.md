@@ -62,6 +62,15 @@
 - [ ] Presentation
 - **Done when:** every requirement ticked
 
+## Optional bonuses (after Day 5)
+
+- [ ] API Gateway: one entry point for the frontend
+- [ ] Service discovery: services find each other by name
+- [ ] Advanced Kafka: multiple topics, consumer groups, dead-letter processing
+- [ ] Advanced CI/CD: image scanning, versioned releases, rollback
+- [ ] AWS observability: CloudWatch alarms and dashboards
+- [ ] Rolling deployment: release without downtime
+
 ## Every day
 
 - Commit small and often
