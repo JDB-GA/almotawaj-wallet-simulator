@@ -3,7 +3,7 @@ package com.almotawaj.wallet.wallet.model;
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.WalletConstants;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ public class Wallet {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true, updatable = false)
-    private User user;
+    private AccountHolder user;
 
     @Column(nullable = false, unique = true, updatable = false, length = WalletConstants.IBAN_LENGTH)
     private String iban;

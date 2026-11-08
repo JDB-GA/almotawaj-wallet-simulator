@@ -21,7 +21,7 @@ import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
 import com.almotawaj.wallet.user.model.User;
 import com.almotawaj.wallet.wallet.service.RecipientResolver;
 import com.almotawaj.wallet.wallet.service.WalletHolderNames;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
+import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,7 +42,7 @@ import java.util.UUID;
 public class PayoutService {
     private final PayoutBatchRepository batchRepository;
     private final PayoutItemRepository itemRepository;
-    private final WalletProvisioner provisioner;
+    private final WalletAccessPolicy accessPolicy;
     private final RecipientResolver recipientResolver;
     private final WalletHolderNames names;
     private final AuditService auditService;
@@ -57,7 +57,7 @@ public class PayoutService {
     public PayoutBatchResponse create(UUID merchantId, CreatePayoutRequest request) {
 
 
-        User merchant = provisioner.getOrCreate(merchantId).getUser();
+        User merchant = accessPolicy.usableWallet(merchantId).getUser();
         Set<UUID> recipients = new HashSet<>();
         List<PayoutItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;

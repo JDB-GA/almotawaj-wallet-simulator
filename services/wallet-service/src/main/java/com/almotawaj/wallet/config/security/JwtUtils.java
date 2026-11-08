@@ -8,47 +8,37 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Verifies tokens issued by identity-service with the shared secret.
+ * Wallet never issues tokens.
+ */
 @Slf4j
 @Component
 public class JwtUtils {
     private final SecretKey signingKey;
-    private final long jwtExpirationMs;
 
-    public JwtUtils(@Value(SecurityConstants.JWT_SECRET_PROPERTY) String jwtSecret,
-                    @Value(SecurityConstants.JWT_EXPIRATION_PROPERTY) long jwtExpirationMs) {
+    public JwtUtils(@Value(SecurityConstants.JWT_SECRET_PROPERTY) String jwtSecret) {
         this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-        this.jwtExpirationMs = jwtExpirationMs;
-    }
-
-    public String generateToken(UserDetails userDetails) {
-        Date now = new Date();
-
-        return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .issuedAt(now)
-                .expiration(new Date(now.getTime() + jwtExpirationMs))
-                .signWith(signingKey)
-                .compact();
     }
 
     public Optional<TokenClaims> parseToken(String token) {
         try {
-            Claims claims = Jwts.parser()
-                    .verifyWith(signingKey)
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
-            return Optional.ofNullable(claims.getSubject())
-                    .map(subject -> new TokenClaims(subject, claims.getIssuedAt().toInstant()));
+            Claims claims = Jwts.parser().verifyWith(signingKey).build().parseSignedClaims(token).getPayload();
+            String userId = claims.get(SecurityConstants.USER_ID_CLAIM, String.class);
+            if (userId == null || claims.getSubject() == null) {
+                return Optional.empty();
+            }
+            List<?> authorities = claims.get(SecurityConstants.AUTHORITIES_CLAIM, List.class);
+            return Optional.of(new TokenClaims(UUID.fromString(userId), claims.getSubject(),
+                    authorities == null ? List.of() : authorities.stream().map(Object::toString).toList()));
         } catch (JwtException | IllegalArgumentException e) {
             log.warn(LogMessages.INVALID_JWT, e.getMessage());
             return Optional.empty();

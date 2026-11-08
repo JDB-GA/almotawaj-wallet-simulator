@@ -1,6 +1,8 @@
 package com.almotawaj.wallet.config.security;
 
-import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
 
-public record TokenClaims(String username, Instant issuedAt) {
+/** What wallet reads from a token issued by identity-service. */
+public record TokenClaims(UUID userId, String email, List<String> authorities) {
 }

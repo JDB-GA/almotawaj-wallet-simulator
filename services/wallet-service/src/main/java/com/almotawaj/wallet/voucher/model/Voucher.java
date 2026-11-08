@@ -2,7 +2,7 @@ package com.almotawaj.wallet.voucher.model;
 
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class Voucher {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "merchant_id", nullable = false, updatable = false)
-    private User merchant;
+    private AccountHolder merchant;
 
     @Column(nullable = false, length = ValidationLimits.VOUCHER_TITLE_MAX)
     private String title;

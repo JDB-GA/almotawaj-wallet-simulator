@@ -31,7 +31,6 @@ import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import com.almotawaj.wallet.wallet.service.WalletHolderNames;
 import com.almotawaj.wallet.wallet.service.WalletLedger;
 import com.almotawaj.wallet.wallet.service.WalletLocker;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -50,7 +49,6 @@ public class VoucherPurchaseService {
     private final VoucherRepository voucherRepository;
     private final VoucherPurchaseRepository purchaseRepository;
     private final IdempotencyRecordRepository idempotencyRepository;
-    private final WalletProvisioner provisioner;
     private final WalletLocker walletLocker;
     private final WalletAccessPolicy accessPolicy;
     private final WalletLedger ledger;
@@ -99,8 +97,8 @@ public class VoucherPurchaseService {
         }
 
         // Get or create a wallet for the buyer and merchant
-        Wallet buyerWallet = provisioner.getOrCreate(buyerId);
-        Wallet merchantWallet = provisioner.getOrCreate(merchantId);
+        Wallet buyerWallet = accessPolicy.usableWallet(buyerId);
+        Wallet merchantWallet = accessPolicy.usableWallet(merchantId);
 
         // Check the merchant if he can receive or not
         if (!accessPolicy.canReceive(merchantWallet.getUser())) {

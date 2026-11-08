@@ -48,7 +48,7 @@ public class TransactionDocumentService {
     private static final PageRequest STATEMENT_ROWS = PageRequest.of(0, PdfConstants.STATEMENT_MAX_ROWS, Sort.by(Sort.Direction.ASC, SortFields.CREATED_AT));
     private static final DateTimeFormatter STATEMENT_NUMBER_DATE = DateTimeFormatter.ofPattern(PdfConstants.STATEMENT_NUMBER_DATE_PATTERN).withZone(ZONE);
 
-    private final WalletProvisioner provisioner;
+    private final WalletAccessPolicy accessPolicy;
     private final WalletTransactionRepository transactionRepository;
     private final TransactionTotalsRepository totalsRepository;
     private final WalletHolderNames names;
@@ -70,7 +70,7 @@ public class TransactionDocumentService {
 
     @Transactional
     public PdfFile statement(UUID userId, TransactionSearchRequest filter, Locale locale) {
-        Wallet wallet = provisioner.getOrCreate(userId);
+        Wallet wallet = accessPolicy.usableWallet(userId);
         Specification<WalletTransaction> specification = WalletTransactionSpecifications.forWallet(wallet.getId(), filter, ZONE);
         Page<WalletTransaction> page = transactionRepository.findAll(specification, STATEMENT_ROWS);
         List<DirectionTotal> totals = totalsRepository.totalsByDirection(specification);

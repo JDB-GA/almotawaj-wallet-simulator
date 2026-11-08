@@ -19,7 +19,7 @@ import com.almotawaj.wallet.voucher.model.response.VoucherResponse;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
 import com.almotawaj.wallet.wallet.service.WalletHolderNames;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
+import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +37,7 @@ import java.util.UUID;
 public class VoucherService {
     private final VoucherRepository voucherRepository;
     private final VoucherPurchaseRepository purchaseRepository;
-    private final WalletProvisioner provisioner;
+    private final WalletAccessPolicy accessPolicy;
     private final WalletHolderNames names;
     private final AuditService auditService;
     private final Clock clock;
@@ -47,7 +47,7 @@ public class VoucherService {
         ensurePriceWithinFaceValue(request.price(), request.faceValue());
         ensureExpiryNotBeforeSaleEnd(request.saleEndsAt(), request.expiresAt());
         Voucher voucher = new Voucher();
-        voucher.setMerchant(provisioner.getOrCreate(merchantId).getUser());
+        voucher.setMerchant(accessPolicy.usableWallet(merchantId).getUser());
         voucher.setTitle(request.title().strip());
         voucher.setPrice(request.price());
         voucher.setFaceValue(request.faceValue());

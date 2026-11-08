@@ -17,7 +17,8 @@ public final class SecurityConstants {
     public static final String HAS_USER_MANAGE = "hasAuthority('USER_MANAGE')";
     public static final String HAS_STATISTICS_VIEW = "hasAuthority('STATISTICS_VIEW')";
     public static final String JWT_SECRET_PROPERTY = "${jwt-secret}";
-    public static final String JWT_EXPIRATION_PROPERTY = "${jwt-expiration-ms}";
+    public static final String USER_ID_CLAIM = "uid";
+    public static final String AUTHORITIES_CLAIM = "authorities";
 
     public static final String AUTH_COOKIE_NAME = "access_token";
     public static final String AUTH_COOKIE_PATH = "/";

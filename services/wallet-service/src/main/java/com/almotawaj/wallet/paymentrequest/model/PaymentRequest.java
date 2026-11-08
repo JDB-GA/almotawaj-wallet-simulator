@@ -2,7 +2,7 @@ package com.almotawaj.wallet.paymentrequest.model;
 
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,11 +29,11 @@ public class PaymentRequest {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "requester_id", nullable = false, updatable = false)
-    private User requester;
+    private AccountHolder requester;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "payer_id", nullable = false, updatable = false)
-    private User payer;
+    private AccountHolder payer;
 
     @Column(nullable = false, updatable = false, precision = ValidationLimits.MONEY_PRECISION, scale = ValidationLimits.MONEY_SCALE)
     private BigDecimal amount;

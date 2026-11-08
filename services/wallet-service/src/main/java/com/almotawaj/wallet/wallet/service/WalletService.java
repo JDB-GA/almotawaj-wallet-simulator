@@ -41,7 +41,7 @@ import java.util.UUID;
 public class WalletService {
     private static final ZoneId ZONE = ZoneId.of(WalletConstants.TIME_ZONE);
 
-    private final WalletProvisioner provisioner;
+    private final WalletAccessPolicy accessPolicy;
     private final WalletLocker walletLocker;
     private final WalletTransactionRepository transactionRepository;
     private final WalletLedger ledger;
@@ -58,7 +58,7 @@ public class WalletService {
      */
     @Transactional
     public WalletResponse getMine(UUID userId) {
-        Wallet wallet = provisioner.getOrCreate(userId);
+        Wallet wallet = accessPolicy.usableWallet(userId);
         return WalletResponse.from(wallet, holderNames.fullName(wallet.getUser()));
     }
 
@@ -72,7 +72,7 @@ public class WalletService {
      */
     @Transactional
     public PageResponse<WalletTransactionResponse> listTransactions(UUID userId, TransactionSearchRequest filter, Pageable pageable) {
-        Wallet wallet = provisioner.getOrCreate(userId);
+        Wallet wallet = accessPolicy.usableWallet(userId);
         Page<WalletTransaction> page = transactionRepository.findAll(
                 WalletTransactionSpecifications.forWallet(wallet.getId(), filter, ZONE), pageable);
         return PageResponse.from(page, WalletTransactionResponse::from);
@@ -86,7 +86,7 @@ public class WalletService {
      */
     @Transactional
     public TopUpOptionsResponse getTopUpOptions(UUID userId) {
-        Wallet wallet = provisioner.getOrCreate(userId);
+        Wallet wallet = accessPolicy.usableWallet(userId);
         return new TopUpOptionsResponse(
                 Arrays.stream(TopUpSource.values()).map(TopUpSourceResponse::from).toList(),
                 new BigDecimal(WalletLimits.TOP_UP_MIN),
@@ -106,7 +106,7 @@ public class WalletService {
      */
     @Transactional
     public WalletTransactionResponse topUp(UUID userId, TopUpRequest request) {
-        Wallet wallet = walletLocker.lock(provisioner.getOrCreate(userId).getId());
+        Wallet wallet = walletLocker.lock(accessPolicy.usableWallet(userId).getId());
         dailyLimitPolicy.ensureTopUpAllowed(wallet.getId(), request.amount());
         TopUpSource source = request.source();
         Counterparty sender = new Counterparty(source.getHolderName(), source.getIban(), source.getBic(), null, null);

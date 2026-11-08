@@ -1,6 +1,7 @@
 package com.almotawaj.wallet.config.constants;
 
 public final class ApiPaths {
+    public static final String HEALTH = "/actuator/health/**";
     public static final String AUTH_USERS = "/auth/users";
     public static final String REGISTER = "/register";
     public static final String LOGIN = "/login";

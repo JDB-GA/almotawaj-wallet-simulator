@@ -1,6 +1,7 @@
 package com.almotawaj.wallet.config.constants;
 
 public final class ErrorMessages {
+    public static final String WALLET_NOT_FOUND = "Wallet not found";
     public static final String EMAIL_REQUIRED = "Email is required";
     public static final String EMAIL_INVALID = "Email must be a valid email address";
     public static final String EMAIL_TOO_LONG = "Email must be at most {max} characters";

@@ -31,7 +31,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TransferService {
-    private final WalletProvisioner provisioner;
+    private final WalletAccessPolicy accessPolicy;
     private final WalletLocker walletLocker;
     private final RecipientResolver recipientResolver;
     private final WalletHolderNames holderNames;
@@ -63,7 +63,7 @@ public class TransferService {
      */
     @Transactional
     public TransferOptionsResponse getOptions(UUID senderId) {
-        Wallet wallet = provisioner.getOrCreate(senderId);
+        Wallet wallet = accessPolicy.usableWallet(senderId);
         return new TransferOptionsResponse(wallet.getBalance(), new BigDecimal(WalletLimits.TRANSFER_MIN),
                 new BigDecimal(WalletLimits.TRANSFER_MAX), DailyLimitPolicy.TRANSFER_LIMIT,
                 dailyLimitPolicy.remainingTransfer(wallet.getId()));
@@ -81,8 +81,8 @@ public class TransferService {
     @Transactional
     public WalletTransactionResponse transfer(UUID senderId, TransferRequest request) {
         User recipient = recipientResolver.resolve(senderId, request.recipient());
-        UUID senderWalletId = provisioner.getOrCreate(senderId).getId();
-        UUID recipientWalletId = provisioner.getOrCreate(recipient.getId()).getId();
+        UUID senderWalletId = accessPolicy.usableWallet(senderId).getId();
+        UUID recipientWalletId = accessPolicy.usableWallet(recipient.getId()).getId();
         WalletLocker.LockedPair locked = walletLocker.lockPair(senderWalletId, recipientWalletId);
         Wallet sender = locked.source();
         Wallet receiver = locked.target();

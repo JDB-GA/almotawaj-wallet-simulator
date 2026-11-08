@@ -2,7 +2,7 @@ package com.almotawaj.wallet.checkout.model;
 
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +25,7 @@ public class MerchantWebhook {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "merchant_id", nullable = false, unique = true, updatable = false)
-    private User merchant;
+    private AccountHolder merchant;
 
     @Column(nullable = false, length = ValidationLimits.URL_MAX)
     private String url;

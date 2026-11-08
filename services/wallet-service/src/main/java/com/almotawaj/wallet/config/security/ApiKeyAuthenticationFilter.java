@@ -34,7 +34,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         if (apiKey != null && !apiKey.isBlank()) {
             apiKeyService.authenticate(apiKey.strip()).ifPresent(merchant ->
                     SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken.authenticated(
-                            new MyUserDetails(merchant), null,
+                            new MyUserDetails(merchant, List.of(new SimpleGrantedAuthority(SecurityConstants.GATEWAY_AUTHORITY))), null,
                             List.of(new SimpleGrantedAuthority(SecurityConstants.GATEWAY_AUTHORITY)))));
         }
         filterChain.doFilter(request, response);

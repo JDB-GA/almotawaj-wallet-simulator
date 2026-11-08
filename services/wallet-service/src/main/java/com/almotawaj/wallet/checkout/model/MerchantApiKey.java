@@ -2,7 +2,7 @@ package com.almotawaj.wallet.checkout.model;
 
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class MerchantApiKey {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "merchant_id", nullable = false, updatable = false)
-    private User merchant;
+    private AccountHolder merchant;
 
     @Column(nullable = false, updatable = false, length = ValidationLimits.API_KEY_NAME_MAX)
     private String name;

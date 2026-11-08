@@ -2,7 +2,7 @@ package com.almotawaj.wallet.payout.model;
 
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.model.WalletTransaction;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class PayoutItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "recipient_id", nullable = false, updatable = false)
-    private User recipient;
+    private AccountHolder recipient;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id", unique = true)

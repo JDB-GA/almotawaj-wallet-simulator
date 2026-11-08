@@ -23,7 +23,6 @@ import com.almotawaj.wallet.wallet.service.Counterparties;
 import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import com.almotawaj.wallet.wallet.service.WalletLedger;
 import com.almotawaj.wallet.wallet.service.WalletLocker;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,6 @@ import java.util.UUID;
 public class PayoutItemProcessor {
     private final PayoutItemRepository itemRepository;
     private final PayoutBatchRepository batchRepository;
-    private final WalletProvisioner provisioner;
     private final WalletLocker walletLocker;
     private final WalletAccessPolicy accessPolicy;
     private final WalletLedger ledger;
@@ -62,8 +60,8 @@ public class PayoutItemProcessor {
         if (!accessPolicy.canReceive(recipient)) {
             return fail(item, batchId, WalletConstants.PAYOUT_RECIPIENT_UNAVAILABLE);
         }
-        Wallet merchantWallet = provisioner.getOrCreate(item.getBatch().getMerchant().getId());
-        Wallet recipientWallet = provisioner.getOrCreate(recipient.getId());
+        Wallet merchantWallet = accessPolicy.usableWallet(item.getBatch().getMerchant().getId());
+        Wallet recipientWallet = accessPolicy.usableWallet(recipient.getId());
         // Lock the merchant's and recipient's wallets (smaller ID first), so parallel items can't overspend the merchant
         WalletLocker.LockedPair locked = walletLocker.lockPair(merchantWallet.getId(), recipientWallet.getId());
         Wallet merchant = locked.source();

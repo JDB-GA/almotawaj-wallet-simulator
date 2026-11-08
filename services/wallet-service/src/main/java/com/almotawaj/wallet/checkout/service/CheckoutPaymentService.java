@@ -27,7 +27,6 @@ import com.almotawaj.wallet.wallet.service.DailyLimitPolicy;
 import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import com.almotawaj.wallet.wallet.service.WalletLedger;
 import com.almotawaj.wallet.wallet.service.WalletLocker;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,6 @@ import java.util.UUID;
 public class CheckoutPaymentService {
     private final CheckoutSessionRepository sessionRepository;
     private final VoucherPurchaseRepository purchaseRepository;
-    private final WalletProvisioner provisioner;
     private final WalletLocker walletLocker;
     private final WalletAccessPolicy accessPolicy;
     private final DailyLimitPolicy dailyLimitPolicy;
@@ -73,8 +71,8 @@ public class CheckoutPaymentService {
         ensurePayable(session, now);
         User merchant = session.getMerchant();
         // Lock the payer's and merchant's wallets (smaller ID first) before checking the balance
-        WalletLocker.LockedPair locked = walletLocker.lockPair(provisioner.getOrCreate(payerId).getId(),
-                provisioner.getOrCreate(merchant.getId()).getId());
+        WalletLocker.LockedPair locked = walletLocker.lockPair(accessPolicy.usableWallet(payerId).getId(),
+                accessPolicy.usableWallet(merchant.getId()).getId());
         Wallet payerWallet = locked.source();
         Wallet merchantWallet = locked.target();
         BigDecimal discount = voucherId == null ? BigDecimal.ZERO : redeem(voucherId, payerId, session, now);
