@@ -16,10 +16,10 @@ import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.security.ApiKeyHasher;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.model.UserStatus;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +33,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MerchantApiKeyService {
     private final MerchantApiKeyRepository apiKeyRepository;
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final ApiKeyHasher hasher;
     private final AuditService auditService;
     private final Clock clock;
@@ -45,14 +45,14 @@ public class MerchantApiKeyService {
 
     @Transactional
     public ApiKeyCreatedResponse create(UUID merchantId, CreateApiKeyRequest request) {
-        userRepository.findByIdForUpdate(merchantId)
+        accountRepository.findByIdForUpdate(merchantId)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.USER_NOT_FOUND));
         if (apiKeyRepository.countByMerchantIdAndRevokedAtIsNull(merchantId) >= GatewayConstants.MAX_ACTIVE_API_KEYS) {
             throw new BusinessRuleException(GatewayMessages.API_KEY_LIMIT_REACHED, ErrorCodes.API_KEY_LIMIT_REACHED);
         }
         String secret = hasher.generate();
         MerchantApiKey key = new MerchantApiKey();
-        key.setMerchant(userRepository.getReferenceById(merchantId));
+        key.setMerchant(accountRepository.getReferenceById(merchantId));
         key.setName(request.name().strip());
         key.setKeyPrefix(secret.substring(0, ValidationLimits.API_KEY_PREFIX_LENGTH));
         key.setKeyHash(hasher.hash(secret));
@@ -72,7 +72,7 @@ public class MerchantApiKeyService {
     }
 
     @Transactional
-    public Optional<User> authenticate(String apiKey) {
+    public Optional<AccountHolder> authenticate(String apiKey) {
         return apiKeyRepository.findByKeyHashAndRevokedAtIsNull(hasher.hash(apiKey))
                 .filter(key -> isActiveMerchant(key.getMerchant()))
                 .map(key -> {
@@ -81,7 +81,7 @@ public class MerchantApiKeyService {
                 });
     }
 
-    private static boolean isActiveMerchant(User user) {
-        return user.getRole() == UserRole.MERCHANT && user.getStatus() == UserStatus.ACTIVE && user.isEmailVerified();
+    private static boolean isActiveMerchant(AccountHolder user) {
+        return user.getRole() == AccountRole.MERCHANT && user.getStatus() == AccountStatus.ACTIVE;
     }
 }

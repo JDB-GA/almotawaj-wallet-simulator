@@ -1,8 +1,6 @@
 package com.almotawaj.wallet.voucher.service;
 
-import com.almotawaj.wallet.audit.repository.AuditLogRepository;
 import com.almotawaj.wallet.exception.ConflictException;
-import com.almotawaj.wallet.kyc.model.KycStatus;
 import com.almotawaj.wallet.payout.model.PayoutBatch;
 import com.almotawaj.wallet.payout.model.PayoutBatchStatus;
 import com.almotawaj.wallet.payout.model.request.CreatePayoutRequest;
@@ -10,9 +8,10 @@ import com.almotawaj.wallet.payout.model.request.PayoutItemRequest;
 import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
 import com.almotawaj.wallet.payout.service.PayoutService;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.model.request.UpdateVoucherRequest;
 import com.almotawaj.wallet.voucher.model.response.VoucherPurchaseResponse;
@@ -60,7 +59,7 @@ class ConcurrencyIntegrationTest {
     @Autowired
     private PayoutService payouts;
     @Autowired
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Autowired
     private WalletRepository walletRepository;
     @Autowired
@@ -75,14 +74,12 @@ class ConcurrencyIntegrationTest {
     private PayoutBatchRepository batchRepository;
     @Autowired
     private PayoutItemRepository itemRepository;
-    @Autowired
-    private AuditLogRepository auditLogRepository;
 
-    private User merchant;
+    private AccountHolder merchant;
 
     @BeforeEach
     void setUp() {
-        merchant = user(UserRole.MERCHANT);
+        merchant = user(AccountRole.MERCHANT);
     }
 
     @AfterEach
@@ -94,7 +91,6 @@ class ConcurrencyIntegrationTest {
         voucherRepository.deleteAll();
         transactionRepository.deleteAll();
         walletRepository.deleteAll();
-        auditLogRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -104,7 +100,7 @@ class ConcurrencyIntegrationTest {
         Voucher voucher = voucher(1, 1);
         List<UUID> buyers = new ArrayList<>();
         for (int index = 0; index < BUYERS; index++) {
-            User buyer = user(UserRole.CLIENT);
+            AccountHolder buyer = user(AccountRole.CLIENT);
             wallet(buyer, "100.000");
             buyers.add(buyer.getId());
         }
@@ -127,7 +123,7 @@ class ConcurrencyIntegrationTest {
     void sameIdempotencyKey_chargesOnlyOnceEvenWhenSentInParallel() throws Exception {
         wallet(merchant, "0.000");
         Voucher voucher = voucher(5, 5);
-        User buyer = user(UserRole.CLIENT);
+        AccountHolder buyer = user(AccountRole.CLIENT);
         wallet(buyer, "100.000");
         String key = UUID.randomUUID().toString();
         List<Callable<VoucherPurchaseResponse>> tasks = new ArrayList<>();
@@ -149,7 +145,7 @@ class ConcurrencyIntegrationTest {
         wallet(merchant, "100.000");
         List<PayoutItemRequest> items = new ArrayList<>();
         for (int index = 0; index < 10; index++) {
-            User recipient = user(UserRole.CLIENT);
+            AccountHolder recipient = user(AccountRole.CLIENT);
             wallet(recipient, "0.000");
             items.add(new PayoutItemRequest(recipient.getEmailAddress(), new BigDecimal("15.000")));
         }
@@ -220,18 +216,19 @@ class ConcurrencyIntegrationTest {
         return voucherRepository.saveAndFlush(voucher);
     }
 
-    private User user(UserRole role) {
+    private AccountHolder user(AccountRole role) {
         int number = SEQUENCE.incrementAndGet();
-        User user = new User();
+        AccountHolder user = new AccountHolder();
         user.setEmailAddress("user" + number + "@example.com");
         user.setMobileNumber("+9733%07d".formatted(number));
-        user.setPassword("hashed");
         user.setRole(role);
-        user.setKycStatus(role == UserRole.CLIENT ? KycStatus.APPROVED : KycStatus.NOT_SUBMITTED);
+        user.setId(java.util.UUID.randomUUID());
+        user.setStatus(AccountStatus.ACTIVE);
+        user.setKycApproved(role == AccountRole.CLIENT);
         return userRepository.saveAndFlush(user);
     }
 
-    private void wallet(User owner, String balance) {
+    private void wallet(AccountHolder owner, String balance) {
         Wallet wallet = new Wallet();
         wallet.setUser(owner);
         wallet.setIban("BH02ALMT%014d".formatted(SEQUENCE.incrementAndGet()));
@@ -239,7 +236,7 @@ class ConcurrencyIntegrationTest {
         walletRepository.saveAndFlush(wallet);
     }
 
-    private BigDecimal balanceOf(User user) {
+    private BigDecimal balanceOf(AccountHolder user) {
         return walletRepository.findByUserId(user.getId()).orElseThrow().getBalance();
     }
 

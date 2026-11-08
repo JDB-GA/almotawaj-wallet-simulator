@@ -1,6 +1,6 @@
-package com.almotawaj.wallet.statistics.model.response;
+package com.almotawaj.wallet.identity.statistics;
 
-import com.almotawaj.wallet.user.model.UserRole;
+import com.almotawaj.wallet.identity.user.model.UserRole;
 
 import java.util.Map;
 

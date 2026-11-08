@@ -41,7 +41,7 @@ class WalletServiceTest {
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-10-05T09:00:00Z"), ZoneOffset.UTC);
 
     @Mock
-    private WalletProvisioner provisioner;
+    private WalletAccessPolicy accessPolicy;
     @Mock
     private WalletLocker walletLocker;
     @Mock
@@ -62,12 +62,12 @@ class WalletServiceTest {
     void setUp() {
         WalletLedger ledger = new WalletLedger(transactionRepository, referenceGenerator);
         DailyLimitPolicy limiter = new DailyLimitPolicy(transactionRepository, CLOCK);
-        walletService = new WalletService(provisioner, walletLocker, transactionRepository, ledger, limiter,
+        walletService = new WalletService(accessPolicy, walletLocker, transactionRepository, ledger, limiter,
                 eventPublisher, auditService, holderNames);
         wallet = new Wallet();
         wallet.setId(WALLET_ID);
         wallet.setBalance(new BigDecimal("10.000"));
-        when(provisioner.getOrCreate(USER_ID)).thenReturn(wallet);
+        when(accessPolicy.usableWallet(USER_ID)).thenReturn(wallet);
         when(walletLocker.lock(WALLET_ID)).thenReturn(wallet);
     }
 

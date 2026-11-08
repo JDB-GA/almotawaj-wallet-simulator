@@ -5,7 +5,6 @@ import com.almotawaj.wallet.identity.user.model.User;
 
 import java.util.UUID;
 
-/** The part of a user that other services may copy. Never includes the password. */
 public record AccountSnapshot(
         UUID id,
         String emailAddress,

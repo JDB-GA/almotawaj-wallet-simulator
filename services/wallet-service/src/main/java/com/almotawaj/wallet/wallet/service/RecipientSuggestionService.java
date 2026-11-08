@@ -4,8 +4,8 @@ import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.ValidationPatterns;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import com.almotawaj.wallet.wallet.model.response.RecipientSuggestionResponse;
 import com.almotawaj.wallet.wallet.repository.WalletRepository;
@@ -21,14 +21,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RecipientSuggestionService {
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final WalletRepository walletRepository;
     private final WalletAccessPolicy accessPolicy;
     private final WalletHolderNames holderNames;
 
     @Transactional(readOnly = true)
     public List<RecipientSuggestionResponse> suggest(UUID senderId, String query) {
-        User sender = userRepository.findById(senderId)
+        AccountHolder sender = accountRepository.findById(senderId)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.USER_NOT_FOUND));
         accessPolicy.ensureCanUseWallet(sender);
         String prefix = query.trim().toLowerCase(Locale.ROOT);
@@ -45,7 +45,7 @@ public class RecipientSuggestionService {
     }
 
     private RecipientSuggestionResponse toResponse(Wallet wallet) {
-        User user = wallet.getUser();
+        AccountHolder user = wallet.getUser();
         return new RecipientSuggestionResponse(wallet.getIban(), holderNames.maskedName(user), holderNames.maskedEmail(user),
                 holderNames.maskedMobile(user), user.getRole());
     }

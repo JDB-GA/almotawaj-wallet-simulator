@@ -17,7 +17,7 @@ import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationExistException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CheckoutSessionService {
     private final CheckoutSessionRepository sessionRepository;
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final CheckoutSessionMapper mapper;
     private final AuditService auditService;
     private final Clock clock;
@@ -60,7 +60,7 @@ public class CheckoutSessionService {
         }
         String description = request.description() == null || request.description().isBlank() ? null : request.description().strip();
         CheckoutSession session = new CheckoutSession();
-        session.setMerchant(userRepository.getReferenceById(merchantId));
+        session.setMerchant(accountRepository.getReferenceById(merchantId));
         session.setOrderReference(request.orderReference());
         session.setAmount(request.amount());
         session.setDescription(description);

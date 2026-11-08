@@ -8,10 +8,11 @@ import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.GatewayConstants;
 import com.almotawaj.wallet.config.security.ApiKeyHasher;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.model.UserStatus;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,21 +40,21 @@ class MerchantApiKeyServiceTest {
     @Mock
     private MerchantApiKeyRepository apiKeyRepository;
     @Mock
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Mock
     private AuditService auditService;
 
     private final ApiKeyHasher hasher = new ApiKeyHasher();
     private MerchantApiKeyService service;
-    private User merchant;
+    private AccountHolder merchant;
 
     @BeforeEach
     void setUp() {
         service = new MerchantApiKeyService(apiKeyRepository, userRepository, hasher, auditService, Clock.fixed(NOW, ZoneOffset.UTC));
-        merchant = new User();
+        merchant = new AccountHolder();
         merchant.setId(UUID.randomUUID());
-        merchant.setRole(UserRole.MERCHANT);
-        merchant.setEmailVerified(true);
+        merchant.setRole(AccountRole.MERCHANT);
+        merchant.setStatus(AccountStatus.ACTIVE);
         when(userRepository.findByIdForUpdate(merchant.getId())).thenReturn(Optional.of(merchant));
         when(apiKeyRepository.saveAndFlush(any(MerchantApiKey.class))).thenAnswer(invocation -> invocation.getArgument(0));
     }
@@ -90,7 +91,7 @@ class MerchantApiKeyServiceTest {
     @Test
     void authenticate_rejectsKeysOfSuspendedMerchants() {
         storedKey("almt_secret");
-        merchant.setStatus(UserStatus.SUSPENDED);
+        merchant.setStatus(AccountStatus.SUSPENDED);
 
         assertThat(service.authenticate("almt_secret")).isEmpty();
     }

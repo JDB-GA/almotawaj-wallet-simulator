@@ -31,11 +31,6 @@ public final class ErrorMessages {
     public static final String EXPIRY_DATE_REQUIRED = "Expiry date is required";
     public static final String REJECTION_REASON_REQUIRED = "Rejection reason is required";
     public static final String REJECTION_REASON_TOO_LONG = "Rejection reason must be at most {max} characters";
-    public static final String TOP_UP_SOURCE_REQUIRED = "Choose the account to receive from";
-    public static final String AMOUNT_REQUIRED = "Amount is required";
-    public static final String AMOUNT_TOO_SMALL = "Amount must be at least {value} BHD";
-    public static final String AMOUNT_TOO_LARGE = "Amount must be at most {value} BHD";
-    public static final String AMOUNT_PRECISION = "Amount can have at most 3 decimal places";
 
     public static final String VALIDATION_FAILED = "Validation failed";
     public static final String VALIDATION_ERRORS_KEY = "errors";
@@ -81,14 +76,6 @@ public final class ErrorMessages {
     public static final String SELF_TRANSFER_NOT_ALLOWED = "You cannot send money to yourself";
     public static final String RECIPIENT_NOT_FOUND = "No wallet found for this email, mobile number or IBAN";
     public static final String RECIPIENT_UNAVAILABLE = "This user cannot receive money yet";
-    public static final String RECIPIENT_REQUIRED = "Enter the recipient's email, mobile number or IBAN";
-    public static final String PAYER_REQUIRED = "Enter the payer's email, mobile number or IBAN";
-    public static final String RECIPIENT_TOO_LONG = "Recipient must be at most {max} characters";
-    public static final String NOTE_TOO_LONG = "Note must be at most {max} characters";
-    public static final String SEARCH_TOO_LONG = "Search must be at most {max} characters";
-    public static final String AMOUNT_FILTER_NEGATIVE = "Amount filters cannot be negative";
-    public static final String DATE_RANGE_INVALID = "The start date must be on or before the end date";
-    public static final String AMOUNT_RANGE_INVALID = "The minimum amount must not exceed the maximum amount";
     public static final String TRANSACTION_NOT_FOUND = "Transaction not found";
     public static final String PAYMENT_REQUEST_NOT_FOUND = "Payment request not found";
     public static final String PAYMENT_REQUEST_NOT_PENDING = "This payment request is no longer pending";
@@ -104,38 +91,12 @@ public final class ErrorMessages {
     public static final String VOUCHER_PRICE_ABOVE_FACE_VALUE = "The price cannot be higher than the face value";
     public static final String VOUCHER_EXPIRY_BEFORE_SALE_END = "The expiry date cannot be before the sale end date";
     public static final String VOUCHER_NOT_USABLE = "This voucher was already used or cannot be used for this payment";
-    public static final String VOUCHER_TITLE_REQUIRED = "Title is required";
-    public static final String VOUCHER_TITLE_TOO_LONG = "Title must be at most {max} characters";
-    public static final String VOUCHER_PRICE_REQUIRED = "Price is required";
-    public static final String VOUCHER_FACE_VALUE_REQUIRED = "Face value is required";
-    public static final String VOUCHER_QUANTITY_REQUIRED = "Quantity is required";
-    public static final String VOUCHER_QUANTITY_TOO_SMALL = "Quantity must be at least {value}";
-    public static final String VOUCHER_QUANTITY_TOO_LARGE = "Quantity must be at most {value}";
-    public static final String VOUCHER_LIMIT_REQUIRED = "Per-client limit is required";
-    public static final String VOUCHER_LIMIT_TOO_SMALL = "Per-client limit must be at least {value}";
-    public static final String VOUCHER_LIMIT_TOO_LARGE = "Per-client limit must be at most {value}";
-    public static final String VOUCHER_SALE_END_REQUIRED = "Sale end date is required";
-    public static final String VOUCHER_SALE_END_IN_PAST = "Sale end date must be in the future";
-    public static final String VOUCHER_EXPIRY_IN_PAST = "Expiry date must be in the future";
-    public static final String VOUCHER_STATUS_REQUIRED = "Status is required";
-    public static final String VOUCHER_STATUS_INVALID = "Status can only be ACTIVE or PAUSED";
-    public static final String VOUCHER_VERSION_REQUIRED = "Version is required";
     public static final String PAYOUT_BATCH_NOT_FOUND = "This payout batch was not found";
-    public static final String PAYOUT_ITEMS_REQUIRED = "Add at least one recipient";
-    public static final String PAYOUT_ITEMS_TOO_MANY = "A payout can have at most {max} recipients";
     public static final String PAYOUT_RECIPIENT_DUPLICATE = "Each recipient can appear only once in a payout";
     public static final String IDEMPOTENCY_KEY_REUSED = "This Idempotency-Key was already used for a different request";
-    public static final String IDEMPOTENCY_KEY_TOO_LONG = "Idempotency-Key must be at most 64 characters";
 
-    public static final String SIMULATION_MODE_REQUIRED = "Choose SAFE or UNSAFE";
-    public static final String SIMULATION_BUYERS_RANGE = "Buyers must be between {min} and {max}";
-    public static final String SIMULATION_STOCK_RANGE = "Stock must be between {min} and {max}";
-    public static final String SIMULATION_RECIPIENTS_RANGE = "Recipients must be between {min} and {max}";
-    public static final String SIMULATION_AMOUNT_RANGE = "Amount must be between {value} and the maximum allowed";
-    public static final String SIMULATION_BALANCE_RANGE = "Balance must be between 0 and the maximum allowed";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String NOT_FOUND = "The requested resource was not found";
-    public static final String IBAN_GENERATION_FAILED = "Could not generate a unique IBAN";
     public static final String UNEXPECTED_PRINCIPAL = "Unexpected principal type after authentication";
 
     private ErrorMessages() {

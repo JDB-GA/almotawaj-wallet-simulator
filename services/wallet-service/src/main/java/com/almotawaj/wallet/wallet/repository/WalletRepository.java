@@ -23,10 +23,10 @@ public interface WalletRepository extends JpaRepository<Wallet, UUID> {
 
     @Query("""
             select w from Wallet w join fetch w.user u
-            where u.id <> :excludedUserId and u.status = com.almotawaj.wallet.user.model.UserStatus.ACTIVE
-            and (u.role = com.almotawaj.wallet.user.model.UserRole.MERCHANT
-                 or (u.role = com.almotawaj.wallet.user.model.UserRole.CLIENT
-                     and u.kycStatus = com.almotawaj.wallet.kyc.model.KycStatus.APPROVED))
+            where u.id <> :excludedUserId and u.status = com.almotawaj.wallet.account.model.AccountStatus.ACTIVE
+            and (u.role = com.almotawaj.wallet.account.model.AccountRole.MERCHANT
+                 or (u.role = com.almotawaj.wallet.account.model.AccountRole.CLIENT
+                     and u.kycApproved = true))
             and (lower(u.emailAddress) like :prefix escape '\\' or u.mobileNumber like :mobilePrefix escape '\\')
             order by u.emailAddress""")
     List<Wallet> findRecipientSuggestions(UUID excludedUserId, String prefix, String mobilePrefix, Pageable pageable);

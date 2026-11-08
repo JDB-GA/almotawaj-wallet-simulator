@@ -19,6 +19,7 @@
 | wallet-service | wallet, paymentrequest, checkout, voucher, payout, statistics, simulation, SSE | 8080 |
 | notification-service | email | 8082 |
 | audit-service | audit log | 8083 |
+| api-gateway | routes every request to the right service | 8000 |
 
 ## Day 1: Identity split (Req 1, 2, 3)
 
@@ -30,12 +31,13 @@
 
 ## Day 2: Wallet decoupling (Req 3, 4, 7)
 
-- [ ] Wallet entities keep `userId`, not a `User` entity
-- [ ] Wallet trusts the JWT instead of reading the user table
-- [ ] Wallet gets names and status from identity by REST where needed
-- [ ] One database or schema per service
-- [ ] Secrets and URLs moved to environment variables, `.env.example` added
-- **Done when:** a transfer and a voucher purchase work across both services
+- [x] Wallet keeps its own `account_holders` copy instead of the `User` entity
+- [x] Wallet trusts the JWT instead of reading the user table
+- [x] Wallet copies accounts from identity by REST when missing (`/internal/accounts`)
+- [x] One database per service: `identity`, `wallet`, `audit`
+- [x] Secrets and URLs moved to environment variables, `.env.example` added
+- [x] Every client and merchant gets a wallet when their account is copied; clients use it only after KYC
+- **Done when:** a transfer and a voucher purchase work across both services ✅
 
 ## Day 3: Docker and Kafka (Req 5, 6, 8, 9, 10, 11)
 
@@ -81,7 +83,7 @@
 
 ## Optional bonuses (after Day 6)
 
-- [ ] API Gateway: one entry point for the frontend
+- [x] API Gateway: one entry point for the frontend (`services/api-gateway`, port 8000)
 - [ ] Service discovery: services find each other by name
 - [ ] Advanced Kafka: multiple topics, consumer groups, dead-letter processing
 - [ ] Advanced CI/CD: image scanning, versioned releases, rollback

@@ -5,7 +5,6 @@ import com.almotawaj.wallet.config.constants.SecurityConstants;
 import com.almotawaj.wallet.config.constants.docs.AdminStatisticsDocs;
 import com.almotawaj.wallet.config.constants.docs.ApiDocs;
 import com.almotawaj.wallet.statistics.model.response.TransactionStatisticsResponse;
-import com.almotawaj.wallet.statistics.model.response.UserStatisticsResponse;
 import com.almotawaj.wallet.statistics.service.AdminStatisticsService;
 import com.almotawaj.wallet.wallet.model.request.TransactionSearchRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,13 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AdminStatisticsController {
     private final AdminStatisticsService statisticsService;
-
-    @Operation(summary = AdminStatisticsDocs.USERS, description = AdminStatisticsDocs.USERS_DESCRIPTION)
-    @ApiResponse(responseCode = ApiDocs.OK, description = AdminStatisticsDocs.USERS_OK)
-    @GetMapping(ApiPaths.USER_STATISTICS)
-    public UserStatisticsResponse getUserStatistics() {
-        return statisticsService.getUserStatistics();
-    }
 
     @Operation(summary = AdminStatisticsDocs.TRANSACTIONS, description = AdminStatisticsDocs.TRANSACTIONS_DESCRIPTION)
     @ApiResponse(responseCode = ApiDocs.OK, description = AdminStatisticsDocs.TRANSACTIONS_OK)

@@ -98,19 +98,9 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.NOT_FOUND, e.getMessage(), e.getCode());
     }
 
-    @ExceptionHandler(OtpVerificationException.class)
-    public ProblemDetail handleOtpVerification(OtpVerificationException e) {
-        return problem(HttpStatus.BAD_REQUEST, e.getMessage(), e.getCode());
-    }
-
     @ExceptionHandler(BusinessRuleException.class)
     public ProblemDetail handleBusinessRule(BusinessRuleException e) {
         return problem(HttpStatus.UNPROCESSABLE_CONTENT, e.getMessage(), e.getCode());
-    }
-
-    @ExceptionHandler(InvalidFileException.class)
-    public ProblemDetail handleInvalidFile(InvalidFileException e) {
-        return problem(HttpStatus.BAD_REQUEST, e.getMessage(), e.getCode());
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -121,11 +111,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<ProblemDetail> handleRateLimit(RateLimitExceededException e) {
         return tooManyRequests(e.getRetryAfter(), ErrorMessages.TOO_MANY_REQUESTS, ErrorCodes.TOO_MANY_REQUESTS);
-    }
-
-    @ExceptionHandler(OtpResendCooldownException.class)
-    public ResponseEntity<ProblemDetail> handleOtpResendCooldown(OtpResendCooldownException e) {
-        return tooManyRequests(e.getRetryAfter(), ErrorMessages.OTP_RESEND_COOLDOWN, ErrorCodes.OTP_RESEND_COOLDOWN);
     }
 
     private static ResponseEntity<ProblemDetail> tooManyRequests(Duration retryAfter, String detail, String code) {

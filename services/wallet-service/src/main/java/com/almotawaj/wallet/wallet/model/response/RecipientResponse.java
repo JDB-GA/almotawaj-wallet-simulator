@@ -1,6 +1,6 @@
 package com.almotawaj.wallet.wallet.model.response;
 
-import com.almotawaj.wallet.user.model.UserRole;
+import com.almotawaj.wallet.account.model.AccountRole;
 
-public record RecipientResponse(String maskedName, String maskedEmail, UserRole role) {
+public record RecipientResponse(String maskedName, String maskedEmail, AccountRole role) {
 }

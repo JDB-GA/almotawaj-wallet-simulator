@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-/** Who may use a wallet. Every client and merchant has one from registration; clients need KYC to use it. */
 @Component
 @RequiredArgsConstructor
 public class WalletAccessPolicy {
@@ -27,7 +26,6 @@ public class WalletAccessPolicy {
         return eligibleRole && account.getStatus() == AccountStatus.ACTIVE;
     }
 
-    /** Returns the user's wallet after checking they may use it. */
     public Wallet usableWallet(UUID userId) {
         Wallet wallet = walletRepository.findByUserId(userId)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.WALLET_NOT_FOUND));

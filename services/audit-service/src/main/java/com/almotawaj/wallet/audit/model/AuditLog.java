@@ -10,10 +10,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 import java.util.UUID;
 
-/**
- * One audited action. The actor is stored as an id and email copied from the event,
- * because users live in identity-service's database.
- */
 @Entity
 @Table(name = AuditConstants.AUDIT_LOGS_TABLE, indexes = {
         @Index(columnList = "created_at"),

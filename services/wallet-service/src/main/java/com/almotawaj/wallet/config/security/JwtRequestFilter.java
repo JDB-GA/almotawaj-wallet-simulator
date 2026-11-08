@@ -20,9 +20,6 @@ import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
 
-/**
- * Trusts the token from identity-service and loads wallet's copy of the account.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {

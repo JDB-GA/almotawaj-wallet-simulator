@@ -2,7 +2,7 @@ package com.almotawaj.wallet.voucher.service;
 
 import com.almotawaj.wallet.config.constants.SeedConstants;
 import com.almotawaj.wallet.seed.model.SeedVoucher;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class VoucherSeeder {
     private final VoucherRepository voucherRepository;
     private final Clock clock;
 
-    public void seed(User merchant) {
+    public void seed(AccountHolder merchant) {
         for (SeedVoucher seed : SeedConstants.VOUCHERS) {
             if (!voucherRepository.existsByMerchantIdAndTitle(merchant.getId(), seed.title())) {
                 voucherRepository.save(voucher(merchant, seed));
@@ -26,7 +26,7 @@ public class VoucherSeeder {
         }
     }
 
-    private Voucher voucher(User merchant, SeedVoucher seed) {
+    private Voucher voucher(AccountHolder merchant, SeedVoucher seed) {
         Voucher voucher = new Voucher();
         voucher.setMerchant(merchant);
         voucher.setTitle(seed.title());

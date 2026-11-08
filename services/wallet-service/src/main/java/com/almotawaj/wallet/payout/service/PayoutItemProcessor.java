@@ -13,7 +13,7 @@ import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
 import com.almotawaj.wallet.simulation.model.SimulationStepType;
 import com.almotawaj.wallet.simulation.service.SimulationTrace;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.wallet.model.Counterparty;
 import com.almotawaj.wallet.wallet.model.TransactionType;
@@ -56,7 +56,7 @@ public class PayoutItemProcessor {
     public PayoutItemStatus process(UUID itemId) {
         PayoutItem item = itemRepository.findById(itemId).orElseThrow();
         UUID batchId = item.getBatch().getId();
-        User recipient = item.getRecipient();
+        AccountHolder recipient = item.getRecipient();
         if (!accessPolicy.canReceive(recipient)) {
             return fail(item, batchId, WalletConstants.PAYOUT_RECIPIENT_UNAVAILABLE);
         }

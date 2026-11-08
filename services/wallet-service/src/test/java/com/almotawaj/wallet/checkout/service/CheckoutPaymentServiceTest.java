@@ -6,7 +6,7 @@ import com.almotawaj.wallet.checkout.model.CheckoutStatus;
 import com.almotawaj.wallet.checkout.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.user.model.UserRole;
+import com.almotawaj.wallet.account.model.AccountRole;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import com.almotawaj.wallet.wallet.model.WalletTransaction;
@@ -19,7 +19,6 @@ import com.almotawaj.wallet.wallet.service.WalletHolderNames;
 import com.almotawaj.wallet.wallet.service.WalletFixtures;
 import com.almotawaj.wallet.wallet.service.WalletLedger;
 import com.almotawaj.wallet.wallet.service.WalletLocker;
-import com.almotawaj.wallet.wallet.service.WalletProvisioner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,8 +51,6 @@ class CheckoutPaymentServiceTest {
     @Mock
     private VoucherPurchaseRepository purchaseRepository;
     @Mock
-    private WalletProvisioner provisioner;
-    @Mock
     private WalletLocker walletLocker;
     @Mock
     private WalletHolderNames names;
@@ -71,14 +68,17 @@ class CheckoutPaymentServiceTest {
     private Wallet payerWallet;
     private Wallet merchantWallet;
 
+    private WalletAccessPolicy accessPolicy;
+
     @BeforeEach
     void setUp() {
-        service = new CheckoutPaymentService(sessionRepository, purchaseRepository, provisioner, walletLocker, new WalletAccessPolicy(),
+        accessPolicy = org.mockito.Mockito.spy(new WalletAccessPolicy(org.mockito.Mockito.mock(com.almotawaj.wallet.wallet.repository.WalletRepository.class)));
+        service = new CheckoutPaymentService(sessionRepository, purchaseRepository, walletLocker, accessPolicy,
                 new DailyLimitPolicy(transactionRepository, CLOCK), new WalletLedger(transactionRepository, referenceGenerator),
                 new Counterparties(names), new CheckoutSessionMapper(names, CLOCK, "http://localhost:5173"), auditService,
                 eventPublisher, CLOCK);
-        payerWallet = WalletFixtures.wallet(UserRole.CLIENT, "50.000");
-        merchantWallet = WalletFixtures.wallet(UserRole.MERCHANT, "0.000");
+        payerWallet = WalletFixtures.wallet(AccountRole.CLIENT, "50.000");
+        merchantWallet = WalletFixtures.wallet(AccountRole.MERCHANT, "0.000");
         session = new CheckoutSession();
         session.setId(SESSION_ID);
         session.setMerchant(merchantWallet.getUser());
@@ -86,8 +86,8 @@ class CheckoutPaymentServiceTest {
         session.setAmount(new BigDecimal("20.000"));
         session.setExpiresAt(NOW.plusSeconds(60));
         when(sessionRepository.findByIdForUpdate(SESSION_ID)).thenReturn(Optional.of(session));
-        when(provisioner.getOrCreate(payerWallet.getUser().getId())).thenReturn(payerWallet);
-        when(provisioner.getOrCreate(merchantWallet.getUser().getId())).thenReturn(merchantWallet);
+        org.mockito.Mockito.doReturn(payerWallet).when(accessPolicy).usableWallet(payerWallet.getUser().getId());
+        org.mockito.Mockito.doReturn(merchantWallet).when(accessPolicy).usableWallet(merchantWallet.getUser().getId());
         WalletLocker.LockedPair locked = new WalletLocker.LockedPair(payerWallet, merchantWallet);
         when(walletLocker.lockPair(payerWallet.getId(), merchantWallet.getId())).thenReturn(locked);
         when(referenceGenerator.next()).thenReturn("TXN-20261006-AAAAAAAA", "TXN-20261006-BBBBBBBB");

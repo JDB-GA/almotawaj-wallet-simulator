@@ -13,8 +13,8 @@ import com.almotawaj.wallet.paymentrequest.model.PaymentRequestStatus;
 import com.almotawaj.wallet.paymentrequest.model.request.CreatePaymentRequest;
 import com.almotawaj.wallet.paymentrequest.model.response.PaymentRequestResponse;
 import com.almotawaj.wallet.paymentrequest.repository.PaymentRequestRepository;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.model.request.TransferRequest;
 import com.almotawaj.wallet.wallet.model.response.WalletTransactionResponse;
 import com.almotawaj.wallet.wallet.service.RecipientResolver;
@@ -33,7 +33,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentRequestService {
     private final PaymentRequestRepository requestRepository;
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final RecipientResolver recipientResolver;
     private final WalletAccessPolicy accessPolicy;
     private final TransferService transferService;
@@ -51,9 +51,9 @@ public class PaymentRequestService {
     @Transactional
     public PaymentRequestResponse create(UUID requesterId, CreatePaymentRequest request) {
         ensureWalletHolder(requesterId);
-        User payer = recipientResolver.resolve(requesterId, request.payer());
+        AccountHolder payer = recipientResolver.resolve(requesterId, request.payer());
         PaymentRequest paymentRequest = new PaymentRequest();
-        paymentRequest.setRequester(userRepository.getReferenceById(requesterId));
+        paymentRequest.setRequester(accountRepository.getReferenceById(requesterId));
         paymentRequest.setPayer(payer);
         paymentRequest.setAmount(request.amount());
         paymentRequest.setNote(request.note() == null || request.note().isBlank() ? null : request.note().strip());
@@ -88,7 +88,7 @@ public class PaymentRequestService {
     }
 
     private void ensureWalletHolder(UUID userId) {
-        accessPolicy.ensureCanUseWallet(userRepository.findById(userId)
+        accessPolicy.ensureCanUseWallet(accountRepository.findById(userId)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.USER_NOT_FOUND)));
     }
 

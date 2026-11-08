@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class AccountHolder {
     @Id
-    private UUID id;                 // same id as in identity, never generated here
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String emailAddress;
@@ -22,7 +22,7 @@ public class AccountHolder {
     @Column(unique = true)
     private String mobileNumber;
 
-    private String displayName;      // merchant business name or KYC full name
+    private String displayName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

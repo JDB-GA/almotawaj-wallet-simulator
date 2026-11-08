@@ -13,7 +13,7 @@ import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.model.VoucherPurchaseStatus;
 import com.almotawaj.wallet.voucher.model.response.UsableVoucherResponse;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
@@ -69,7 +69,7 @@ public class CheckoutPaymentService {
                 new InformationNotFoundException(GatewayMessages.CHECKOUT_NOT_FOUND, ErrorCodes.CHECKOUT_NOT_FOUND));
         Instant now = clock.instant();
         ensurePayable(session, now);
-        User merchant = session.getMerchant();
+        AccountHolder merchant = session.getMerchant();
         // Lock the payer's and merchant's wallets (smaller ID first) before checking the balance
         WalletLocker.LockedPair locked = walletLocker.lockPair(accessPolicy.usableWallet(payerId).getId(),
                 accessPolicy.usableWallet(merchant.getId()).getId());

@@ -1,10 +1,8 @@
 package com.almotawaj.wallet.wallet.service;
 
-import com.almotawaj.wallet.kyc.model.KycStatus;
-import com.almotawaj.wallet.kyc.repository.KycApplicationRepository;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import com.almotawaj.wallet.wallet.repository.WalletRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,24 +28,22 @@ class RecipientSuggestionServiceTest {
     private static final UUID SENDER_ID = UUID.randomUUID();
 
     @Mock
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Mock
     private WalletRepository walletRepository;
     @Spy
-    private WalletAccessPolicy accessPolicy;
-    @Mock
-    private KycApplicationRepository kycApplicationRepository;
+    private WalletAccessPolicy accessPolicy = new WalletAccessPolicy(org.mockito.Mockito.mock(WalletRepository.class));
 
     private RecipientSuggestionService service;
 
     @BeforeEach
     void setUp() {
-        User sender = new User();
-        sender.setRole(UserRole.CLIENT);
-        sender.setKycStatus(KycStatus.APPROVED);
+        AccountHolder sender = new AccountHolder();
+        sender.setRole(AccountRole.CLIENT);
+        sender.setKycApproved(true);
         when(userRepository.findById(SENDER_ID)).thenReturn(Optional.of(sender));
         service = new RecipientSuggestionService(userRepository, walletRepository, accessPolicy,
-                new WalletHolderNames(kycApplicationRepository));
+                new WalletHolderNames());
     }
 
     @Test
@@ -58,10 +54,10 @@ class RecipientSuggestionServiceTest {
 
     @Test
     void suggest_escapesWildcardsAndMasksMobile() {
-        User recipient = new User();
+        AccountHolder recipient = new AccountHolder();
         recipient.setEmailAddress("sara@example.com");
         recipient.setMobileNumber("+97333123456");
-        recipient.setRole(UserRole.MERCHANT);
+        recipient.setRole(AccountRole.MERCHANT);
         Wallet wallet = new Wallet();
         wallet.setUser(recipient);
         wallet.setIban("BH02ALMT00000000001234");

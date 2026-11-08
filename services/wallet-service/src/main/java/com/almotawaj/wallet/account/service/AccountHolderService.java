@@ -6,6 +6,7 @@ import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.account.model.AccountRole;
 import com.almotawaj.wallet.account.model.AccountStatus;
 import com.almotawaj.wallet.account.repository.AccountHolderRepository;
+import com.almotawaj.wallet.util.LoginIdentifier;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import com.almotawaj.wallet.wallet.repository.WalletRepository;
 import com.almotawaj.wallet.wallet.service.IbanGenerator;
@@ -16,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Keeps wallet's copy of accounts. Reads locally first and, on a miss, copies the
- * account from identity-service (cache-aside). From Day 3, identity events keep it fresh.
- */
 @Service
 @RequiredArgsConstructor
 public class AccountHolderService {
@@ -33,13 +30,15 @@ public class AccountHolderService {
         return repository.findById(id).or(() -> identityClient.findById(id).map(this::save));
     }
 
-    /** Finds a recipient by email or mobile number. */
     @Transactional
     public Optional<AccountHolder> findByIdentifier(String identifier) {
-        return identityClient.lookup(identifier).map(this::save);
+        String value = identifier.trim();
+        Optional<AccountHolder> local = value.contains("@")
+                ? repository.findByEmailAddressIgnoreCase(value)
+                : repository.findByMobileNumber(LoginIdentifier.normalizeMobile(value));
+        return local.or(() -> identityClient.lookup(value).map(this::save));
     }
 
-    /** Creates or refreshes the local copy from identity's data. A new client or merchant gets its wallet here. */
     @Transactional
     public AccountHolder save(AccountSnapshot snapshot) {
         boolean isNew = !repository.existsById(snapshot.id());

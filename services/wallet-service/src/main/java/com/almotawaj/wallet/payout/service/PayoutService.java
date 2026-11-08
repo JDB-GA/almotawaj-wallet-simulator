@@ -18,7 +18,7 @@ import com.almotawaj.wallet.payout.model.response.PayoutBatchResponse;
 import com.almotawaj.wallet.payout.model.response.PayoutItemResponse;
 import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.service.RecipientResolver;
 import com.almotawaj.wallet.wallet.service.WalletHolderNames;
 import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
@@ -57,7 +57,7 @@ public class PayoutService {
     public PayoutBatchResponse create(UUID merchantId, CreatePayoutRequest request) {
 
 
-        User merchant = accessPolicy.usableWallet(merchantId).getUser();
+        AccountHolder merchant = accessPolicy.usableWallet(merchantId).getUser();
         Set<UUID> recipients = new HashSet<>();
         List<PayoutItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
@@ -68,7 +68,7 @@ public class PayoutService {
          * Will resolve each recipient using the PayoutItemRequest (each item is a line)
          */
         for (PayoutItemRequest line : request.items()) {
-            User recipient = recipientResolver.resolve(merchantId, line.recipient());
+            AccountHolder recipient = recipientResolver.resolve(merchantId, line.recipient());
             if (!recipients.add(recipient.getId())) {
                 throw new BusinessRuleException(ErrorMessages.PAYOUT_RECIPIENT_DUPLICATE, ErrorCodes.PAYOUT_RECIPIENT_DUPLICATE);
             }

@@ -5,7 +5,7 @@ import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.service.AuditService;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.user.model.UserRole;
+import com.almotawaj.wallet.account.model.AccountRole;
 import com.almotawaj.wallet.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.wallet.model.TransactionType;
 import com.almotawaj.wallet.wallet.model.Wallet;
@@ -37,7 +37,7 @@ class TransferServiceTest {
     private static final String RECIPIENT_EMAIL = "sara@example.com";
 
     @Mock
-    private WalletProvisioner provisioner;
+    private WalletAccessPolicy accessPolicy;
     @Mock
     private WalletLocker walletLocker;
     @Mock
@@ -59,14 +59,14 @@ class TransferServiceTest {
 
     @BeforeEach
     void setUp() {
-        transferService = new TransferService(provisioner, walletLocker, recipientResolver, holderNames, new Counterparties(holderNames),
+        transferService = new TransferService(accessPolicy, walletLocker, recipientResolver, holderNames, new Counterparties(holderNames),
                 new DailyLimitPolicy(transactionRepository, Clock.systemUTC()), new WalletLedger(transactionRepository, referenceGenerator),
                 eventPublisher, auditService);
-        sender = WalletFixtures.wallet(UserRole.CLIENT, "100.000");
-        receiver = WalletFixtures.wallet(UserRole.CLIENT, "5.000");
+        sender = WalletFixtures.wallet(AccountRole.CLIENT, "100.000");
+        receiver = WalletFixtures.wallet(AccountRole.CLIENT, "5.000");
         when(recipientResolver.resolve(SENDER_ID, RECIPIENT_EMAIL)).thenReturn(receiver.getUser());
-        when(provisioner.getOrCreate(SENDER_ID)).thenReturn(sender);
-        when(provisioner.getOrCreate(receiver.getUser().getId())).thenReturn(receiver);
+        when(accessPolicy.usableWallet(SENDER_ID)).thenReturn(sender);
+        when(accessPolicy.usableWallet(receiver.getUser().getId())).thenReturn(receiver);
         when(walletLocker.lockPair(sender.getId(), receiver.getId())).thenReturn(new WalletLocker.LockedPair(sender, receiver));
         when(holderNames.fullName(any())).thenReturn("Holder");
         when(referenceGenerator.next()).thenReturn("TXN-20261005-AAAAAAAA", "TXN-20261005-BBBBBBBB");

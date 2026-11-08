@@ -78,11 +78,6 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.CONFLICT, e.getMessage(), e.getCode());
     }
 
-    @ExceptionHandler(ConflictException.class)
-    public ProblemDetail handleConflict(ConflictException e) {
-        return problem(HttpStatus.CONFLICT, e.getMessage(), e.getCode());
-    }
-
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ProblemDetail handleOptimisticLock(ObjectOptimisticLockingFailureException e) {
         return problem(HttpStatus.CONFLICT, ErrorMessages.VOUCHER_EDIT_CONFLICT, ErrorCodes.VOUCHER_EDIT_CONFLICT);

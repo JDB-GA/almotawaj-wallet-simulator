@@ -8,7 +8,7 @@ import com.almotawaj.wallet.checkout.model.request.UpdateWebhookRequest;
 import com.almotawaj.wallet.checkout.model.response.WebhookResponse;
 import com.almotawaj.wallet.checkout.repository.MerchantWebhookRepository;
 import com.almotawaj.wallet.config.security.WebhookSigner;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MerchantWebhookService {
     private final MerchantWebhookRepository webhookRepository;
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final WebhookUrlPolicy urlPolicy;
     private final WebhookSigner signer;
     private final AuditService auditService;
@@ -34,7 +34,7 @@ public class MerchantWebhookService {
         String url = urlPolicy.requireAllowed(request.url().strip()).toString();
         MerchantWebhook webhook = webhookRepository.findByMerchantId(merchantId).orElseGet(() -> {
             MerchantWebhook created = new MerchantWebhook();
-            created.setMerchant(userRepository.getReferenceById(merchantId));
+            created.setMerchant(accountRepository.getReferenceById(merchantId));
             return created;
         });
         webhook.setUrl(url);

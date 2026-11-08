@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
-/** Only services that know the shared internal token can call /internal/**. */
 @Component
 public class InternalTokenFilter extends OncePerRequestFilter {
     private final byte[] expectedToken;

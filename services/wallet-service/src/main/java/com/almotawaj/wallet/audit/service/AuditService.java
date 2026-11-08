@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-/**
- * Records audit events. The audit log is owned by audit-service; until the Kafka
- * publisher is added (Day 3) events are only logged here.
- */
 @Slf4j
 @Service
 public class AuditService {

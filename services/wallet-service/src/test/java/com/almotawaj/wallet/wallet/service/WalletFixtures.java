@@ -1,7 +1,8 @@
 package com.almotawaj.wallet.wallet.service;
 
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
 import com.almotawaj.wallet.wallet.model.Wallet;
 
 import java.math.BigDecimal;
@@ -11,10 +12,11 @@ public final class WalletFixtures {
     private WalletFixtures() {
     }
 
-    public static Wallet wallet(UserRole role, String balance) {
-        User user = new User();
+    public static Wallet wallet(AccountRole role, String balance) {
+        AccountHolder user = new AccountHolder();
         user.setId(UUID.randomUUID());
         user.setRole(role);
+        user.setStatus(AccountStatus.ACTIVE);
         Wallet wallet = new Wallet();
         wallet.setId(UUID.randomUUID());
         wallet.setUser(user);

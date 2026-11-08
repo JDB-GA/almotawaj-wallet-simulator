@@ -9,8 +9,6 @@ public final class SecurityConstants {
     public static final String HAS_ROLE_CLIENT = "hasRole('CLIENT')";
     public static final String HAS_ROLE_SUPER_ADMIN = "hasRole('SUPER_ADMIN')";
     public static final String HAS_ROLE_MERCHANT = "hasRole('MERCHANT')";
-    public static final String GATEWAY_AUTHORITY = "GATEWAY_API";
-    public static final String HAS_GATEWAY_AUTHORITY = "hasAuthority('GATEWAY_API')";
     public static final String API_KEY_HEADER = "X-API-Key";
     public static final String HAS_WALLET_ROLE = "hasAnyRole('CLIENT', 'MERCHANT')";
     public static final String HAS_KYC_REVIEW = "hasAuthority('KYC_REVIEW')";

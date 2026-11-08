@@ -9,7 +9,7 @@ import com.almotawaj.wallet.simulation.model.response.PayoutRaceResult;
 import com.almotawaj.wallet.simulation.model.response.SimulationAttempt;
 import com.almotawaj.wallet.simulation.model.response.SimulationStep;
 import com.almotawaj.wallet.simulation.model.response.VoucherRaceResult;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ class SimulationServiceTest {
     @Autowired
     private SimulationService simulations;
     @Autowired
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Autowired
     private VoucherRepository voucherRepository;
 

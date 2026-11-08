@@ -1,15 +1,14 @@
 package com.almotawaj.wallet.simulation.service;
 
-import com.almotawaj.wallet.audit.repository.AuditLogRepository;
 import com.almotawaj.wallet.config.constants.SimulationConstants;
-import com.almotawaj.wallet.kyc.model.KycStatus;
 import com.almotawaj.wallet.payout.model.PayoutBatch;
 import com.almotawaj.wallet.payout.model.PayoutItem;
 import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.repository.IdempotencyRecordRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
@@ -37,7 +36,7 @@ public class SimulationSandbox {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int DECIMAL_RADIX = 10;
 
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final WalletRepository walletRepository;
     private final WalletTransactionRepository transactionRepository;
     private final VoucherRepository voucherRepository;
@@ -45,23 +44,22 @@ public class SimulationSandbox {
     private final IdempotencyRecordRepository idempotencyRepository;
     private final PayoutBatchRepository batchRepository;
     private final PayoutItemRepository itemRepository;
-    private final AuditLogRepository auditLogRepository;
     private final IbanGenerator ibanGenerator;
     private final Clock clock;
 
     @Transactional
-    public User createMerchant(BigDecimal balance) {
-        User merchant = user(UserRole.MERCHANT);
+    public AccountHolder createMerchant(BigDecimal balance) {
+        AccountHolder merchant = user(AccountRole.MERCHANT);
         merchant.setDisplayName(SimulationConstants.MERCHANT_NAME);
         wallet(merchant, balance);
         return merchant;
     }
 
     @Transactional
-    public List<User> createClients(int count, BigDecimal balance) {
-        List<User> clients = new ArrayList<>();
+    public List<AccountHolder> createClients(int count, BigDecimal balance) {
+        List<AccountHolder> clients = new ArrayList<>();
         for (int index = 0; index < count; index++) {
-            User client = user(UserRole.CLIENT);
+            AccountHolder client = user(AccountRole.CLIENT);
             wallet(client, balance);
             clients.add(client);
         }
@@ -69,7 +67,7 @@ public class SimulationSandbox {
     }
 
     @Transactional
-    public UUID createVoucher(User merchant, int stock) {
+    public UUID createVoucher(AccountHolder merchant, int stock) {
         Voucher voucher = new Voucher();
         voucher.setMerchant(merchant);
         voucher.setTitle(SimulationConstants.VOUCHER_TITLE);
@@ -83,7 +81,7 @@ public class SimulationSandbox {
     }
 
     @Transactional
-    public List<UUID> createPayoutBatch(User merchant, List<User> recipients, BigDecimal amount) {
+    public List<UUID> createPayoutBatch(AccountHolder merchant, List<AccountHolder> recipients, BigDecimal amount) {
         PayoutBatch batch = new PayoutBatch();
         batch.setMerchant(merchant);
         batch.setItemCount(recipients.size());
@@ -91,7 +89,7 @@ public class SimulationSandbox {
         batchRepository.save(batch);
         List<UUID> ids = new ArrayList<>();
         ids.add(batch.getId());
-        for (User recipient : recipients) {
+        for (AccountHolder recipient : recipients) {
             PayoutItem item = new PayoutItem();
             item.setBatch(batch);
             item.setRecipient(recipient);
@@ -121,22 +119,21 @@ public class SimulationSandbox {
         batchRepository.deleteAllByMerchantIdIn(userIds);
         transactionRepository.deleteAllByWalletUserIdIn(userIds);
         walletRepository.deleteAllByUserIdIn(userIds);
-        auditLogRepository.deleteAllByActorIdIn(userIds);
-        userRepository.deleteAllByIdInBatch(userIds);
+        accountRepository.deleteAllByIdInBatch(userIds);
     }
 
-    private User user(UserRole role) {
-        User user = new User();
-        user.setEmailAddress(SimulationConstants.EMAIL_PATTERN.formatted(UUID.randomUUID()));
-        user.setMobileNumber(randomMobile());
-        user.setPassword(SimulationConstants.DISABLED_PASSWORD);
-        user.setRole(role);
-        user.setEmailVerified(true);
-        user.setKycStatus(role == UserRole.CLIENT ? KycStatus.APPROVED : KycStatus.NOT_SUBMITTED);
-        return userRepository.save(user);
+    private AccountHolder user(AccountRole role) {
+        AccountHolder account = new AccountHolder();
+        account.setId(UUID.randomUUID());
+        account.setEmailAddress(SimulationConstants.EMAIL_PATTERN.formatted(account.getId()));
+        account.setMobileNumber(randomMobile());
+        account.setRole(role);
+        account.setStatus(AccountStatus.ACTIVE);
+        account.setKycApproved(role == AccountRole.CLIENT);
+        return accountRepository.save(account);
     }
 
-    private void wallet(User owner, BigDecimal balance) {
+    private void wallet(AccountHolder owner, BigDecimal balance) {
         Wallet wallet = new Wallet();
         wallet.setUser(owner);
         wallet.setIban(ibanGenerator.generate());

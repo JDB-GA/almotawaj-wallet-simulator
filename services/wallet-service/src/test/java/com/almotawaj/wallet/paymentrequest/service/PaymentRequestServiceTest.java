@@ -9,8 +9,8 @@ import com.almotawaj.wallet.exception.InformationNotFoundException;
 import com.almotawaj.wallet.paymentrequest.model.PaymentRequest;
 import com.almotawaj.wallet.paymentrequest.model.PaymentRequestStatus;
 import com.almotawaj.wallet.paymentrequest.repository.PaymentRequestRepository;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.model.request.TransferRequest;
 import com.almotawaj.wallet.wallet.service.RecipientResolver;
 import com.almotawaj.wallet.wallet.service.TransferService;
@@ -44,7 +44,7 @@ class PaymentRequestServiceTest {
     @Mock
     private PaymentRequestRepository requestRepository;
     @Mock
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Mock
     private RecipientResolver recipientResolver;
     @Mock
@@ -61,8 +61,8 @@ class PaymentRequestServiceTest {
     @InjectMocks
     private PaymentRequestService service;
 
-    private User requester;
-    private User payer;
+    private AccountHolder requester;
+    private AccountHolder payer;
     private PaymentRequest request;
 
     @BeforeEach
@@ -116,8 +116,8 @@ class PaymentRequestServiceTest {
         verifyNoInteractions(transferService, auditService, notifier);
     }
 
-    private static User user(String email) {
-        User user = new User();
+    private static AccountHolder user(String email) {
+        AccountHolder user = new AccountHolder();
         user.setId(UUID.randomUUID());
         user.setEmailAddress(email);
         return user;

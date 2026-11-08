@@ -1,37 +1,8 @@
 package com.almotawaj.wallet.config.constants;
 
 public final class ErrorMessages {
+    public static final String SEED_ACCOUNTS_MISSING = "Seed identity-service first: the demo merchant was not found";
     public static final String WALLET_NOT_FOUND = "Wallet not found";
-    public static final String EMAIL_REQUIRED = "Email is required";
-    public static final String EMAIL_INVALID = "Email must be a valid email address";
-    public static final String EMAIL_TOO_LONG = "Email must be at most {max} characters";
-    public static final String MOBILE_REQUIRED = "Mobile number is required";
-    public static final String MOBILE_INVALID = "Mobile number must be 8 digits without the country code, e.g. 33123456";
-    public static final String IDENTIFIER_REQUIRED = "Email or mobile number is required";
-    public static final String PASSWORD_REQUIRED = "Password is required";
-    public static final String PASSWORD_LENGTH = "Password must be between {min} and {max} characters";
-    public static final String CURRENT_PASSWORD_REQUIRED = "Current password is required";
-    public static final String ROLE_REQUIRED = "Role is required";
-    public static final String OTP_REQUIRED = "Verification code is required";
-    public static final String OTP_FORMAT_INVALID = "Verification code must be 6 digits";
-    public static final String FULL_NAME_REQUIRED = "Full name is required";
-    public static final String FULL_NAME_INVALID = "Full name may only contain letters, spaces, dots, apostrophes and hyphens";
-    public static final String FULL_NAME_TOO_LONG = "Full name must be at most {max} characters";
-    public static final String CPR_REQUIRED = "CPR number is required";
-    public static final String CPR_INVALID = "CPR number must be 9 digits";
-    public static final String DATE_OF_BIRTH_REQUIRED = "Date of birth is required";
-    public static final String DATE_OF_BIRTH_PAST = "Date of birth must be in the past";
-    public static final String NATIONALITY_REQUIRED = "Nationality is required";
-    public static final String NATIONALITY_INVALID = "Nationality must be a 2-letter country code";
-    public static final String BLOCK_INVALID = "Block must be 1 to 4 digits";
-    public static final String ROAD_INVALID = "Road must be 1 to 5 digits";
-    public static final String BUILDING_INVALID = "Building must be 1 to 6 letters or digits";
-    public static final String FLAT_INVALID = "Flat must be 1 to 6 letters or digits";
-    public static final String AREA_REQUIRED = "Area is required";
-    public static final String AREA_TOO_LONG = "Area must be at most {max} characters";
-    public static final String EXPIRY_DATE_REQUIRED = "Expiry date is required";
-    public static final String REJECTION_REASON_REQUIRED = "Rejection reason is required";
-    public static final String REJECTION_REASON_TOO_LONG = "Rejection reason must be at most {max} characters";
     public static final String TOP_UP_SOURCE_REQUIRED = "Choose the account to receive from";
     public static final String AMOUNT_REQUIRED = "Amount is required";
     public static final String AMOUNT_TOO_SMALL = "Amount must be at least {value} BHD";
@@ -62,7 +33,6 @@ public final class ErrorMessages {
     public static final String FILE_REQUIRED = "File is required";
     public static final String FILE_TYPE_INVALID = "File type is not allowed";
     public static final String FILE_TOO_LARGE = "File is larger than the allowed size";
-    public static final String KYC_NOT_FOUND = "No verification request found";
     public static final String DOCUMENT_NOT_FOUND = "Document not found";
     public static final String KYC_ALREADY_REVIEWED = "This verification request has already been reviewed";
     public static final String PERMISSION_NOT_GRANTABLE = "This permission cannot be granted to this user's role";
@@ -93,9 +63,6 @@ public final class ErrorMessages {
     public static final String TRANSACTION_NOT_FOUND = "Transaction not found";
     public static final String PAYMENT_REQUEST_NOT_FOUND = "Payment request not found";
     public static final String PAYMENT_REQUEST_NOT_PENDING = "This payment request is no longer pending";
-    public static final String DISPLAY_NAME_REQUIRED = "Business name is required";
-    public static final String DISPLAY_NAME_LENGTH = "Business name must be {min} to {max} characters";
-    public static final String DISPLAY_NAME_INVALID = "Business name can only contain letters, digits, spaces and . , & ' -";
     public static final String PROFILE_PICTURE_NOT_FOUND = "No profile picture has been uploaded";
     public static final String VOUCHER_NOT_FOUND = "This voucher was not found";
     public static final String VOUCHER_SOLD_OUT = "This voucher is sold out";
@@ -137,7 +104,6 @@ public final class ErrorMessages {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String NOT_FOUND = "The requested resource was not found";
     public static final String IBAN_GENERATION_FAILED = "Could not generate a unique IBAN";
-    public static final String UNEXPECTED_PRINCIPAL = "Unexpected principal type after authentication";
 
     private ErrorMessages() {
     }

@@ -16,7 +16,7 @@ import com.almotawaj.wallet.simulation.model.response.PayoutRaceResult;
 import com.almotawaj.wallet.simulation.model.response.SimulationAttempt;
 import com.almotawaj.wallet.simulation.model.response.SimulationStep;
 import com.almotawaj.wallet.simulation.model.response.VoucherRaceResult;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.service.VoucherPurchaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,9 +50,9 @@ public class SimulationService {
     private final PayoutRunner payoutRunner;
 
     public VoucherRaceResult voucherRace(VoucherRaceRequest request) throws InterruptedException {
-        User merchant = sandbox.createMerchant(BigDecimal.ZERO);
-        List<User> buyers = sandbox.createClients(request.buyers(), new BigDecimal(SimulationConstants.BUYER_BALANCE));
-        List<UUID> userIds = Stream.concat(Stream.of(merchant), buyers.stream()).map(User::getId).toList();
+        AccountHolder merchant = sandbox.createMerchant(BigDecimal.ZERO);
+        List<AccountHolder> buyers = sandbox.createClients(request.buyers(), new BigDecimal(SimulationConstants.BUYER_BALANCE));
+        List<UUID> userIds = Stream.concat(Stream.of(merchant), buyers.stream()).map(AccountHolder::getId).toList();
         try {
             UUID voucherId = sandbox.createVoucher(merchant, request.stock());
             log.info(LogMessages.SIMULATION_STARTED, request.mode(), request.buyers());
@@ -69,9 +69,9 @@ public class SimulationService {
     }
 
     public PayoutRaceResult payoutRace(PayoutRaceRequest request) {
-        User merchant = sandbox.createMerchant(request.merchantBalance());
-        List<User> recipients = sandbox.createClients(request.recipients(), BigDecimal.ZERO);
-        List<UUID> userIds = Stream.concat(Stream.of(merchant), recipients.stream()).map(User::getId).toList();
+        AccountHolder merchant = sandbox.createMerchant(request.merchantBalance());
+        List<AccountHolder> recipients = sandbox.createClients(request.recipients(), BigDecimal.ZERO);
+        List<UUID> userIds = Stream.concat(Stream.of(merchant), recipients.stream()).map(AccountHolder::getId).toList();
         try {
             List<UUID> ids = sandbox.createPayoutBatch(merchant, recipients, request.amount());
             UUID batchId = ids.get(0);

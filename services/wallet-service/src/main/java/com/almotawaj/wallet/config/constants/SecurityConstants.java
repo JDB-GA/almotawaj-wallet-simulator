@@ -13,7 +13,6 @@ public final class SecurityConstants {
     public static final String HAS_GATEWAY_AUTHORITY = "hasAuthority('GATEWAY_API')";
     public static final String API_KEY_HEADER = "X-API-Key";
     public static final String HAS_WALLET_ROLE = "hasAnyRole('CLIENT', 'MERCHANT')";
-    public static final String HAS_KYC_REVIEW = "hasAuthority('KYC_REVIEW')";
     public static final String HAS_USER_MANAGE = "hasAuthority('USER_MANAGE')";
     public static final String HAS_STATISTICS_VIEW = "hasAuthority('STATISTICS_VIEW')";
     public static final String JWT_SECRET_PROPERTY = "${jwt-secret}";
@@ -21,9 +20,6 @@ public final class SecurityConstants {
     public static final String AUTHORITIES_CLAIM = "authorities";
 
     public static final String AUTH_COOKIE_NAME = "access_token";
-    public static final String AUTH_COOKIE_PATH = "/";
-    public static final String AUTH_COOKIE_SAME_SITE = "Strict";
-    public static final String AUTH_COOKIE_SECURE_PROPERTY = "${auth-cookie-secure:true}";
 
     public static final String CORS_ALLOWED_ORIGINS_PROPERTY = "${cors-allowed-origins}";
     public static final List<String> CORS_ALLOWED_METHODS = List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");

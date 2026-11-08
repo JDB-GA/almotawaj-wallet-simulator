@@ -4,7 +4,7 @@ import com.almotawaj.wallet.common.model.response.PageResponse;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.model.request.TransactionSearchRequest;
 import com.almotawaj.wallet.wallet.model.response.WalletTransactionResponse;
 import com.almotawaj.wallet.wallet.repository.WalletTransactionRepository;
@@ -22,12 +22,12 @@ import java.util.UUID;
 public class UserTransactionService {
     private static final ZoneId ZONE = ZoneId.of(WalletConstants.TIME_ZONE);
 
-    private final UserRepository userRepository;
+    private final AccountHolderRepository accountRepository;
     private final WalletTransactionRepository transactionRepository;
 
     @Transactional(readOnly = true)
     public PageResponse<WalletTransactionResponse> list(UUID userId, TransactionSearchRequest filter, Pageable pageable) {
-        if (!userRepository.existsById(userId)) {
+        if (!accountRepository.existsById(userId)) {
             throw new InformationNotFoundException(ErrorMessages.USER_NOT_FOUND);
         }
         return PageResponse.from(

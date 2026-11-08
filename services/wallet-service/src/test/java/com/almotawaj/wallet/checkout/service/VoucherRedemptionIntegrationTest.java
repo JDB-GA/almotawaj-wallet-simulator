@@ -1,16 +1,15 @@
 package com.almotawaj.wallet.checkout.service;
 
-import com.almotawaj.wallet.audit.repository.AuditLogRepository;
 import com.almotawaj.wallet.checkout.model.CheckoutSession;
 import com.almotawaj.wallet.checkout.model.CheckoutStatus;
 import com.almotawaj.wallet.checkout.model.response.CheckoutViewResponse;
 import com.almotawaj.wallet.checkout.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.kyc.model.KycStatus;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.model.VoucherPurchase;
 import com.almotawaj.wallet.voucher.model.VoucherPurchaseStatus;
@@ -59,7 +58,7 @@ class VoucherRedemptionIntegrationTest {
     @Autowired
     private CheckoutRefundService refunds;
     @Autowired
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Autowired
     private WalletRepository walletRepository;
     @Autowired
@@ -72,19 +71,17 @@ class VoucherRedemptionIntegrationTest {
     private IdempotencyRecordRepository idempotencyRepository;
     @Autowired
     private CheckoutSessionRepository sessionRepository;
-    @Autowired
-    private AuditLogRepository auditLogRepository;
 
-    private User merchant;
-    private User buyer;
+    private AccountHolder merchant;
+    private AccountHolder buyer;
     private UUID voucherId;
     private UUID purchaseId;
 
     @BeforeEach
     void setUp() {
-        merchant = user(UserRole.MERCHANT);
+        merchant = user(AccountRole.MERCHANT);
         wallet(merchant, "0.000");
-        buyer = user(UserRole.CLIENT);
+        buyer = user(AccountRole.CLIENT);
         wallet(buyer, "100.000");
         voucherId = voucher(merchant).getId();
         purchaseId = purchases.purchase(buyer.getId(), voucherId, null).id();
@@ -98,7 +95,6 @@ class VoucherRedemptionIntegrationTest {
         voucherRepository.deleteAll();
         transactionRepository.deleteAll();
         walletRepository.deleteAll();
-        auditLogRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -130,7 +126,7 @@ class VoucherRedemptionIntegrationTest {
     @Test
     void usableVouchers_listsOnlyUnusedVouchersFromTheCheckoutMerchant() {
         CheckoutSession own = session(merchant, "20.000");
-        User otherMerchant = user(UserRole.MERCHANT);
+        AccountHolder otherMerchant = user(AccountRole.MERCHANT);
         CheckoutSession other = session(otherMerchant, "20.000");
 
         assertThat(payments.usableVouchers(buyer.getId(), own.getId())).extracting(UsableVoucherResponse::id).containsExactly(purchaseId);
@@ -143,7 +139,7 @@ class VoucherRedemptionIntegrationTest {
 
     @Test
     void voucherFromAnotherMerchant_isRejectedAndNothingChanges() {
-        User otherMerchant = user(UserRole.MERCHANT);
+        AccountHolder otherMerchant = user(AccountRole.MERCHANT);
         wallet(otherMerchant, "0.000");
         CheckoutSession session = session(otherMerchant, "20.000");
 
@@ -227,7 +223,7 @@ class VoucherRedemptionIntegrationTest {
         return errors;
     }
 
-    private CheckoutSession session(User owner, String amount) {
+    private CheckoutSession session(AccountHolder owner, String amount) {
         CheckoutSession session = new CheckoutSession();
         session.setMerchant(owner);
         session.setOrderReference("ORDER-" + SEQUENCE.incrementAndGet());
@@ -242,7 +238,7 @@ class VoucherRedemptionIntegrationTest {
         voucherRepository.saveAndFlush(voucher);
     }
 
-    private Voucher voucher(User owner) {
+    private Voucher voucher(AccountHolder owner) {
         Voucher voucher = new Voucher();
         voucher.setMerchant(owner);
         voucher.setTitle("Gift card");
@@ -255,18 +251,19 @@ class VoucherRedemptionIntegrationTest {
         return voucherRepository.saveAndFlush(voucher);
     }
 
-    private User user(UserRole role) {
+    private AccountHolder user(AccountRole role) {
         int number = SEQUENCE.incrementAndGet();
-        User user = new User();
+        AccountHolder user = new AccountHolder();
         user.setEmailAddress("redeem" + number + "@example.com");
         user.setMobileNumber("+9734%07d".formatted(number));
-        user.setPassword("hashed");
         user.setRole(role);
-        user.setKycStatus(role == UserRole.CLIENT ? KycStatus.APPROVED : KycStatus.NOT_SUBMITTED);
+        user.setId(java.util.UUID.randomUUID());
+        user.setStatus(AccountStatus.ACTIVE);
+        user.setKycApproved(role == AccountRole.CLIENT);
         return userRepository.saveAndFlush(user);
     }
 
-    private void wallet(User owner, String balance) {
+    private void wallet(AccountHolder owner, String balance) {
         Wallet wallet = new Wallet();
         wallet.setUser(owner);
         wallet.setIban("BH03ALMT%014d".formatted(SEQUENCE.incrementAndGet()));
@@ -274,7 +271,7 @@ class VoucherRedemptionIntegrationTest {
         walletRepository.saveAndFlush(wallet);
     }
 
-    private BigDecimal balanceOf(User user) {
+    private BigDecimal balanceOf(AccountHolder user) {
         return walletRepository.findByUserId(user.getId()).orElseThrow().getBalance();
     }
 }

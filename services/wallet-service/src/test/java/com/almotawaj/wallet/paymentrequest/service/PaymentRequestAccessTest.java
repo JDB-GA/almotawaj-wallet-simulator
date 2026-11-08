@@ -3,11 +3,12 @@ package com.almotawaj.wallet.paymentrequest.service;
 import com.almotawaj.wallet.audit.service.AuditService;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.kyc.model.KycStatus;
 import com.almotawaj.wallet.paymentrequest.model.request.CreatePaymentRequest;
 import com.almotawaj.wallet.paymentrequest.repository.PaymentRequestRepository;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.wallet.service.RecipientResolver;
 import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -36,7 +37,7 @@ class PaymentRequestAccessTest {
     @Mock
     private PaymentRequestRepository requestRepository;
     @Mock
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Mock
     private RecipientResolver recipientResolver;
     @Mock
@@ -44,16 +45,18 @@ class PaymentRequestAccessTest {
     @Mock
     private AuditService auditService;
     @Spy
-    private WalletAccessPolicy accessPolicy = new WalletAccessPolicy();
+    private WalletAccessPolicy accessPolicy = new WalletAccessPolicy(org.mockito.Mockito.mock(com.almotawaj.wallet.wallet.repository.WalletRepository.class));
 
     @InjectMocks
     private PaymentRequestService service;
 
     @BeforeEach
     void setUp() {
-        User client = new User();
+        AccountHolder client = new AccountHolder();
         client.setId(CLIENT_ID);
-        client.setKycStatus(KycStatus.PENDING);
+        client.setRole(AccountRole.CLIENT);
+        client.setStatus(AccountStatus.ACTIVE);
+        client.setKycApproved(false);
         when(userRepository.findById(CLIENT_ID)).thenReturn(Optional.of(client));
     }
 

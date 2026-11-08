@@ -1,13 +1,12 @@
 package com.almotawaj.wallet.voucher.controller;
 
-import com.almotawaj.wallet.audit.repository.AuditLogRepository;
 import com.almotawaj.wallet.config.constants.SecurityConstants;
-import com.almotawaj.wallet.config.security.JwtUtils;
-import com.almotawaj.wallet.config.security.MyUserDetails;
-import com.almotawaj.wallet.kyc.model.KycStatus;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.model.UserRole;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.support.TestTokens;
+import org.springframework.beans.factory.annotation.Value;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
@@ -44,10 +43,10 @@ class ParallelPurchaseHttpTest {
 
     @LocalServerPort
     private int port;
+    @Value("${jwt-secret}")
+    private String jwtSecret;
     @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private UserRepository userRepository;
+    private AccountHolderRepository userRepository;
     @Autowired
     private WalletRepository walletRepository;
     @Autowired
@@ -56,8 +55,6 @@ class ParallelPurchaseHttpTest {
     private VoucherRepository voucherRepository;
     @Autowired
     private VoucherPurchaseRepository purchaseRepository;
-    @Autowired
-    private AuditLogRepository auditLogRepository;
 
     @AfterEach
     void cleanUp() {
@@ -65,20 +62,19 @@ class ParallelPurchaseHttpTest {
         voucherRepository.deleteAll();
         transactionRepository.deleteAll();
         walletRepository.deleteAll();
-        auditLogRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
     void twentySimultaneousRequestsForTheLastVoucher_giveOne201AndNineteen409() {
-        User merchant = user("http-shop@example.com", "+97333200000", UserRole.MERCHANT);
+        AccountHolder merchant = user("http-shop@example.com", "+97333200000", AccountRole.MERCHANT);
         wallet(merchant, "BH02ALMT00000000000200");
         Voucher voucher = voucher(merchant);
         List<String> cookies = new ArrayList<>();
         for (int index = 1; index <= BUYERS; index++) {
-            User buyer = user("http-buyer" + index + "@example.com", "+973332%05d".formatted(index), UserRole.CLIENT);
+            AccountHolder buyer = user("http-buyer" + index + "@example.com", "+973332%05d".formatted(index), AccountRole.CLIENT);
             wallet(buyer, "BH02ALMT%014d".formatted(200 + index));
-            cookies.add(SecurityConstants.AUTH_COOKIE_NAME + "=" + jwtUtils.generateToken(new MyUserDetails(buyer)));
+            cookies.add(SecurityConstants.AUTH_COOKIE_NAME + "=" + TestTokens.forAccount(buyer, jwtSecret));
         }
 
         HttpClient client = HttpClient.newHttpClient();
@@ -95,7 +91,7 @@ class ParallelPurchaseHttpTest {
         assertThat(purchaseRepository.count()).isEqualTo(1);
     }
 
-    private Voucher voucher(User merchant) {
+    private Voucher voucher(AccountHolder merchant) {
         Voucher voucher = new Voucher();
         voucher.setMerchant(merchant);
         voucher.setTitle("Last one");
@@ -108,18 +104,18 @@ class ParallelPurchaseHttpTest {
         return voucherRepository.saveAndFlush(voucher);
     }
 
-    private User user(String email, String mobile, UserRole role) {
-        User user = new User();
+    private AccountHolder user(String email, String mobile, AccountRole role) {
+        AccountHolder user = new AccountHolder();
         user.setEmailAddress(email);
         user.setMobileNumber(mobile);
-        user.setPassword("hashed");
         user.setRole(role);
-        user.setEmailVerified(true);
-        user.setKycStatus(role == UserRole.CLIENT ? KycStatus.APPROVED : KycStatus.NOT_SUBMITTED);
+        user.setId(java.util.UUID.randomUUID());
+        user.setStatus(AccountStatus.ACTIVE);
+        user.setKycApproved(role == AccountRole.CLIENT);
         return userRepository.saveAndFlush(user);
     }
 
-    private void wallet(User owner, String iban) {
+    private void wallet(AccountHolder owner, String iban) {
         Wallet wallet = new Wallet();
         wallet.setUser(owner);
         wallet.setIban(iban);

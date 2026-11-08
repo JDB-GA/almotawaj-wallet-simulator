@@ -16,10 +16,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Verifies tokens issued by identity-service with the shared secret.
- * Wallet never issues tokens.
- */
 @Slf4j
 @Component
 public class JwtUtils {

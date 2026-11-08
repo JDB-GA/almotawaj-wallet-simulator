@@ -20,7 +20,6 @@ import java.util.UUID;
 public class AuditService {
     private final AuditLogRepository auditLogRepository;
 
-    /** Saves one audit entry. Called by the Kafka consumer (Day 3). */
     @Transactional
     public void record(UUID actorId, String actorEmail, AuditAction action, AuditTargetType targetType,
                        UUID targetId, String details) {

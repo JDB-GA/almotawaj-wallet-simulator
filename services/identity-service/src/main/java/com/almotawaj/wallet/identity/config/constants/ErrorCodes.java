@@ -48,14 +48,9 @@ public final class ErrorCodes {
     public static final String PAYMENT_REQUEST_NOT_FOUND = "PAYMENT_REQUEST_NOT_FOUND";
     public static final String PAYMENT_REQUEST_NOT_PENDING = "PAYMENT_REQUEST_NOT_PENDING";
     public static final String PROFILE_PICTURE_NOT_FOUND = "PROFILE_PICTURE_NOT_FOUND";
-    public static final String API_KEY_NOT_FOUND = "API_KEY_NOT_FOUND";
-    public static final String API_KEY_LIMIT_REACHED = "API_KEY_LIMIT_REACHED";
-    public static final String WEBHOOK_URL_NOT_ALLOWED = "WEBHOOK_URL_NOT_ALLOWED";
     public static final String CHECKOUT_NOT_FOUND = "CHECKOUT_NOT_FOUND";
     public static final String CHECKOUT_NOT_PENDING = "CHECKOUT_NOT_PENDING";
     public static final String CHECKOUT_EXPIRED = "CHECKOUT_EXPIRED";
-    public static final String CHECKOUT_NOT_PAID = "CHECKOUT_NOT_PAID";
-    public static final String ORDER_ALREADY_EXISTS = "ORDER_ALREADY_EXISTS";
     public static final String MERCHANT_UNAVAILABLE = "MERCHANT_UNAVAILABLE";
     public static final String DAILY_CHECKOUT_LIMIT_EXCEEDED = "DAILY_CHECKOUT_LIMIT_EXCEEDED";
     public static final String VOUCHER_NOT_FOUND = "VOUCHER_NOT_FOUND";

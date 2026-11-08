@@ -10,10 +10,6 @@ import org.springframework.web.client.RestClientException;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * Synchronous REST calls to identity-service, used when wallet does not have
- * a local copy of an account yet.
- */
 @Slf4j
 @Component
 public class IdentityClient {

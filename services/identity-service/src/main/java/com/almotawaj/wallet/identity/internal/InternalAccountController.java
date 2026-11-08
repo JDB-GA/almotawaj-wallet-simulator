@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-/**
- * Service-to-service API: lets other services copy the account data they need.
- * Protected by {@link InternalTokenFilter}, never exposed to browsers.
- */
 @Hidden
 @RestController
 @RequestMapping(InternalConstants.ACCOUNTS_PATH)
@@ -33,7 +29,6 @@ public class InternalAccountController {
         return ResponseEntity.of(userRepository.findById(id).map(user -> AccountSnapshot.from(user, names.fullName(user))));
     }
 
-    /** Finds an account by email or Bahraini mobile number. */
     @GetMapping
     public ResponseEntity<AccountSnapshot> lookup(@RequestParam String identifier) {
         String normalized = LoginIdentifier.normalize(identifier);

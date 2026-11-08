@@ -2,10 +2,6 @@ package com.almotawaj.wallet.config.constants.docs;
 
 public final class SystemDocs {
     public static final String AUDIT_TAG = "Audit Log";
-    public static final String AUDIT_TAG_DESCRIPTION = "Trail of account, administrative and money actions (super admin only)";
-    public static final String AUDIT_LIST = "List audit entries";
-    public static final String AUDIT_LIST_DESCRIPTION = "Newest first. Filter by action or by the id of the affected user, application, payment request or transaction.";
-    public static final String AUDIT_LIST_OK = "Page of audit entries";
 
     public static final String SEED_TAG = "Seeding";
     public static final String SEED_TAG_DESCRIPTION = "Demo data for development and grading";

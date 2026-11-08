@@ -7,7 +7,7 @@ import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.WalletLimits;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.user.model.User;
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.wallet.model.Counterparty;
 import com.almotawaj.wallet.wallet.model.TransactionType;
@@ -50,7 +50,7 @@ public class TransferService {
      */
     @Transactional(readOnly = true)
     public RecipientResponse findRecipient(UUID senderId, String query) {
-        User recipient = recipientResolver.resolve(senderId, query);
+        AccountHolder recipient = recipientResolver.resolve(senderId, query);
         return new RecipientResponse(holderNames.maskedName(recipient), holderNames.maskedEmail(recipient),
                 recipient.getRole());
     }
@@ -80,7 +80,7 @@ public class TransferService {
      */
     @Transactional
     public WalletTransactionResponse transfer(UUID senderId, TransferRequest request) {
-        User recipient = recipientResolver.resolve(senderId, request.recipient());
+        AccountHolder recipient = recipientResolver.resolve(senderId, request.recipient());
         UUID senderWalletId = accessPolicy.usableWallet(senderId).getId();
         UUID recipientWalletId = accessPolicy.usableWallet(recipient.getId()).getId();
         WalletLocker.LockedPair locked = walletLocker.lockPair(senderWalletId, recipientWalletId);

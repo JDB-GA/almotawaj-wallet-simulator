@@ -5,8 +5,8 @@ import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.ValidationPatterns;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.user.model.User;
-import com.almotawaj.wallet.user.repository.UserRepository;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.service.AccountHolderService;
 import com.almotawaj.wallet.util.Iban;
 import com.almotawaj.wallet.util.LoginIdentifier;
 import com.almotawaj.wallet.wallet.model.Wallet;
@@ -20,12 +20,12 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class RecipientResolver {
-    private final UserRepository userRepository;
+    private final AccountHolderService accountHolderService;
     private final WalletRepository walletRepository;
     private final WalletAccessPolicy accessPolicy;
 
-    public User resolve(UUID senderId, String query) {
-        User recipient = find(query.trim()).orElseThrow(() ->
+    public AccountHolder resolve(UUID senderId, String query) {
+        AccountHolder recipient = find(query.trim()).orElseThrow(() ->
                 new InformationNotFoundException(ErrorMessages.RECIPIENT_NOT_FOUND, ErrorCodes.RECIPIENT_NOT_FOUND));
         if (recipient.getId().equals(senderId)) {
             throw new BusinessRuleException(ErrorMessages.SELF_TRANSFER_NOT_ALLOWED, ErrorCodes.SELF_TRANSFER_NOT_ALLOWED);
@@ -36,12 +36,9 @@ public class RecipientResolver {
         return recipient;
     }
 
-    private Optional<User> find(String query) {
-        if (LoginIdentifier.isEmail(query)) {
-            return userRepository.findByEmailAddress(LoginIdentifier.normalizeEmail(query));
-        }
-        if (query.matches(ValidationPatterns.MOBILE_NUMBER)) {
-            return userRepository.findByMobileNumber(LoginIdentifier.normalizeMobile(query));
+    private Optional<AccountHolder> find(String query) {
+        if (LoginIdentifier.isEmail(query) || query.matches(ValidationPatterns.MOBILE_NUMBER)) {
+            return accountHolderService.findByIdentifier(query);
         }
         return Iban.isValid(query) ? walletRepository.findByIban(Iban.normalize(query)).map(Wallet::getUser) : Optional.empty();
     }

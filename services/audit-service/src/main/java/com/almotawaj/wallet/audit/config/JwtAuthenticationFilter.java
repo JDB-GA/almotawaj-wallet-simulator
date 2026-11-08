@@ -23,10 +23,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-/**
- * Trusts the token issued by identity-service: checks its signature with the shared secret
- * and reads the authorities from it, without calling identity-service.
- */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final SecretKey signingKey;
@@ -48,7 +44,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(
                         UsernamePasswordAuthenticationToken.authenticated(claims.getSubject(), null, granted));
             } catch (JwtException | IllegalArgumentException ignored) {
-                // invalid token: the request stays anonymous and is refused by the security rules
             }
         }
         chain.doFilter(request, response);
