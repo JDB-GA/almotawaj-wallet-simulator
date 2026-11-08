@@ -91,7 +91,6 @@ public class PayoutRunner {
                         .exceptionally(error -> crashed(batchId, itemId, merchantId, total, paid, failed, error)))
                 .toList();
 
-
         /*
          * Waits for the threads to finish their work (the background work)
          * Note: CompletableFuture[]::new is same as size -> new CompletableFuture[size]
@@ -112,7 +111,6 @@ public class PayoutRunner {
         // Returns the batch object
         return batch;
     }
-
 
     private PayoutItemStatus payOne(UUID batchId, UUID itemId, UUID merchantId, int total,
                                     AtomicInteger paid, AtomicInteger failed, PayoutItemObserver observer) {

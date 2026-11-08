@@ -23,11 +23,12 @@
 
 ## Day 1: Identity split (Req 1, 2, 3)
 
-- [ ] Create service skeletons
+- [x] Create service skeletons: identity, wallet, notification, audit
 - [ ] Document each service: responsibility, APIs, data, communication
-- [ ] Move auth, user, kyc into identity-service
-- [ ] Identity issues a JWT with `userId`, `role`, `kycApproved`
-- **Done when:** register, login and KYC work from identity-service
+- [x] Move auth, user, kyc into identity-service
+- [x] Identity issues a JWT with `uid` and `authorities`
+- [x] audit-service trusts the JWT without calling identity
+- **Done when:** register, login and KYC work from identity-service ✅
 
 ## Day 2: Wallet decoupling (Req 3, 4, 7)
 
@@ -37,6 +38,8 @@
 - [x] One database per service: `identity`, `wallet`, `audit`
 - [x] Secrets and URLs moved to environment variables, `.env.example` added
 - [x] Every client and merchant gets a wallet when their account is copied; clients use it only after KYC
+- [x] API Gateway routes every request to the right service (`/internal/**` stays private)
+- [x] Unused code removed after the split
 - **Done when:** a transfer and a voucher purchase work across both services ✅
 
 ## Day 3: Docker and Kafka (Req 5, 6, 8, 9, 10, 11)
@@ -46,6 +49,7 @@
 - [ ] Services talk by Docker service name, not localhost
 - [ ] Topics and event models defined
 - [ ] Identity and wallet publish; notification and audit consume
+- [ ] Registration: wallet copy, OTP email and audit entry through events instead of direct calls
 - [ ] Retries, dead-letter topic, duplicate-safe consumers
 - **Done when:** `docker compose up` runs all and events flow end to end
 

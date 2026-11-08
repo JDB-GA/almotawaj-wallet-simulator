@@ -56,12 +56,10 @@ public class PayoutService {
     @Transactional
     public PayoutBatchResponse create(UUID merchantId, CreatePayoutRequest request) {
 
-
         AccountHolder merchant = accessPolicy.usableWallet(merchantId).getUser();
         Set<UUID> recipients = new HashSet<>();
         List<PayoutItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
-
 
         /*
          * Loop throw CreatePayoutRequest(the request the items)
@@ -108,7 +106,6 @@ public class PayoutService {
         // Map it as PayoutBatchResponse
         return PayoutBatchResponse.from(batch, items.stream().map(this::toItemResponse).toList());
     }
-
 
     /*
      * Finds the batch by BatchId and MerchantId

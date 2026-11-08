@@ -81,7 +81,6 @@ public class VoucherPurchaseService {
         BigDecimal price = voucher.getPrice();
         int perClientLimit = voucher.getPerClientLimit();
 
-
         /*
          * It reserves one voucher safely. Even if 20 buyers hit the last voucher at once, only one gets 1 back;
          * the rest get 0 and a 409
@@ -143,7 +142,6 @@ public class VoucherPurchaseService {
         if (idempotencyKey != null) {
             remember(buyer, idempotencyKey, purchase);
         }
-
 
         // Get the remaining and mark for simulation
         int remaining = sold.getRemaining();

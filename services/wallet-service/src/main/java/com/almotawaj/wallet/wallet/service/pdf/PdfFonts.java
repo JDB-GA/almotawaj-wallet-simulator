@@ -18,10 +18,6 @@ public class PdfFonts {
         return regular;
     }
 
-    public BaseFont boldBase() {
-        return bold;
-    }
-
     public Font title() {
         return new Font(bold, PdfConstants.TITLE_SIZE, Font.NORMAL, PdfConstants.BRAND_COLOR);
     }

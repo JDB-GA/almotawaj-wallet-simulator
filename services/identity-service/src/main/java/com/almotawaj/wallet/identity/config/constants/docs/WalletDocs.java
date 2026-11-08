@@ -1,7 +1,5 @@
 package com.almotawaj.wallet.identity.config.constants.docs;
 
-import com.almotawaj.wallet.identity.config.constants.WalletLimits;
-
 public final class WalletDocs {
     public static final String TAG = "Wallet";
     public static final String TAG_DESCRIPTION = "Wallet balance, IBAN, transaction history and simulated incoming bank transfers (clients with approved KYC and merchants)";

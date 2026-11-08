@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:file:.env[.properties],optional:file:../.env[.properties],optional:file:../../.env[.properties]
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: wallet-admin-user-transactions
+              uri: ${WALLET_URL}
+              order: 0
+              predicates:
+                - Path=/api/admin/users/*/transactions
+
+            - id: identity
+              uri: ${IDENTITY_URL}
+              order: 1
+              predicates:
+                - Path=/auth/**,/api/profile,/api/profile/**,/api/kyc/**,/api/admin/kyc/**,/api/admin/users,/api/admin/users/**,/api/admin/statistics/users,/api/seed,/api/admin/seed-data
+
+            - id: wallet
+              uri: ${WALLET_URL}
+              order: 1
+              predicates:
+                - Path=/api/wallet/**,/api/checkout/**,/api/merchant/**,/api/gateway/**,/api/vouchers,/api/vouchers/**,/api/notifications/**,/api/admin/transactions,/api/admin/transactions/**,/api/admin/statistics/transactions,/api/admin/simulations/**,/api/seed/wallet,/api/admin/seed-data/wallet
+
+            - id: audit
+              uri: ${AUDIT_URL}
+              order: 1
+              predicates:
+                - Path=/api/admin/audit-logs,/api/admin/audit-logs/**
+
+server:
+  port: ${PORT:8000}
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway

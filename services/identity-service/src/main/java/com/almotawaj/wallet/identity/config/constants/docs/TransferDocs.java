@@ -1,7 +1,5 @@
 package com.almotawaj.wallet.identity.config.constants.docs;
 
-import com.almotawaj.wallet.identity.config.constants.WalletLimits;
-
 public final class TransferDocs {
     public static final String TAG = "Transfers";
     public static final String TAG_DESCRIPTION = "Send money to another wallet by email, mobile number or IBAN";

@@ -25,7 +25,6 @@ public class SecurityConfiguration {
     private final JwtRequestFilter jwtRequestFilter;
     private final ApiKeyAuthenticationFilter apiKeyAuthenticationFilter;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) {
         http
@@ -45,5 +44,4 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
 }
