@@ -118,12 +118,8 @@ Phase 03 extends the same wallet so that it stays correct when many people act o
 | --- | --- |
 | `ConcurrencyIntegrationTest`: 20 threads buy 1 voucher, **repeated 50 times** | Exactly one `201`, 19 conflicts, stock 0, money adds up: every run |
 | `ParallelPurchaseHttpTest`: 20 real parallel HTTP requests to `POST /api/vouchers/{id}/purchase` | One `201 Created`, nineteen `409 Conflict` |
-| Same `Idempotency-Key` sent 10 times in parallel | One purchase, charged once |
-| 10 payouts of 15 BHD from 100 BHD on 5 threads | 6 paid, 4 failed, 10 BHD left, never negative |
-| Stale `version` on a voucher edit | `409`, the newer change survives |
-| `VoucherRedemptionIntegrationTest`: one voucher used in 10 tabs at once, **repeated 20 times** | Exactly one payment succeeds, nine get `VOUCHER_NOT_USABLE`; refunds free the voucher |
+| `VoucherRedemptionIntegrationTest`: one voucher used in 10 tabs at once, **repeated 20 times** | Exactly one payment succeeds, nine get `VOUCHER_NOT_USABLE` |
 | `SimulationServiceTest` | Safe mode never oversells; unsafe mode does, so the race is real |
-| `VoucherAndPayoutControllerTest` | Status codes, roles, validation and Swagger for every new endpoint |
 
 ```text
 Request A → 201 Created   {"code":"VCH-JKTQ-CAW8-SLW9", ...}

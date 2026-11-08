@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${subject}">Your code</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:Tahoma,Arial,Helvetica,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;padding:32px 16px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                   style="max-width:480px;background-color:#ffffff;border-radius:12px;border:1px solid #e5e5e5;">
+                <tr>
+                    <td align="center" style="padding:32px 32px 8px;">
+                        <img th:src="${logoUrl}" src="" width="80" height="80" alt="Logo" style="display:block;border:0;">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" style="padding:16px 32px 8px;">
+                        <div dir="ltr" th:text="${code}"
+                             style="display:inline-block;padding:16px 28px;background-color:#f5f5f5;border-radius:10px;color:#171717;font-family:'Courier New',monospace;font-size:34px;font-weight:bold;letter-spacing:10px;">
+                            123456
+                        </div>
+                    </td>
+                </tr>
+                <tr th:each="section : ${sections}">
+                    <td th:lang="${section.language()}" th:dir="${section.direction()}" style="padding:16px 32px;border-top:1px solid #e5e5e5;">
+                        <p style="margin:0;color:#171717;font-size:20px;font-weight:bold;" th:text="${section.heading()}">Heading</p>
+                        <p style="margin:12px 0 0;color:#525252;font-size:15px;line-height:1.6;" th:text="${section.intro()}">Intro</p>
+                        <p style="margin:8px 0 0;color:#525252;font-size:14px;line-height:1.6;" th:text="${section.expiry()}">Expiry</p>
+                        <p style="margin:8px 0 0;color:#a3a3a3;font-size:13px;line-height:1.6;" th:text="${section.ignore()}">Ignore</p>
+                        <p style="margin:16px 0 0;">
+                            <a th:href="${actionUrl}" th:text="${section.action()}" href="#"
+                               style="display:inline-block;padding:10px 18px;background-color:#2563eb;border-radius:8px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;">Set your password</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

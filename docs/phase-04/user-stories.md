@@ -4,7 +4,7 @@
 
 Format: _As a [user], I want to [action], so that [reason]._ Extends the [Phase 03 stories](../phase-03/user-stories.md).
 
-## Day 1: Services
+## Day 1 and 2: Services
 
 **US-44: Independent services.** As an administrator, I want each service to run on its own, so that one can change without rebuilding the rest.
 
@@ -14,7 +14,7 @@ Format: _As a [user], I want to [action], so that [reason]._ Extends the [Phase 
 
 - [ ] No passwords, keys or environment URLs in the repository.
 
-## Day 2: Docker and Kafka
+## Day 3: Docker and Kafka
 
 **US-46: One-command start.** As a developer, I want to start everything with one command, so that I don't install each dependency by hand.
 
@@ -28,13 +28,13 @@ Format: _As a [user], I want to [action], so that [reason]._ Extends the [Phase 
 
 - [ ] A stopped container comes back on its own.
 
-## Day 3: CI/CD
+## Day 4: CI/CD
 
 **US-49: Safe releases.** As a developer, I want every push built and tested, so that broken code never reaches production.
 
 - [ ] A failing test stops the pipeline.
 
-## Day 4: AWS
+## Day 5: AWS
 
 **US-50: Correct under scale.** As a client, I want my voucher purchase correct with several wallet instances, so that the last voucher is never sold twice.
 

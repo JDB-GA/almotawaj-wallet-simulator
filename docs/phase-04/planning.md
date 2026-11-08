@@ -11,28 +11,45 @@
 - [X] AWS CLI configured locally
 - [X] Branch `feature-microservices`
 
-## Day 1: Services (Req 1, 2, 3, 4, 7)
+## Services
 
-- [ ] Decide service boundaries: identity, wallet, notification
+| Service | Owns | Port |
+| --- | --- | --- |
+| identity-service | auth, user, kyc | 8081 |
+| wallet-service | wallet, paymentrequest, checkout, voucher, payout, statistics, simulation, SSE | 8080 |
+| notification-service | email | 8082 |
+| audit-service | audit log | 8083 |
+
+## Day 1: Identity split (Req 1, 2, 3)
+
+- [ ] Create service skeletons
 - [ ] Document each service: responsibility, APIs, data, communication
-- [ ] One Spring Boot app per service, no shared internal classes
+- [ ] Move auth, user, kyc into identity-service
+- [ ] Identity issues a JWT with `userId`, `role`, `kycApproved`
+- **Done when:** register, login and KYC work from identity-service
+
+## Day 2: Wallet decoupling (Req 3, 4, 7)
+
+- [ ] Wallet entities keep `userId`, not a `User` entity
+- [ ] Wallet trusts the JWT instead of reading the user table
+- [ ] Wallet gets names and status from identity by REST where needed
 - [ ] One database or schema per service
 - [ ] Secrets and URLs moved to environment variables, `.env.example` added
-- **Done when:** every service starts on its own
+- **Done when:** a transfer and a voucher purchase work across both services
 
-## Day 2: Docker and Kafka (Req 5, 6, 8, 9, 10, 11)
+## Day 3: Docker and Kafka (Req 5, 6, 8, 9, 10, 11)
 
 - [ ] Dockerfile per service (multi-stage build)
 - [ ] `docker-compose.yml`: services, Postgres, Kafka
 - [ ] Services talk by Docker service name, not localhost
-- [ ] Topic and event model defined
-- [ ] Producer in wallet service, consumer in notification service
-- [ ] Retries, dead-letter topic, duplicate-safe consumer
-- **Done when:** `docker compose up` runs all and an event flows end to end
+- [ ] Topics and event models defined
+- [ ] Identity and wallet publish; notification and audit consume
+- [ ] Retries, dead-letter topic, duplicate-safe consumers
+- **Done when:** `docker compose up` runs all and events flow end to end
 
-## Day 3: CI/CD and tests (Req 12, 13, 14, 22, 23)
+## Day 4: CI/CD and tests (Req 12, 13, 14, 22, 23)
 
-- [ ] GitHub Actions: build, test, build images
+- [ ] GitHub Actions: build, test, build images per service
 - [ ] Push images to ECR with version tags
 - [ ] Pipeline fails on a failing test
 - [ ] Previous tests still pass
@@ -40,7 +57,7 @@
 - [ ] Cucumber feature files for key flows
 - **Done when:** a push runs the full pipeline
 
-## Day 4: AWS (Req 15, 16, 17, 20, 21)
+## Day 5: AWS (Req 15, 16, 17, 20, 21)
 
 - [ ] Deploy services to AWS
 - [ ] Database on RDS, private
@@ -50,7 +67,7 @@
 - [ ] Pipeline deploys automatically
 - **Done when:** live endpoint works on AWS
 
-## Day 5: Docs and cleanup (Req 18, 19, 24 + deliverables)
+## Day 6: Docs and cleanup (Req 18, 19, 24 + deliverables)
 
 - [ ] Architecture diagram
 - [ ] Deployment guide: build, run, Kafka, AWS, verify
@@ -62,7 +79,7 @@
 - [ ] Presentation
 - **Done when:** every requirement ticked
 
-## Optional bonuses (after Day 5)
+## Optional bonuses (after Day 6)
 
 - [ ] API Gateway: one entry point for the frontend
 - [ ] Service discovery: services find each other by name
