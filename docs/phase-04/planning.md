@@ -13,18 +13,18 @@
 
 ## Services
 
-| Service | Owns | Port |
-| --- | --- | --- |
-| identity-service | auth, user, kyc | 8081 |
-| wallet-service | wallet, paymentrequest, checkout, voucher, payout, statistics, simulation, SSE | 8080 |
-| notification-service | email | 8082 |
-| audit-service | audit log | 8083 |
-| api-gateway | routes every request to the right service | 8000 |
+| Service              | Owns                                                                           | Port |
+|----------------------|--------------------------------------------------------------------------------|------|
+| identity-service     | auth, user, kyc                                                                | 8081 |
+| wallet-service       | wallet, paymentrequest, checkout, voucher, payout, statistics, simulation, SSE | 8084 |
+| notification-service | email                                                                          | 8082 |
+| audit-service        | audit log                                                                      | 8083 |
+| api-gateway          | routes every request to the right service                                      | 8080 |
 
 ## Day 1: Identity split (Req 1, 2, 3)
 
 - [x] Create service skeletons: identity, wallet, notification, audit
-- [ ] Document each service: responsibility, APIs, data, communication
+- [x] Document each service: [`services.md`](services.md)
 - [x] Move auth, user, kyc into identity-service
 - [x] Identity issues a JWT with `uid` and `authorities`
 - [x] audit-service trusts the JWT without calling identity
@@ -80,14 +80,15 @@
 - [ ] Remove dead code, debug logs, hard-coded values
 - [ ] Architecture doc: services, communication, data, infrastructure, CI/CD
 - [ ] API docs updated, Kafka events documented separately
-- [ ] README: overview, architecture, services, Kafka, Docker, CI/CD, AWS, env vars, testing, challenges, unsolved, future
+- [ ] README: overview, architecture, services, Kafka, Docker, CI/CD, AWS, env vars, testing, challenges, unsolved,
+  future
 - [ ] ERD, credits, AWS screenshots
 - [ ] Presentation
 - **Done when:** every requirement ticked
 
 ## Optional bonuses (after Day 6)
 
-- [x] API Gateway: one entry point for the frontend (`services/api-gateway`, port 8000)
+- [x] API Gateway: one entry point for the frontend (`services/api-gateway`, port 8080)
 - [ ] Service discovery: services find each other by name
 - [ ] Advanced Kafka: multiple topics, consumer groups, dead-letter processing
 - [ ] Advanced CI/CD: image scanning, versioned releases, rollback
