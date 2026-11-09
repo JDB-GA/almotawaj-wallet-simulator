@@ -13,6 +13,12 @@ public final class AuditConstants {
     public static final String AUTHORITIES_CLAIM = "authorities";
     public static final String JWT_SECRET_PROPERTY = "${jwt-secret}";
 
+    public static final String AUDIT_EVENTS = "audit-events";
+    public static final long RETRY_INTERVAL_MS = 2_000;
+    public static final long MAX_RETRIES = 3;
+    public static final String HEALTH_PATHS = "/actuator/health/**";
+    public static final String ERROR_PATH = "/error";
+
     private AuditConstants() {
     }
 }

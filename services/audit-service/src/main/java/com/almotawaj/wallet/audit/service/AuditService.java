@@ -3,8 +3,8 @@ package com.almotawaj.wallet.audit.service;
 import com.almotawaj.wallet.audit.common.PageResponse;
 import com.almotawaj.wallet.audit.config.AuditConstants;
 import com.almotawaj.wallet.audit.model.AuditAction;
+import com.almotawaj.wallet.audit.model.AuditEvent;
 import com.almotawaj.wallet.audit.model.AuditLog;
-import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.model.response.AuditLogResponse;
 import com.almotawaj.wallet.audit.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +21,18 @@ public class AuditService {
     private final AuditLogRepository auditLogRepository;
 
     @Transactional
-    public void record(UUID actorId, String actorEmail, AuditAction action, AuditTargetType targetType,
-                       UUID targetId, String details) {
+    public void record(AuditEvent event) {
+        if (auditLogRepository.existsByEventId(event.eventId())) {
+            return;
+        }
         AuditLog log = new AuditLog();
-        log.setActorId(actorId);
-        log.setActorEmail(actorEmail);
-        log.setAction(action.name());
-        log.setTargetType(targetType.name());
-        log.setTargetId(targetId);
-        log.setDetails(details == null ? null : truncate(details));
+        log.setEventId(event.eventId());
+        log.setActorId(event.actorId());
+        log.setActorEmail(event.actorEmail());
+        log.setAction(event.action());
+        log.setTargetType(event.targetType());
+        log.setTargetId(event.targetId());
+        log.setDetails(event.details() == null ? null : truncate(event.details()));
         auditLogRepository.save(log);
     }
 
