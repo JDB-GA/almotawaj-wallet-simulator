@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.identity.user.controller;
 
+import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.config.constants.ApiPaths;
 import com.almotawaj.wallet.identity.config.constants.SecurityConstants;
 import com.almotawaj.wallet.identity.config.constants.docs.ApiDocs;
@@ -8,7 +9,6 @@ import com.almotawaj.wallet.identity.config.security.MyUserDetails;
 import com.almotawaj.wallet.identity.user.model.request.UpdateProfileRequest;
 import com.almotawaj.wallet.identity.user.model.response.ProfileResponse;
 import com.almotawaj.wallet.identity.user.service.ProfileService;
-import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

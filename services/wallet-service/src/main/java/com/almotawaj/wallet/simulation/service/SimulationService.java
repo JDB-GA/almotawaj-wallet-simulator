@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.simulation.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.config.constants.LogMessages;
 import com.almotawaj.wallet.config.constants.SimulationConstants;
 import com.almotawaj.wallet.exception.BusinessRuleException;
@@ -16,7 +17,6 @@ import com.almotawaj.wallet.simulation.model.response.PayoutRaceResult;
 import com.almotawaj.wallet.simulation.model.response.SimulationAttempt;
 import com.almotawaj.wallet.simulation.model.response.SimulationStep;
 import com.almotawaj.wallet.simulation.model.response.VoucherRaceResult;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.service.VoucherPurchaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class SimulationService {
     private final SimulationSandbox sandbox;
+    private final SandboxAccountsClient sandboxAccounts;
     private final VoucherPurchaseService purchaseService;
     private final UnsafeVoucherBuyer unsafeBuyer;
     private final PayoutRunner payoutRunner;
@@ -65,6 +66,7 @@ public class SimulationService {
             return result;
         } finally {
             sandbox.cleanUp(userIds);
+            sandboxAccounts.delete(userIds);
         }
     }
 
@@ -92,6 +94,7 @@ public class SimulationService {
             return result;
         } finally {
             sandbox.cleanUp(userIds);
+            sandboxAccounts.delete(userIds);
         }
     }
 

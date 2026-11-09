@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.payout.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.audit.model.AuditAction;
 import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.service.AuditService;
@@ -13,7 +14,6 @@ import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
 import com.almotawaj.wallet.simulation.model.SimulationStepType;
 import com.almotawaj.wallet.simulation.service.SimulationTrace;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.wallet.model.Counterparty;
 import com.almotawaj.wallet.wallet.model.TransactionType;

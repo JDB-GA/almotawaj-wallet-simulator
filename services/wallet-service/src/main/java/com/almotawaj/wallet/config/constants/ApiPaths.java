@@ -2,27 +2,14 @@ package com.almotawaj.wallet.config.constants;
 
 public final class ApiPaths {
     public static final String HEALTH = "/actuator/health/**";
-    public static final String AUTH_USERS = "/auth/users";
     public static final String REGISTER = "/register";
     public static final String LOGIN = "/login";
     public static final String LOGOUT = "/logout";
     public static final String ME = "/me";
     public static final String VERIFY_EMAIL = "/verify-email";
-    public static final String RESEND_VERIFICATION = "/verify-email/resend";
-    public static final String AUTH_REGISTER = AUTH_USERS + REGISTER;
-    public static final String AUTH_LOGIN = AUTH_USERS + LOGIN;
-    public static final String AUTH_VERIFY_EMAIL = AUTH_USERS + VERIFY_EMAIL;
-    public static final String AUTH_RESEND_VERIFICATION = AUTH_USERS + RESEND_VERIFICATION;
-    public static final String FORGOT_PASSWORD = "/password/forgot";
-    public static final String RESET_PASSWORD = "/password/reset";
-    public static final String CHANGE_PASSWORD = "/password/change";
-    public static final String AUTH_FORGOT_PASSWORD = AUTH_USERS + FORGOT_PASSWORD;
-    public static final String AUTH_RESET_PASSWORD = AUTH_USERS + RESET_PASSWORD;
-    public static final String AUTH_CHANGE_PASSWORD = AUTH_USERS + CHANGE_PASSWORD;
     public static final String KYC = "/api/kyc";
     public static final String KYC_APPLICATION = "/{applicationId}";
     public static final String ADMIN_USERS = "/api/admin/users";
-    public static final String ADMIN_SEED_DATA = "/api/admin/seed-data/wallet";
     public static final String ADMIN_STATISTICS = "/api/admin/statistics";
     public static final String ADMIN_TRANSACTIONS = "/api/admin/transactions";
     public static final String SEED = "/api/seed/wallet";
@@ -77,6 +64,11 @@ public final class ApiPaths {
     public static final String API_DOCS = "/v3/api-docs/**";
     public static final String ERROR = "/error";
     public static final String ALL = "/**";
+
+    public static final String INTERNAL_PREFIX = "/internal/";
+    public static final String INTERNAL_PATHS = "/internal/**";
+    public static final String INTERNAL_SEED_DATA = "/internal/seed-data";
+    public static final String INTERNAL_SANDBOX_ACCOUNTS = "/internal/sandbox-accounts";
 
     private ApiPaths() {
     }

@@ -1,14 +1,13 @@
 package com.almotawaj.wallet.simulation.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.config.constants.SimulationConstants;
 import com.almotawaj.wallet.payout.model.PayoutBatch;
 import com.almotawaj.wallet.payout.model.PayoutItem;
 import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
-import com.almotawaj.wallet.account.model.AccountHolder;
-import com.almotawaj.wallet.account.model.AccountRole;
-import com.almotawaj.wallet.account.model.AccountStatus;
-import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.repository.IdempotencyRecordRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.security.SecureRandom;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -33,10 +31,8 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class SimulationSandbox {
-    private static final SecureRandom RANDOM = new SecureRandom();
-    private static final int DECIMAL_RADIX = 10;
-
     private final AccountHolderRepository accountRepository;
+    private final SandboxAccountsClient sandboxAccounts;
     private final WalletRepository walletRepository;
     private final WalletTransactionRepository transactionRepository;
     private final VoucherRepository voucherRepository;
@@ -47,23 +43,18 @@ public class SimulationSandbox {
     private final IbanGenerator ibanGenerator;
     private final Clock clock;
 
-    @Transactional
     public AccountHolder createMerchant(BigDecimal balance) {
-        AccountHolder merchant = user(AccountRole.MERCHANT);
-        merchant.setDisplayName(SimulationConstants.MERCHANT_NAME);
-        wallet(merchant, balance);
-        return merchant;
+        return accounts(AccountRole.MERCHANT, 1, SimulationConstants.MERCHANT_NAME, balance).get(0);
     }
 
-    @Transactional
     public List<AccountHolder> createClients(int count, BigDecimal balance) {
-        List<AccountHolder> clients = new ArrayList<>();
-        for (int index = 0; index < count; index++) {
-            AccountHolder client = user(AccountRole.CLIENT);
-            wallet(client, balance);
-            clients.add(client);
-        }
-        return clients;
+        return accounts(AccountRole.CLIENT, count, null, balance);
+    }
+
+    private List<AccountHolder> accounts(AccountRole role, int count, String displayName, BigDecimal balance) {
+        List<AccountHolder> accounts = accountRepository.findAllById(sandboxAccounts.create(role, count, displayName));
+        accounts.forEach(account -> wallet(account, balance));
+        return accounts;
     }
 
     @Transactional
@@ -119,18 +110,6 @@ public class SimulationSandbox {
         batchRepository.deleteAllByMerchantIdIn(userIds);
         transactionRepository.deleteAllByWalletUserIdIn(userIds);
         walletRepository.deleteAllByUserIdIn(userIds);
-        accountRepository.deleteAllByIdInBatch(userIds);
-    }
-
-    private AccountHolder user(AccountRole role) {
-        AccountHolder account = new AccountHolder();
-        account.setId(UUID.randomUUID());
-        account.setEmailAddress(SimulationConstants.EMAIL_PATTERN.formatted(account.getId()));
-        account.setMobileNumber(randomMobile());
-        account.setRole(role);
-        account.setStatus(AccountStatus.ACTIVE);
-        account.setKycApproved(role == AccountRole.CLIENT);
-        return accountRepository.save(account);
     }
 
     private void wallet(AccountHolder owner, BigDecimal balance) {
@@ -141,11 +120,4 @@ public class SimulationSandbox {
         walletRepository.save(wallet);
     }
 
-    private static String randomMobile() {
-        StringBuilder mobile = new StringBuilder(SimulationConstants.MOBILE_PREFIX);
-        for (int index = 0; index < SimulationConstants.MOBILE_RANDOM_DIGITS; index++) {
-            mobile.append(RANDOM.nextInt(DECIMAL_RADIX));
-        }
-        return mobile.toString();
-    }
 }

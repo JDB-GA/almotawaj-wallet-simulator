@@ -1,8 +1,9 @@
 package com.almotawaj.wallet.identity.kyc.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
+import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.common.service.FileStorageService;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
@@ -20,7 +21,6 @@ import com.almotawaj.wallet.identity.kyc.repository.KycApplicationRepository;
 import com.almotawaj.wallet.identity.kyc.repository.KycDocumentRepository;
 import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.repository.UserRepository;
-import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

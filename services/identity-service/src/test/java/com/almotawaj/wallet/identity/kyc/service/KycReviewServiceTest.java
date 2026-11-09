@@ -3,8 +3,10 @@ package com.almotawaj.wallet.identity.kyc.service;
 import com.almotawaj.wallet.identity.audit.AuditService;
 import com.almotawaj.wallet.identity.common.service.FileStorageService;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
+import com.almotawaj.wallet.identity.config.constants.KafkaConstants;
+import com.almotawaj.wallet.identity.event.EmailEvent;
+import com.almotawaj.wallet.identity.event.EventPublisher;
 import com.almotawaj.wallet.identity.exception.BusinessRuleException;
-import com.almotawaj.wallet.identity.kyc.event.KycReviewedEvent;
 import com.almotawaj.wallet.identity.kyc.model.KycApplication;
 import com.almotawaj.wallet.identity.kyc.model.KycApplicationStatus;
 import com.almotawaj.wallet.identity.kyc.model.KycStatus;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -29,6 +30,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +48,7 @@ class KycReviewServiceTest {
     @Mock
     private FileStorageService fileStorageService;
     @Mock
-    private ApplicationEventPublisher eventPublisher;
+    private EventPublisher eventPublisher;
     @Mock
     private AuditService auditService;
 
@@ -81,8 +83,9 @@ class KycReviewServiceTest {
         assertThat(application.getReviewedBy()).isSameAs(reviewer);
         assertThat(application.getReviewedAt()).isEqualTo(NOW);
         assertThat(applicant.getKycStatus()).isEqualTo(KycStatus.APPROVED);
-        verify(eventPublisher).publishEvent(new KycReviewedEvent(applicant.getId(), "client@example.com",
-                KycApplicationStatus.APPROVED, null));
+        ArgumentCaptor<EmailEvent> email = ArgumentCaptor.forClass(EmailEvent.class);
+        verify(eventPublisher).publish(eq(KafkaConstants.EMAIL_EVENTS), eq(applicant.getId().toString()), email.capture());
+        assertThat(email.getValue().kycStatus()).isEqualTo("APPROVED");
     }
 
     @Test
@@ -94,9 +97,9 @@ class KycReviewServiceTest {
         assertThat(application.getStatus()).isEqualTo(KycApplicationStatus.REJECTED);
         assertThat(application.getRejectionReason()).isEqualTo("Blurry CPR copy");
         assertThat(applicant.getKycStatus()).isEqualTo(KycStatus.REJECTED);
-        ArgumentCaptor<KycReviewedEvent> event = ArgumentCaptor.forClass(KycReviewedEvent.class);
-        verify(eventPublisher).publishEvent(event.capture());
-        assertThat(event.getValue().reason()).isEqualTo("Blurry CPR copy");
+        ArgumentCaptor<EmailEvent> email = ArgumentCaptor.forClass(EmailEvent.class);
+        verify(eventPublisher).publish(eq(KafkaConstants.EMAIL_EVENTS), eq(applicant.getId().toString()), email.capture());
+        assertThat(email.getValue().reason()).isEqualTo("Blurry CPR copy");
     }
 
     @Test
@@ -107,6 +110,6 @@ class KycReviewServiceTest {
                 .isInstanceOf(BusinessRuleException.class)
                 .hasFieldOrPropertyWithValue("code", ErrorCodes.KYC_ALREADY_REVIEWED);
         assertThat(application.getStatus()).isEqualTo(KycApplicationStatus.APPROVED);
-        verify(eventPublisher, never()).publishEvent(any());
+        verify(eventPublisher, never()).publish(any(), any(), any());
     }
 }

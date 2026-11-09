@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.identity.auth.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.auth.model.LoginResult;
 import com.almotawaj.wallet.identity.auth.model.request.ChangePasswordRequest;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;

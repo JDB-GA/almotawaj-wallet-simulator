@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.wallet.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.audit.model.AuditAction;
 import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.service.AuditService;
@@ -7,7 +8,6 @@ import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.WalletLimits;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.wallet.event.MoneyReceivedEvent;
 import com.almotawaj.wallet.wallet.model.Counterparty;
 import com.almotawaj.wallet.wallet.model.TransactionType;

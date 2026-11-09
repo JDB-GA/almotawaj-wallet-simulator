@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.identity.user.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.common.model.response.PageResponse;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;

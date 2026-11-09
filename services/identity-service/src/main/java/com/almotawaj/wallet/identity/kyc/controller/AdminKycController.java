@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.identity.kyc.controller;
 
+import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.common.model.response.PageResponse;
 import com.almotawaj.wallet.identity.config.constants.ApiPaths;
 import com.almotawaj.wallet.identity.config.constants.SecurityConstants;
@@ -13,7 +14,6 @@ import com.almotawaj.wallet.identity.kyc.model.request.KycRejectRequest;
 import com.almotawaj.wallet.identity.kyc.model.response.KycApplicationSummaryResponse;
 import com.almotawaj.wallet.identity.kyc.model.response.KycReviewResponse;
 import com.almotawaj.wallet.identity.kyc.service.KycReviewService;
-import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

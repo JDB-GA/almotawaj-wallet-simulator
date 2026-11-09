@@ -33,6 +33,10 @@ public final class SecurityConstants {
     public static final String PERMISSIONS_POLICY = "camera=(), microphone=(), geolocation=(), payment=(), usb=()";
     public static final long HSTS_MAX_AGE_SECONDS = 63072000;
 
+    public static final String INTERNAL_TOKEN_HEADER = "X-Internal-Token";
+    public static final String INTERNAL_TOKEN_PROPERTY = "${internal-api-token}";
+    public static final String IDENTITY_URL_PROPERTY = "${identity-url}";
+
     private SecurityConstants() {
     }
 }

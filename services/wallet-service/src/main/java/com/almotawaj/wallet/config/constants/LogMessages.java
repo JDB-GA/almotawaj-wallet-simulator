@@ -30,6 +30,10 @@ public final class LogMessages {
     public static final String SIMULATION_STARTED = "Simulation {} started: {} threads";
     public static final String SIMULATION_FINISHED = "Simulation {} finished in {} ms: {}";
 
+    public static final String EVENT_PUBLISHED = "Published to {} key={}";
+    public static final String EVENT_PUBLISH_FAILED = "Failed to publish to {}: {}";
+    public static final String WALLET_CREATED = "Wallet ready for user {}";
+
     private LogMessages() {
     }
 }

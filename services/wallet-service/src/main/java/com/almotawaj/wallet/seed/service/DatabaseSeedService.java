@@ -20,7 +20,6 @@ public class DatabaseSeedService {
 
     @Transactional
     public void seedBasicData() {
-        SeedConstants.ACCOUNT_EMAILS.forEach(accountHolderService::findByIdentifier);
         var merchant = accountHolderService.findByIdentifier(SeedConstants.MERCHANT_EMAIL)
                 .orElseThrow(() -> new InformationNotFoundException(ErrorMessages.SEED_ACCOUNTS_MISSING));
         voucherSeeder.seed(merchant);

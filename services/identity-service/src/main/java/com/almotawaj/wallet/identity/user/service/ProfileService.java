@@ -1,8 +1,9 @@
 package com.almotawaj.wallet.identity.user.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
+import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.common.model.FileType;
 import com.almotawaj.wallet.identity.common.service.FileStorageService;
 import com.almotawaj.wallet.identity.common.service.FileTypeDetector;
@@ -14,7 +15,6 @@ import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.model.request.UpdateProfileRequest;
 import com.almotawaj.wallet.identity.user.model.response.ProfileResponse;
 import com.almotawaj.wallet.identity.user.repository.UserRepository;
-import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.user.service.WalletHolderNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

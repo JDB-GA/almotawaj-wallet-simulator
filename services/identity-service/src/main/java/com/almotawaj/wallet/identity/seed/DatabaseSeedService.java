@@ -4,6 +4,7 @@ import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
 import com.almotawaj.wallet.identity.config.constants.LogMessages;
 import com.almotawaj.wallet.identity.config.constants.SeedConstants;
+import com.almotawaj.wallet.identity.event.AccountEvents;
 import com.almotawaj.wallet.identity.exception.BusinessRuleException;
 import com.almotawaj.wallet.identity.kyc.service.KycSeeder;
 import com.almotawaj.wallet.identity.seed.SeedAccount;
@@ -22,13 +23,15 @@ public class DatabaseSeedService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final KycSeeder kycSeeder;
+    private final AccountEvents accountEvents;
     private final String seedPassword;
 
-    public DatabaseSeedService(UserRepository userRepository, PasswordEncoder passwordEncoder, KycSeeder kycSeeder,
+    public DatabaseSeedService(UserRepository userRepository, PasswordEncoder passwordEncoder, KycSeeder kycSeeder, AccountEvents accountEvents,
                                @Value(SeedConstants.SEED_PASSWORD_PROPERTY) String seedPassword) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.kycSeeder = kycSeeder;
+        this.accountEvents = accountEvents;
         this.seedPassword = seedPassword;
     }
 
@@ -44,6 +47,7 @@ public class DatabaseSeedService {
                 reviewer = user;
             }
             kycSeeder.seed(user, account, reviewer);
+            accountEvents.created(user);
         }
         log.info(LogMessages.SEED_COMPLETED);
     }

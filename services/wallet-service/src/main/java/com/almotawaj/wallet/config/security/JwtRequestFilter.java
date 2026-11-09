@@ -46,7 +46,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private void authenticate(TokenClaims claims, HttpServletRequest request) {
-        accountHolderService.findOrFetch(claims.userId()).ifPresent(account -> {
+        accountHolderService.find(claims.userId()).ifPresent(account -> {
             MyUserDetails userDetails = new MyUserDetails(account,
                     claims.authorities().stream().map(SimpleGrantedAuthority::new).toList());
             if (!userDetails.isEnabled() || !userDetails.isAccountNonLocked()) {

@@ -24,7 +24,7 @@ spring:
               uri: ${WALLET_URL:http://localhost:8084}
               order: 1
               predicates:
-                - Path=/api/wallet/**,/api/checkout/**,/api/merchant/**,/api/gateway/**,/api/vouchers,/api/vouchers/**,/api/notifications/**,/api/admin/transactions,/api/admin/transactions/**,/api/admin/statistics/transactions,/api/admin/simulations/**,/api/seed/wallet,/api/admin/seed-data/wallet
+                - Path=/api/wallet/**,/api/checkout/**,/api/merchant/**,/api/gateway/**,/api/vouchers,/api/vouchers/**,/api/notifications/**,/api/admin/transactions,/api/admin/transactions/**,/api/admin/statistics/transactions,/api/admin/simulations/**,/api/seed/wallet
 
             - id: audit
               uri: ${AUDIT_URL:http://localhost:8083}

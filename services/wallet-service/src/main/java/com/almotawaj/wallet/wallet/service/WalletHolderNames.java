@@ -1,14 +1,15 @@
 package com.almotawaj.wallet.wallet.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.WalletConstants;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WalletHolderNames {
     public String fullName(AccountHolder user) {
-        String name = user.getDisplayName() == null ? user.getEmailAddress() : user.getDisplayName();
+        String name = user.getKycFullName() != null ? user.getKycFullName()
+                : user.getDisplayName() != null ? user.getDisplayName() : user.getEmailAddress();
         return name.length() <= ValidationLimits.COUNTERPARTY_NAME_MAX
                 ? name
                 : name.substring(0, ValidationLimits.COUNTERPARTY_NAME_MAX);

@@ -1,15 +1,17 @@
 package com.almotawaj.wallet.identity.auth.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.auth.model.OtpPurpose;
 import com.almotawaj.wallet.identity.auth.model.request.ResetPasswordRequest;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
+import com.almotawaj.wallet.identity.config.constants.KafkaConstants;
 import com.almotawaj.wallet.identity.config.constants.LogMessages;
 import com.almotawaj.wallet.identity.config.constants.OtpConstants;
-import com.almotawaj.wallet.identity.email.service.CodeEmailService;
+import com.almotawaj.wallet.identity.event.EmailEvent;
+import com.almotawaj.wallet.identity.event.EventPublisher;
 import com.almotawaj.wallet.identity.exception.OtpVerificationException;
 import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.model.UserStatus;
@@ -35,7 +37,7 @@ public class PasswordResetService {
 
     private final UserRepository userRepository;
     private final OtpService otpService;
-    private final CodeEmailService codeEmailService;
+    private final EventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
     private final Clock clock;
     private final AuditService auditService;
@@ -44,7 +46,8 @@ public class PasswordResetService {
     public void requestReset(String email, Locale locale) {
         findResettableUser(email).filter(user -> otpService.isResendAllowed(user.getId(), PURPOSE)).ifPresent(user -> {
             String code = otpService.issue(user, PURPOSE);
-            codeEmailService.sendPasswordReset(user.getId(), user.getEmailAddress(), code, locale);
+            eventPublisher.publish(KafkaConstants.EMAIL_EVENTS, user.getId().toString(), EmailEvent.code(
+                    EmailEvent.EmailType.PASSWORD_RESET, user.getId(), user.getEmailAddress(), code, locale.toLanguageTag()));
             log.info(LogMessages.PASSWORD_RESET_REQUESTED, user.getId());
         });
     }
@@ -52,7 +55,8 @@ public class PasswordResetService {
     @Transactional
     public void sendInvitation(User user) {
         String code = otpService.issue(user, PURPOSE, OtpConstants.INVITATION_EXPIRY);
-        codeEmailService.sendInvitation(user.getId(), user.getEmailAddress(), code);
+        eventPublisher.publish(KafkaConstants.EMAIL_EVENTS, user.getId().toString(), EmailEvent.code(
+                EmailEvent.EmailType.INVITATION, user.getId(), user.getEmailAddress(), code, null));
     }
 
     @Transactional(noRollbackFor = OtpVerificationException.class)

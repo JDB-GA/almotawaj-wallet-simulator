@@ -3,19 +3,11 @@ package com.almotawaj.wallet.config.constants;
 import com.almotawaj.wallet.seed.model.SeedVoucher;
 
 import java.util.List;
-import java.util.Set;
 
 public final class SeedConstants {
     public static final String SEED_TOKEN_PROPERTY = "${seed-token:}";
 
     public static final String MERCHANT_EMAIL = "merchant@almotawaj.com";
-    public static final Set<String> ACCOUNT_EMAILS = Set.of(
-            "admin@almotawaj.com",
-            "reviewer@almotawaj.com",
-            "client@almotawaj.com",
-            "illia@almotawaj.com",
-            "salman@almotawaj.com");
-
     public static final int VOUCHER_EXPIRY_DAYS = 30;
     public static final List<SeedVoucher> VOUCHERS = List.of(
             new SeedVoucher("Coffee Gift Card", "9.000", "10.000", 50, 2),

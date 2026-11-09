@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .headers(new SecurityHeadersCustomizer())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(ApiPaths.ERROR, ApiPaths.SEED, ApiPaths.HEALTH).permitAll()
+                        .requestMatchers(ApiPaths.ERROR, ApiPaths.SEED, ApiPaths.HEALTH, ApiPaths.INTERNAL_PATHS).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.SWAGGER_UI_HTML, ApiPaths.SWAGGER_UI, ApiPaths.API_DOCS).permitAll()
                         .requestMatchers(ApiPaths.GATEWAY + ApiPaths.ALL).hasAuthority(SecurityConstants.GATEWAY_AUTHORITY)
                         .anyRequest().hasAuthority(SecurityConstants.EMAIL_VERIFIED_AUTHORITY))

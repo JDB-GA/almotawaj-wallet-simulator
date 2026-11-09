@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.identity.auth.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.auth.model.LoginResult;
 import com.almotawaj.wallet.identity.auth.model.request.LoginRequest;
 import com.almotawaj.wallet.identity.auth.model.request.RegisterRequest;
@@ -10,6 +10,7 @@ import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
 import com.almotawaj.wallet.identity.config.security.JwtUtils;
 import com.almotawaj.wallet.identity.config.security.MyUserDetails;
+import com.almotawaj.wallet.identity.event.AccountEvents;
 import com.almotawaj.wallet.identity.exception.InformationExistException;
 import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.model.response.UserResponse;
@@ -38,6 +39,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final EmailVerificationService emailVerificationService;
     private final AuditService auditService;
+    private final AccountEvents accountEvents;
 
     /**
      * Registers a new user after verifying that the email and mobile number are not already taken.
@@ -65,6 +67,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.password()));
 
         User saved = userRepository.save(user);
+        accountEvents.created(saved);
         emailVerificationService.sendCode(saved, locale);
         auditService.record(saved.getId(), AuditAction.USER_REGISTERED, AuditTargetType.USER, saved.getId(), null);
 

@@ -1,9 +1,9 @@
 package com.almotawaj.wallet.wallet.service;
 
-import com.almotawaj.wallet.config.constants.ErrorCodes;
-import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.config.constants.ErrorCodes;
+import com.almotawaj.wallet.exception.BusinessRuleException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.access.AccessDeniedException;
 

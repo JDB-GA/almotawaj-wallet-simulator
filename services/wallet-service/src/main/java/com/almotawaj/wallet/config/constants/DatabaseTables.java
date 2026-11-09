@@ -2,6 +2,10 @@ package com.almotawaj.wallet.config.constants;
 
 public final class DatabaseTables {
     public static final String USERS = "users";
+    public static final String KYC_APPROVED = "APPROVED";
+    public static final String KYC_NOT_APPROVED = "NOT_SUBMITTED";
+    public static final String APPROVED_KYC_NAME = "(select k.full_name from kyc_applications k where k.user_id = id"
+            + " and k.status = 'APPROVED' order by k.created_at desc limit 1)";
     public static final String WALLETS = "wallets";
     public static final String WALLET_TRANSACTIONS = "wallet_transactions";
     public static final String PAYMENT_REQUESTS = "payment_requests";

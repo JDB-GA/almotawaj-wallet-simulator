@@ -1,16 +1,19 @@
 package com.almotawaj.wallet.identity.kyc.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
+import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import com.almotawaj.wallet.identity.common.model.response.PageResponse;
 import com.almotawaj.wallet.identity.common.service.FileStorageService;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
+import com.almotawaj.wallet.identity.config.constants.KafkaConstants;
 import com.almotawaj.wallet.identity.config.constants.LogMessages;
+import com.almotawaj.wallet.identity.event.EmailEvent;
+import com.almotawaj.wallet.identity.event.EventPublisher;
 import com.almotawaj.wallet.identity.exception.BusinessRuleException;
 import com.almotawaj.wallet.identity.exception.InformationNotFoundException;
-import com.almotawaj.wallet.identity.kyc.event.KycReviewedEvent;
 import com.almotawaj.wallet.identity.kyc.model.KycApplication;
 import com.almotawaj.wallet.identity.kyc.model.KycApplicationStatus;
 import com.almotawaj.wallet.identity.kyc.model.KycDocument;
@@ -19,11 +22,10 @@ import com.almotawaj.wallet.identity.kyc.model.response.KycApplicationSummaryRes
 import com.almotawaj.wallet.identity.kyc.model.response.KycReviewResponse;
 import com.almotawaj.wallet.identity.kyc.repository.KycApplicationRepository;
 import com.almotawaj.wallet.identity.kyc.repository.KycDocumentRepository;
+import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.repository.UserRepository;
-import com.almotawaj.wallet.identity.common.model.DocumentContent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,7 +43,7 @@ public class KycReviewService {
     private final KycDocumentRepository documentRepository;
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
-    private final ApplicationEventPublisher eventPublisher;
+    private final EventPublisher eventPublisher;
     private final Clock clock;
     private final AuditService auditService;
 
@@ -93,8 +95,9 @@ public class KycReviewService {
         log.info(LogMessages.KYC_REVIEWED, reviewerId, applicationId, decision);
         AuditAction action = decision == KycApplicationStatus.APPROVED ? AuditAction.KYC_APPROVED : AuditAction.KYC_REJECTED;
         auditService.record(reviewerId, action, AuditTargetType.KYC_APPLICATION, applicationId, reason);
-        eventPublisher.publishEvent(new KycReviewedEvent(
-                application.getUser().getId(), application.getUser().getEmailAddress(), decision, reason));
+        User user = application.getUser();
+        eventPublisher.publish(KafkaConstants.EMAIL_EVENTS, user.getId().toString(),
+                EmailEvent.kycDecision(user.getId(), user.getEmailAddress(), decision.name(), reason));
         return KycReviewResponse.from(application);
     }
 }

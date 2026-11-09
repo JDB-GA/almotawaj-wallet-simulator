@@ -1,9 +1,6 @@
 package com.almotawaj.wallet.config.constants;
 
 public final class SimulationConstants {
-    public static final String EMAIL_PATTERN = "sim-%s@simulation.local";
-    public static final String MOBILE_PREFIX = "+9739";
-    public static final int MOBILE_RANDOM_DIGITS = 7;
     public static final String MERCHANT_NAME = "Simulation Store";
     public static final String VOUCHER_TITLE = "Simulation voucher";
     public static final String VOUCHER_PRICE = "10.000";

@@ -1,7 +1,7 @@
 package com.almotawaj.wallet.wallet.service;
 
-import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.config.constants.WalletConstants;
 import com.almotawaj.wallet.wallet.model.Counterparty;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import lombok.RequiredArgsConstructor;

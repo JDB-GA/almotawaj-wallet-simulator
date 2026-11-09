@@ -1,8 +1,8 @@
 package com.almotawaj.wallet.voucher.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.config.constants.SeedConstants;
 import com.almotawaj.wallet.seed.model.SeedVoucher;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.model.Voucher;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
 import lombok.RequiredArgsConstructor;

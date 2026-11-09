@@ -2,8 +2,8 @@ package com.almotawaj.wallet.identity.config.security;
 
 import com.almotawaj.wallet.identity.config.constants.ApiPaths;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
+import com.almotawaj.wallet.identity.config.constants.InternalConstants;
 import com.almotawaj.wallet.identity.config.constants.SecurityConstants;
-import com.almotawaj.wallet.identity.internal.InternalConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, ApiPaths.AUTH_REGISTER, ApiPaths.AUTH_LOGIN, ApiPaths.AUTH_LOGOUT,
                                 ApiPaths.AUTH_FORGOT_PASSWORD, ApiPaths.AUTH_RESET_PASSWORD).permitAll()
-                        .requestMatchers(ApiPaths.ERROR, ApiPaths.SEED, InternalConstants.INTERNAL_PATHS).permitAll()
+                        .requestMatchers(ApiPaths.ERROR, ApiPaths.SEED, ApiPaths.HEALTH, InternalConstants.INTERNAL_PATHS).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.SWAGGER_UI_HTML, ApiPaths.SWAGGER_UI, ApiPaths.API_DOCS).permitAll()
                         .requestMatchers(HttpMethod.GET, ApiPaths.AUTH_ME).authenticated()
                         .requestMatchers(HttpMethod.POST, ApiPaths.AUTH_VERIFY_EMAIL, ApiPaths.AUTH_RESEND_VERIFICATION,

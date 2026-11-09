@@ -1,12 +1,12 @@
 package com.almotawaj.wallet.checkout.service;
 
+import com.almotawaj.wallet.account.model.AccountRole;
 import com.almotawaj.wallet.audit.service.AuditService;
 import com.almotawaj.wallet.checkout.model.CheckoutSession;
 import com.almotawaj.wallet.checkout.model.CheckoutStatus;
 import com.almotawaj.wallet.checkout.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.account.model.AccountRole;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.wallet.model.Wallet;
 import com.almotawaj.wallet.wallet.model.WalletTransaction;
@@ -15,8 +15,8 @@ import com.almotawaj.wallet.wallet.service.Counterparties;
 import com.almotawaj.wallet.wallet.service.DailyLimitPolicy;
 import com.almotawaj.wallet.wallet.service.TransactionReferenceGenerator;
 import com.almotawaj.wallet.wallet.service.WalletAccessPolicy;
-import com.almotawaj.wallet.wallet.service.WalletHolderNames;
 import com.almotawaj.wallet.wallet.service.WalletFixtures;
+import com.almotawaj.wallet.wallet.service.WalletHolderNames;
 import com.almotawaj.wallet.wallet.service.WalletLedger;
 import com.almotawaj.wallet.wallet.service.WalletLocker;
 import org.junit.jupiter.api.BeforeEach;

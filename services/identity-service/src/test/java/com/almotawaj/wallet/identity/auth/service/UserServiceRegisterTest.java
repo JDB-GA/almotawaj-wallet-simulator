@@ -4,6 +4,7 @@ import com.almotawaj.wallet.identity.audit.AuditService;
 import com.almotawaj.wallet.identity.auth.model.LoginResult;
 import com.almotawaj.wallet.identity.auth.model.request.RegisterRequest;
 import com.almotawaj.wallet.identity.config.security.JwtUtils;
+import com.almotawaj.wallet.identity.event.AccountEvents;
 import com.almotawaj.wallet.identity.exception.InformationExistException;
 import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.model.UserRole;
@@ -43,6 +44,9 @@ class UserServiceRegisterTest {
     private EmailVerificationService emailVerificationService;
     @Mock
     private AuditService auditService;
+
+    @Mock
+    private AccountEvents accountEvents;
 
     @InjectMocks
     private UserService userService;

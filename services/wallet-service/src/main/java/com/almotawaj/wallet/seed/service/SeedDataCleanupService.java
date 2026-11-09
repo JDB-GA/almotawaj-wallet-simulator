@@ -4,12 +4,9 @@ import com.almotawaj.wallet.checkout.repository.CheckoutSessionRepository;
 import com.almotawaj.wallet.checkout.repository.MerchantApiKeyRepository;
 import com.almotawaj.wallet.checkout.repository.MerchantWebhookRepository;
 import com.almotawaj.wallet.config.constants.LogMessages;
-import com.almotawaj.wallet.config.constants.SeedConstants;
 import com.almotawaj.wallet.paymentrequest.repository.PaymentRequestRepository;
 import com.almotawaj.wallet.payout.repository.PayoutBatchRepository;
 import com.almotawaj.wallet.payout.repository.PayoutItemRepository;
-import com.almotawaj.wallet.account.model.AccountHolder;
-import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.repository.IdempotencyRecordRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
@@ -27,7 +24,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SeedDataCleanupService {
-    private final AccountHolderRepository accountRepository;
     private final WalletTransactionRepository transactionRepository;
     private final WalletRepository walletRepository;
     private final PaymentRequestRepository paymentRequestRepository;
@@ -41,13 +37,7 @@ public class SeedDataCleanupService {
     private final PayoutBatchRepository payoutBatchRepository;
 
     @Transactional
-    public void clean() {
-        List<AccountHolder> users = accountRepository.findAllByEmailAddressIn(SeedConstants.ACCOUNT_EMAILS);
-        List<UUID> userIds = users.stream().map(AccountHolder::getId).toList();
-        if (userIds.isEmpty()) {
-            return;
-        }
-
+    public void clean(List<UUID> userIds) {
         paymentRequestRepository.deleteAllByUserIdIn(userIds);
         idempotencyRepository.deleteAllByUserIdIn(userIds);
         voucherPurchaseRepository.deleteAllByUserIdIn(userIds);
@@ -59,7 +49,6 @@ public class SeedDataCleanupService {
         webhookRepository.deleteAllByMerchantIdIn(userIds);
         transactionRepository.deleteAllByWalletUserIdIn(userIds);
         walletRepository.deleteAllByUserIdIn(userIds);
-        accountRepository.deleteAllInBatch(users);
-        log.info(LogMessages.SEED_DATA_CLEANED, users.size());
+        log.info(LogMessages.SEED_DATA_CLEANED, userIds.size());
     }
 }

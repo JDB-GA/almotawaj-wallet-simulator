@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.checkout.service;
 
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.audit.model.AuditAction;
 import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.service.AuditService;
@@ -17,7 +18,6 @@ import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationExistException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;

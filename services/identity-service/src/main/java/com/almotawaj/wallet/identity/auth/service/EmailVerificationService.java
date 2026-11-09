@@ -1,12 +1,14 @@
 package com.almotawaj.wallet.identity.auth.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.auth.model.OtpPurpose;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
-import com.almotawaj.wallet.identity.email.service.EmailService;
+import com.almotawaj.wallet.identity.config.constants.KafkaConstants;
+import com.almotawaj.wallet.identity.event.EmailEvent;
+import com.almotawaj.wallet.identity.event.EventPublisher;
 import com.almotawaj.wallet.identity.exception.InformationExistException;
 import com.almotawaj.wallet.identity.exception.InformationNotFoundException;
 import com.almotawaj.wallet.identity.exception.OtpVerificationException;
@@ -26,14 +28,15 @@ public class EmailVerificationService {
     private static final OtpPurpose PURPOSE = OtpPurpose.EMAIL_VERIFICATION;
 
     private final OtpService otpService;
-    private final EmailService emailService;
+    private final EventPublisher eventPublisher;
     private final UserRepository userRepository;
     private final AuditService auditService;
 
     @Transactional
     public void sendCode(User user, Locale locale) {
         String code = otpService.issue(user, PURPOSE);
-        emailService.sendVerificationCode(user.getId(), user.getEmailAddress(), code, locale);
+        eventPublisher.publish(KafkaConstants.EMAIL_EVENTS, user.getId().toString(), EmailEvent.code(
+                EmailEvent.EmailType.VERIFICATION_CODE, user.getId(), user.getEmailAddress(), code, locale.toLanguageTag()));
     }
 
     @Transactional

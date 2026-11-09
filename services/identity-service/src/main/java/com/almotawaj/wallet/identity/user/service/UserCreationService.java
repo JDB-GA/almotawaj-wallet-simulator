@@ -1,12 +1,13 @@
 package com.almotawaj.wallet.identity.user.service;
 
 import com.almotawaj.wallet.identity.audit.AuditAction;
-import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.audit.AuditService;
+import com.almotawaj.wallet.identity.audit.AuditTargetType;
 import com.almotawaj.wallet.identity.auth.service.PasswordResetService;
 import com.almotawaj.wallet.identity.config.constants.ErrorCodes;
 import com.almotawaj.wallet.identity.config.constants.ErrorMessages;
 import com.almotawaj.wallet.identity.config.constants.LogMessages;
+import com.almotawaj.wallet.identity.event.AccountEvents;
 import com.almotawaj.wallet.identity.exception.InformationExistException;
 import com.almotawaj.wallet.identity.user.model.User;
 import com.almotawaj.wallet.identity.user.model.request.CreateUserRequest;
@@ -34,6 +35,7 @@ public class UserCreationService {
     private final PasswordResetService passwordResetService;
     private final AdminUserMapper mapper;
     private final AuditService auditService;
+    private final AccountEvents accountEvents;
     private final SecureRandom secureRandom = new SecureRandom();
 
     @Transactional
@@ -55,6 +57,7 @@ public class UserCreationService {
         user.setPassword(passwordEncoder.encode(unusablePassword()));
         user.getPermissions().addAll(request.permissionsOrEmpty());
         User saved = userRepository.saveAndFlush(user);
+        accountEvents.created(saved);
 
         passwordResetService.sendInvitation(saved);
         log.info(LogMessages.USER_CREATED, actor.getId(), saved.getId(), saved.getRole());

@@ -1,12 +1,12 @@
 package com.almotawaj.wallet.wallet.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.service.AccountHolderService;
 import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.ValidationPatterns;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.account.model.AccountHolder;
-import com.almotawaj.wallet.account.service.AccountHolderService;
 import com.almotawaj.wallet.util.Iban;
 import com.almotawaj.wallet.util.LoginIdentifier;
 import com.almotawaj.wallet.wallet.model.Wallet;

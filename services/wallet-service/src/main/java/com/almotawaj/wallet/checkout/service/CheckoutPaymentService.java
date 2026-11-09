@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.checkout.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.audit.model.AuditAction;
 import com.almotawaj.wallet.audit.model.AuditTargetType;
 import com.almotawaj.wallet.audit.service.AuditService;
@@ -13,7 +14,6 @@ import com.almotawaj.wallet.config.constants.ErrorMessages;
 import com.almotawaj.wallet.config.constants.GatewayMessages;
 import com.almotawaj.wallet.exception.BusinessRuleException;
 import com.almotawaj.wallet.exception.InformationNotFoundException;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.voucher.model.VoucherPurchaseStatus;
 import com.almotawaj.wallet.voucher.model.response.UsableVoucherResponse;
 import com.almotawaj.wallet.voucher.repository.VoucherPurchaseRepository;

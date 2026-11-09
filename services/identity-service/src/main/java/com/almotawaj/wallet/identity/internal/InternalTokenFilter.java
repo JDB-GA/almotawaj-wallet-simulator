@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.identity.internal;
 
+import com.almotawaj.wallet.identity.config.constants.InternalConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ public class InternalTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith("/internal/");
+        return !request.getRequestURI().startsWith(InternalConstants.INTERNAL_PREFIX);
     }
 
     @Override

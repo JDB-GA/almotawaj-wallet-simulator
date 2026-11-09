@@ -1,9 +1,9 @@
 package com.almotawaj.wallet.wallet.model;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
 import com.almotawaj.wallet.config.constants.DatabaseTables;
 import com.almotawaj.wallet.config.constants.ValidationLimits;
 import com.almotawaj.wallet.config.constants.WalletConstants;
-import com.almotawaj.wallet.account.model.AccountHolder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

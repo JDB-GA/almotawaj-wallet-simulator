@@ -1,5 +1,6 @@
 package com.almotawaj.wallet.simulation.service;
 
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.simulation.model.SimulationMode;
 import com.almotawaj.wallet.simulation.model.SimulationOutcome;
 import com.almotawaj.wallet.simulation.model.SimulationStepType;
@@ -9,9 +10,16 @@ import com.almotawaj.wallet.simulation.model.response.PayoutRaceResult;
 import com.almotawaj.wallet.simulation.model.response.SimulationAttempt;
 import com.almotawaj.wallet.simulation.model.response.SimulationStep;
 import com.almotawaj.wallet.simulation.model.response.VoucherRaceResult;
-import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.voucher.repository.VoucherRepository;
 import org.junit.jupiter.api.Test;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
+import java.util.ArrayList;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.junit.jupiter.api.BeforeEach;
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,16 +28,48 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class SimulationServiceTest {
+    private static final AtomicInteger SEQUENCE = new AtomicInteger();
+
     @Autowired
     private SimulationService simulations;
     @Autowired
     private AccountHolderRepository userRepository;
     @Autowired
     private VoucherRepository voucherRepository;
+    @MockitoBean
+    private SandboxAccountsClient sandboxAccounts;
+
+    @BeforeEach
+    void fakeIdentity() {
+        when(sandboxAccounts.create(any(), anyInt(), any())).thenAnswer(call -> {
+            AccountRole role = call.getArgument(0);
+            int count = call.getArgument(1);
+            List<UUID> ids = new ArrayList<>();
+            for (int index = 0; index < count; index++) {
+                AccountHolder account = new AccountHolder();
+                account.setId(UUID.randomUUID());
+                account.setEmailAddress("sim-" + account.getId() + "@simulation.local");
+                account.setMobileNumber("+9739" + String.format("%07d", SEQUENCE.incrementAndGet()));
+                account.setRole(role);
+                account.setStatus(AccountStatus.ACTIVE);
+                account.setKycApproved(role == AccountRole.CLIENT);
+                ids.add(userRepository.save(account).getId());
+            }
+            return ids;
+        });
+        doAnswer(call -> {
+            userRepository.deleteAllById(call.getArgument(0));
+            return null;
+        }).when(sandboxAccounts).delete(any());
+    }
 
     @Test
     void safeRace_neverSellsMoreThanTheStock_andLeavesNothingBehind() throws Exception {

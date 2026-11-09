@@ -1,5 +1,9 @@
 package com.almotawaj.wallet.checkout.service;
 
+import com.almotawaj.wallet.account.model.AccountHolder;
+import com.almotawaj.wallet.account.model.AccountRole;
+import com.almotawaj.wallet.account.model.AccountStatus;
+import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import com.almotawaj.wallet.audit.service.AuditService;
 import com.almotawaj.wallet.checkout.model.MerchantApiKey;
 import com.almotawaj.wallet.checkout.model.request.CreateApiKeyRequest;
@@ -8,11 +12,6 @@ import com.almotawaj.wallet.config.constants.ErrorCodes;
 import com.almotawaj.wallet.config.constants.GatewayConstants;
 import com.almotawaj.wallet.config.security.ApiKeyHasher;
 import com.almotawaj.wallet.exception.BusinessRuleException;
-import com.almotawaj.wallet.account.model.AccountHolder;
-import com.almotawaj.wallet.account.model.AccountRole;
-import com.almotawaj.wallet.account.model.AccountStatus;
-import com.almotawaj.wallet.account.model.AccountStatus;
-import com.almotawaj.wallet.account.repository.AccountHolderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
