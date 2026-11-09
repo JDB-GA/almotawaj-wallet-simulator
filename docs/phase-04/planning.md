@@ -32,12 +32,11 @@
 
 ## Day 2: Wallet decoupling (Req 3, 4, 7)
 
-- [x] Wallet keeps its own `account_holders` copy instead of the `User` entity
+- [x] Wallet maps `users` read-only instead of owning a `User` entity; no user data is copied
 - [x] Wallet trusts the JWT instead of reading the user table
-- [x] Wallet copies accounts from identity by REST when missing (`/internal/accounts`)
-- [x] One database per service: `identity`, `wallet`, `audit`
+- [x] One database `almotawaj` with one schema; each service writes only its own tables
 - [x] Secrets and URLs moved to environment variables, `.env.example` added
-- [x] Every client and merchant gets a wallet when their account is copied; clients use it only after KYC
+- [x] Every client and merchant gets a wallet at registration (`account-events`); clients use it only after KYC
 - [x] API Gateway routes every request to the right service (`/internal/**` stays private)
 - [x] Unused code removed after the split
 - **Done when:** a transfer and a voucher purchase work across both services ✅
@@ -47,10 +46,10 @@
 - [ ] Dockerfile per service (multi-stage build)
 - [ ] `docker-compose.yml`: services, Postgres, Kafka
 - [ ] Services talk by Docker service name, not localhost
-- [ ] Topics and event models defined
-- [ ] Identity and wallet publish; notification and audit consume
-- [ ] Registration: wallet copy, OTP email and audit entry through events instead of direct calls
-- [ ] Retries, dead-letter topic, duplicate-safe consumers
+- [x] Topics and event models: `account-events`, `email-events`, `audit-events`
+- [x] Identity and wallet publish; wallet, notification and audit consume
+- [x] Registration: wallet, OTP email and audit entry through events instead of direct calls
+- [x] Retries (3 x 2 s), dead-letter topic (`<topic>-dlt`), duplicate-safe consumers
 - **Done when:** `docker compose up` runs all and events flow end to end
 
 ## Day 4: CI/CD and tests (Req 12, 13, 14, 22, 23)
@@ -58,8 +57,8 @@
 - [ ] GitHub Actions: build, test, build images per service
 - [ ] Push images to ECR with version tags
 - [ ] Pipeline fails on a failing test
-- [ ] Previous tests still pass
-- [ ] New tests: Kafka events, health endpoints, service APIs
+- [x] Previous tests still pass
+- [x] New tests: Kafka events, health endpoints, service APIs
 - [ ] Cucumber feature files for key flows
 - **Done when:** a push runs the full pipeline
 
