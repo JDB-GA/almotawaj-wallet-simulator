@@ -33,6 +33,7 @@ public class EmailSender {
                     .build());
         } catch (ResendException e) {
             log.error(LogMessages.EMAIL_SEND_FAILED, userId, e);
+            throw new IllegalStateException(LogMessages.EMAIL_NOT_SENT.formatted(userId), e);
         }
     }
 }

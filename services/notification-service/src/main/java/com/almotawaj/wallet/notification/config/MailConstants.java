@@ -13,9 +13,15 @@ public final class MailConstants {
     public static final String LOGO_URL_VARIABLE = "logoUrl";
     public static final String DIRECTION_LTR = "ltr";
     public static final String DIRECTION_RTL = "rtl";
+    public static final String KYC_DECISION_TEMPLATE = "email/kyc-decision";
+    public static final String KYC_SUBJECT_KEY = "email.kyc.subject";
+    public static final String KYC_KEY_PREFIX = "email.kyc.";
     public static final String HEADING_SUFFIX = ".heading";
+    public static final String KYC_BODY_SUFFIX = ".body";
+    public static final String KYC_REASON_LABEL_KEY = "email.kyc.reason-label";
     public static final String SUBJECT_VARIABLE = "subject";
     public static final String SECTIONS_VARIABLE = "sections";
+    public static final String REASON_VARIABLE = "reason";
     public static final String APP_URL_PROPERTY = "${app-url}";
     public static final String RESET_PASSWORD_PATH = "/reset-password";
     public static final String CODE_NOTICE_TEMPLATE = "email/code-notice";
