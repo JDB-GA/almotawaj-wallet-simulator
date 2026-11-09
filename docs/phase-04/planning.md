@@ -67,6 +67,8 @@
 - [ ] Deploy services to AWS
 - [ ] Database on RDS, private
 - [ ] IAM roles, security groups, Secrets Manager
+- [ ] Kafka private (no public address), TLS on, each service allowed only its own topics
+- [ ] `email-events` kept 1 hour only (it carries OTP codes)
 - [ ] Logs in CloudWatch: app, container, Kafka activity
 - [ ] 2 wallet instances, voucher race still correct
 - [ ] Pipeline deploys automatically
