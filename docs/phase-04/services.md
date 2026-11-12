@@ -2,7 +2,7 @@
 
 [← Back to the README](../../README.md)
 
-Boundaries follow business responsibility. All services share one PostgreSQL database and schema, `almotawaj`; each service owns its own tables and never reads another service's. Money moves inside one database transaction with row locks, so everything that moves money stays in one service.
+Boundaries follow business responsibility. All services share one PostgreSQL database, `almotawaj`, with one schema, `public`. Each service owns its own tables; the only exception is wallet reading `users` read-only. Money moves inside one database transaction with row locks, so everything that moves money stays in one service.
 
 ```text
                  Frontend
@@ -12,12 +12,53 @@ Boundaries follow business responsibility. All services share one PostgreSQL dat
        |            |            |
  identity :8081  wallet :8084  audit :8083
        |            |
-       +--- REST ---+   (/internal/sandbox-accounts, Concurrency Lab only)
+       +--- REST ---+   identity -> wallet: /internal/seed-data
+                        wallet -> identity: /internal/sandbox-accounts
 
  Kafka: account-events -> wallet (creates the wallet)
         email-events   -> notification :8082
         audit-events   -> audit
 ```
+
+## How they communicate
+
+| Way | From -> To | Used for |
+| --- | --- | --- |
+| REST through the gateway (sync) | Frontend -> any service | Every user request |
+| REST internal (sync) | identity -> wallet | `DELETE /internal/seed-data`: remove demo data |
+| REST internal (sync) | wallet -> identity | `/internal/sandbox-accounts`: Concurrency Lab users |
+| Kafka (async) | identity -> wallet | `account-events`: create the wallet |
+| Kafka (async) | identity -> notification | `email-events`: send an email |
+| Kafka (async) | identity, wallet -> audit | `audit-events`: save an audit entry |
+| JWT | identity -> wallet, audit | Token signed by identity, checked locally |
+
+- Internal REST calls need the `X-Internal-Token` header. The gateway never routes `/internal/**`.
+- Events are sent only after the database save commits.
+- Every consumer retries 3 times (2 s apart), then moves the message to `<topic>-dlt`.
+- Duplicate events are ignored (audit: unique event id; notification: remembers sent event ids; wallet: creates a wallet only if missing).
+
+### Example: JWT payload
+
+```json
+{
+  "sub": "client@almotawaj.com",
+  "uid": "3f2b8c1e-7a4d-4e2b-9c1a-5d6e7f8a9b0c",
+  "authorities": ["ROLE_CLIENT"],
+  "iat": 1762761600,
+  "exp": 1762848000
+}
+```
+
+`sub` is the email, `uid` the user id, `authorities` the roles, `iat` and `exp` issue and expiry times.
+
+### Example: registration
+
+1. Frontend -> gateway -> identity saves the user.
+2. identity publishes `account-events` -> wallet creates the wallet.
+3. identity publishes `email-events` -> notification sends the verification code.
+4. identity publishes `audit-events` -> audit saves the entry.
+
+identity does not wait for any of them.
 
 ## identity-service (8081)
 
@@ -55,13 +96,13 @@ Boundaries follow business responsibility. All services share one PostgreSQL dat
 | Responsibility | Emails: verification code, password reset, invitation, KYC decision |
 | APIs | None |
 | Data | None |
-| Communication | Consumes `email-events` and sends through Resend (async). Failed sends retry 3 times, then go to `email-events-dlt` |
+| Communication | Consumes `email-events` and sends through Resend (async). Failed sends retry 3 times, then go to `email-events-dlt`. A failed send throws, so it is retried instead of lost |
 
 ## api-gateway (8080)
 
 | | |
 | --- | --- |
-| Responsibility | One entry point; routes each path to its service |
+| Responsibility | One entry point; routes each path to its service and handles CORS for the frontend (`CORS_ALLOWED_ORIGINS`) |
 | APIs | Everything above, except `/internal/**`, which is never routed |
 | Data | None |
 | Communication | Forwards HTTP requests (sync) |
