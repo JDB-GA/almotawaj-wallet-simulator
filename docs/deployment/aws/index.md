@@ -26,7 +26,7 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | Run the services | Elastic Beanstalk (Docker) |
 | Database | RDS PostgreSQL |
 | Kafka | EC2 |
-| Secrets | Secrets Manager |
+| Secrets | Systems Manager Parameter Store |
 | Logs | CloudWatch |
 | Access | IAM, VPC, security groups |
 
@@ -37,10 +37,10 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 1 | Region, budget alert, IAM user | [01-account-setup.md](01-account-setup.md) | ✅ |
 | 2 | VPC and security groups | [02-security-groups.md](02-security-groups.md) | ✅ |
 | 3 | ECR repositories | [03-ecr.md](03-ecr.md) | ✅ |
-| 4 | Jenkins pushes images to ECR | [04-jenkins-ecr.md](04-jenkins-ecr.md) | 🟡 |
-| 5 | RDS PostgreSQL | | ⬜ |
-| 6 | Kafka on EC2 | | ⬜ |
-| 7 | Secrets Manager | | ⬜ |
+| 4 | Jenkins pushes images to ECR | [04-jenkins-ecr.md](04-jenkins-ecr.md) | ✅ |
+| 5 | RDS PostgreSQL | [05-rds.md](05-rds.md) | ✅ |
+| 6 | Kafka on EC2 | [06-kafka-ec2.md](06-kafka-ec2.md) | ✅ |
+| 7 | Secrets (Parameter Store) | [07-secrets.md](07-secrets.md) | ✅ |
 | 8 | Elastic Beanstalk | | ⬜ |
 | 9 | CloudWatch logs | | ⬜ |
 | 10 | Jenkins deploys automatically | | ⬜ |

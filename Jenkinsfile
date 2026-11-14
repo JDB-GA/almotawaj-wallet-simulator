@@ -4,6 +4,7 @@ pipeline {
     environment {
         AWS_REGION = 'eu-north-1'
         COMPOSE_PROJECT_NAME = 'almotawaj'
+        DOCKER_DEFAULT_PLATFORM = 'linux/amd64'
     }
 
     stages {

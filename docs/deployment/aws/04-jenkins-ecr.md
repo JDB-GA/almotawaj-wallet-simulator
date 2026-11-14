@@ -52,3 +52,22 @@ docker run -d --name jenkins -p 8090:8080 -v jenkins-data:/var/jenkins_home -v /
 ```
 
 **Check:** `docker exec jenkins aws --version` prints the version.
+
+## 4d. Push to ECR stage
+
+[`Jenkinsfile`](../../../Jenkinsfile) runs **Build and Test → Build Images → Push to ECR**.
+
+| Part | Why |
+| --- | --- |
+| `AWS_REGION = 'eu-north-1'` | Same region as every resource |
+| `COMPOSE_PROJECT_NAME = 'almotawaj'` | Images are always named `almotawaj-<service>` |
+| `withCredentials(... 'aws-jenkins' ...)` | Loads the access key only inside this stage |
+| `aws sts get-caller-identity` | Reads the account number, so it is not hardcoded |
+| Tag `:$BUILD_NUMBER` | Fixed version for rollback |
+| Tag `:latest` | Always the newest green build; used by the deploy |
+
+A failed test stops the pipeline before this stage, so `latest` only moves on a green build.
+
+**Check:** ECR → each `almotawaj/<service>` repository shows a build number tag and `latest`.
+
+**Cost:** storage only (about $0.10 per GB after 500 MB free).
