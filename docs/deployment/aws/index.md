@@ -41,7 +41,7 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 5 | RDS PostgreSQL | [05-rds.md](05-rds.md) | ✅ |
 | 6 | Kafka on EC2 | [06-kafka-ec2.md](06-kafka-ec2.md) | ✅ |
 | 7 | Secrets (Parameter Store) | [07-secrets.md](07-secrets.md) | ✅ |
-| 8 | Elastic Beanstalk | | ⬜ |
+| 8 | Elastic Beanstalk | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | 🟡 |
 | 9 | CloudWatch logs | | ⬜ |
 | 10 | Jenkins deploys automatically | | ⬜ |
 | 11 | Verify end to end | | ⬜ |

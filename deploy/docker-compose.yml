@@ -1,0 +1,45 @@
+x-service: &service
+  env_file: .env
+  restart: unless-stopped
+
+services:
+  identity-service:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/identity-service:latest
+    environment:
+      WALLET_URL: http://wallet-service:8084
+      JAVA_TOOL_OPTIONS: -Xmx256m
+
+  wallet-service:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/wallet-service:latest
+    environment:
+      IDENTITY_URL: http://identity-service:8081
+      JAVA_TOOL_OPTIONS: -Xmx256m
+
+  notification-service:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/notification-service:latest
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx192m
+
+  audit-service:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/audit-service:latest
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx192m
+
+  api-gateway:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/api-gateway:latest
+    environment:
+      IDENTITY_URL: http://identity-service:8081
+      WALLET_URL: http://wallet-service:8084
+      AUDIT_URL: http://audit-service:8083
+      JAVA_TOOL_OPTIONS: -Xmx192m
+    ports:
+      - "80:8080"
+    depends_on:
+      - identity-service
+      - wallet-service
+      - audit-service

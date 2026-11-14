@@ -54,6 +54,12 @@ Jenkins runs locally, so GitHub cannot call it. Jenkins checks GitHub instead.
 2. Schedule: `H/5 * * * *` (check every 5 minutes; build only if there is a new commit).
 3. **Save**.
 
+## 6. AWS additions
+
+- AWS CLI and the `aws-jenkins` credential: [AWS Step 4](aws/04-jenkins-ecr.md)
+- Push to ECR stage: [AWS Step 4d](aws/04-jenkins-ecr.md#4d-push-to-ecr-stage)
+- Images built for amd64: [AWS Step 8a](aws/08-elastic-beanstalk.md#8a-images-built-for-amd64)
+
 ## What the pipeline does
 
 ```text
