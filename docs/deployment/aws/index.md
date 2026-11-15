@@ -23,7 +23,7 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | Need | AWS service |
 | --- | --- |
 | Docker images | ECR |
-| Run the services | Elastic Beanstalk (Docker) |
+| Run the services | Elastic Beanstalk (Docker), `c7i-flex.large` |
 | Database | RDS PostgreSQL |
 | Kafka | EC2 |
 | Secrets | Systems Manager Parameter Store |
@@ -41,10 +41,13 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 5 | RDS PostgreSQL | [05-rds.md](05-rds.md) | ✅ |
 | 6 | Kafka on EC2 | [06-kafka-ec2.md](06-kafka-ec2.md) | ✅ |
 | 7 | Secrets (Parameter Store) | [07-secrets.md](07-secrets.md) | ✅ |
-| 8 | Elastic Beanstalk | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | 🟡 |
-| 9 | CloudWatch logs | | ⬜ |
-| 10 | Jenkins deploys automatically | | ⬜ |
+| 8 | Elastic Beanstalk | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | ✅ |
+| 9 | CloudWatch logs | [09-cloudwatch.md](09-cloudwatch.md) | ✅ |
+| 10 | Jenkins deploys automatically | [10-jenkins-deploy.md](10-jenkins-deploy.md) | 🟡 |
 | 11 | Verify end to end | | ⬜ |
+| 12 | Frontend on S3 + CloudFront (HTTPS) | | ⬜ |
+| 13 | KYC uploads to S3 (code change in identity) | | ⬜ |
+| 14 | HTTPS in front of the backend (CloudFront) | | ⬜ |
 
 ## How each step page is written
 

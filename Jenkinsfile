@@ -44,5 +44,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    sh '''
+                        ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+                        BUCKET=elasticbeanstalk-$AWS_REGION-$ACCOUNT
+                        VERSION=build-$BUILD_NUMBER
+
+                        cd deploy && jar -cfM ../$VERSION.zip docker-compose.yml && cd ..
+                        aws s3 cp $VERSION.zip s3://$BUCKET/almotawaj/$VERSION.zip
+                        aws elasticbeanstalk create-application-version --application-name almotawaj \
+                            --version-label $VERSION --source-bundle S3Bucket=$BUCKET,S3Key=almotawaj/$VERSION.zip
+                        aws elasticbeanstalk update-environment --environment-name almotawaj-prod --version-label $VERSION
+                    '''
+                }
+            }
+        }
     }
 }
