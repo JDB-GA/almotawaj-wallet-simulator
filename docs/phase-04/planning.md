@@ -43,36 +43,44 @@
 
 ## Day 3: Docker and Kafka (Req 5, 6, 8, 9, 10, 11)
 
-- [ ] Dockerfile per service (multi-stage build)
-- [ ] `docker-compose.yml`: services, Postgres, Kafka
-- [ ] Services talk by Docker service name, not localhost
+- [x] Dockerfile per service (multi-stage build)
+- [x] `docker-compose.yml`: services, Postgres, Kafka
+- [x] Services talk by Docker service name, not localhost
 - [x] Topics and event models: `account-events`, `email-events`, `audit-events`
 - [x] Identity and wallet publish; wallet, notification and audit consume
 - [x] Registration: wallet, OTP email and audit entry through events instead of direct calls
 - [x] Retries (3 x 2 s), dead-letter topic (`<topic>-dlt`), duplicate-safe consumers
-- **Done when:** `docker compose up` runs all and events flow end to end
+- **Done when:** `docker compose up` runs all and events flow end to end ✅
 
 ## Day 4: CI/CD and tests (Req 12, 13, 14, 22, 23)
 
-- [ ] GitHub Actions: build, test, build images per service
-- [ ] Push images to ECR with version tags
-- [ ] Pipeline fails on a failing test
+- [x] Jenkins: build, test, build images per service ([`jenkins.md`](../deployment/jenkins.md))
+- [x] Push images to ECR with version tags
+- [x] Pipeline fails on a failing test
 - [x] Previous tests still pass
 - [x] New tests: Kafka events, health endpoints, service APIs
-- [ ] Cucumber feature files for key flows
-- **Done when:** a push runs the full pipeline
+- [x] Cucumber feature files for key flows (send money, payment request, bulk payout)
+- **Done when:** a push runs the full pipeline ✅
 
 ## Day 5: AWS (Req 15, 16, 17, 20, 21)
 
-- [ ] Deploy services to AWS
-- [ ] Database on RDS, private
-- [ ] IAM roles, security groups, Secrets Manager
-- [ ] Kafka private (no public address), TLS on, each service allowed only its own topics
-- [ ] `email-events` kept 1 hour only (it carries OTP codes)
-- [ ] Logs in CloudWatch: app, container, Kafka activity
+Step-by-step notes: [`deployment/aws`](../deployment/aws/index.md).
+
+- [x] Deploy services to AWS (Elastic Beanstalk)
+- [x] Database on RDS, private
+- [x] IAM roles, security groups, secrets (Parameter Store)
+- [x] Kafka on EC2, private (only the services can reach it)
+- [x] Logs in CloudWatch: app, container, Kafka activity
+- [x] Pipeline deploys automatically
+- [x] End-to-end check on AWS: seed, register, email, verify
+- [ ] Upgrade the AWS account to the Paid plan (removes the free-plan limits; credits stay)
+- [ ] Certificate in N. Virginia and custom domain `wallet.almotawaj.com` on CloudFront (DNS in Vercel)
+- [ ] `CORS_ALLOWED_ORIGINS` and `APP_URL` set to the custom domain; frontend rebuilt and uploaded
+- [ ] Jenkins deploys the frontend: build, upload to S3, refresh CloudFront
+- [ ] KYC uploads to S3 instead of the container disk
+- [ ] Kafka TLS and per-service topic permissions; `email-events` kept 1 hour only
 - [ ] 2 wallet instances, voucher race still correct
-- [ ] Pipeline deploys automatically
-- **Done when:** live endpoint works on AWS
+- **Done when:** the app works end to end on the custom domain
 
 ## Day 6: Docs and cleanup (Req 18, 19, 24 + deliverables)
 
@@ -95,6 +103,14 @@
 - [ ] Advanced CI/CD: image scanning, versioned releases, rollback
 - [ ] AWS observability: CloudWatch alarms and dashboards
 - [ ] Rolling deployment: release without downtime
+
+## Day 7: RAG chatbot (extra)
+
+- [ ] Assistant that answers questions about the wallet from its docs, using Google AI File Search
+- [ ] Upload the docs to a File Search store
+- [ ] Chat endpoint in the backend; API key in Parameter Store
+- [ ] Chat window in the frontend
+- **Done when:** the chatbot answers wallet questions with sources from the docs
 
 ## Every day
 

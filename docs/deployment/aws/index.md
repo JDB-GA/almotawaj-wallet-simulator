@@ -20,34 +20,37 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 
 ## Services used
 
-| Need | AWS service |
-| --- | --- |
-| Docker images | ECR |
+| Need             | AWS service                                  |
+|------------------|----------------------------------------------|
+| Docker images    | ECR                                          |
 | Run the services | Elastic Beanstalk (Docker), `c7i-flex.large` |
-| Database | RDS PostgreSQL |
-| Kafka | EC2 |
-| Secrets | Systems Manager Parameter Store |
-| Logs | CloudWatch |
-| Access | IAM, VPC, security groups |
+| Database         | RDS PostgreSQL                               |
+| Kafka            | EC2                                          |
+| Secrets          | Systems Manager Parameter Store              |
+| Logs             | CloudWatch                                   |
+| Access           | IAM, VPC, security groups                    |
 
 ## Steps
 
-| # | Step | Page | Status |
-| --- | --- | --- | --- |
-| 1 | Region, budget alert, IAM user | [01-account-setup.md](01-account-setup.md) | ✅ |
-| 2 | VPC and security groups | [02-security-groups.md](02-security-groups.md) | ✅ |
-| 3 | ECR repositories | [03-ecr.md](03-ecr.md) | ✅ |
-| 4 | Jenkins pushes images to ECR | [04-jenkins-ecr.md](04-jenkins-ecr.md) | ✅ |
-| 5 | RDS PostgreSQL | [05-rds.md](05-rds.md) | ✅ |
-| 6 | Kafka on EC2 | [06-kafka-ec2.md](06-kafka-ec2.md) | ✅ |
-| 7 | Secrets (Parameter Store) | [07-secrets.md](07-secrets.md) | ✅ |
-| 8 | Elastic Beanstalk | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | ✅ |
-| 9 | CloudWatch logs | [09-cloudwatch.md](09-cloudwatch.md) | ✅ |
-| 10 | Jenkins deploys automatically | [10-jenkins-deploy.md](10-jenkins-deploy.md) | ✅ |
-| 11 | Verify end to end | [11-verify.md](11-verify.md) | ✅ |
-| 12 | Frontend on S3 + CloudFront (HTTPS) | | ⬜ |
-| 13 | KYC uploads to S3 (code change in identity) | | ⬜ |
-| 14 | HTTPS in front of the backend (CloudFront) | | ⬜ |
+| #  | Step                                        | Page                                               | Status |
+|----|---------------------------------------------|----------------------------------------------------|--------|
+| 1  | Region, budget alert, IAM user              | [01-account-setup.md](01-account-setup.md)         | ✅     |
+| 2  | VPC and security groups                     | [02-security-groups.md](02-security-groups.md)     | ✅     |
+| 3  | ECR repositories                            | [03-ecr.md](03-ecr.md)                             | ✅     |
+| 4  | Jenkins pushes images to ECR                | [04-jenkins-ecr.md](04-jenkins-ecr.md)             | ✅     |
+| 5  | RDS PostgreSQL                              | [05-rds.md](05-rds.md)                             | ✅     |
+| 6  | Kafka on EC2                                | [06-kafka-ec2.md](06-kafka-ec2.md)                 | ✅     |
+| 7  | Secrets (Parameter Store)                   | [07-secrets.md](07-secrets.md)                     | ✅     |
+| 8  | Elastic Beanstalk                           | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | ✅     |
+| 9  | CloudWatch logs                             | [09-cloudwatch.md](09-cloudwatch.md)               | ✅     |
+| 10 | Jenkins deploys automatically               | [10-jenkins-deploy.md](10-jenkins-deploy.md)       | ✅     |
+| 11 | Verify end to end                           | [11-verify.md](11-verify.md)                       | ✅     |
+| 12 | Frontend on S3 + CloudFront (HTTPS) | [12-frontend-cloudfront.md](12-frontend-cloudfront.md) | ✅ |
+| 13 | Upgrade the AWS account to the Paid plan | | ⬜ |
+| 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | | ⬜ |
+| 15 | Jenkins deploys the frontend (S3 + CloudFront refresh) | | ⬜ |
+| 16 | KYC uploads to S3 (code change in identity) | | ⬜ |
+| 17 | AWS architecture diagram | [17-architecture.md](17-architecture.md) | 🟡 |
 
 ## How each step page is written
 
@@ -63,4 +66,4 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 Filled in as resources are created, so nothing is forgotten.
 
 | Resource | Name | How to delete |
-| --- | --- | --- |
+|----------|------|---------------|
