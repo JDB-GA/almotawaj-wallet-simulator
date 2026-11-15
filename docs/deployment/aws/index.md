@@ -44,7 +44,7 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 8 | Elastic Beanstalk | [08-elastic-beanstalk.md](08-elastic-beanstalk.md) | ✅ |
 | 9 | CloudWatch logs | [09-cloudwatch.md](09-cloudwatch.md) | ✅ |
 | 10 | Jenkins deploys automatically | [10-jenkins-deploy.md](10-jenkins-deploy.md) | ✅ |
-| 11 | Verify end to end | | ⬜ |
+| 11 | Verify end to end | [11-verify.md](11-verify.md) | ✅ |
 | 12 | Frontend on S3 + CloudFront (HTTPS) | | ⬜ |
 | 13 | KYC uploads to S3 (code change in identity) | | ⬜ |
 | 14 | HTTPS in front of the backend (CloudFront) | | ⬜ |
