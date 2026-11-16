@@ -55,3 +55,4 @@ The wallet screens use lists instead of tables: each transaction or payment requ
 
 Administrative screens keep tables, and tables never hide columns. A table with the `stacked-table` class (see `src/styles/tables.css`) turns each row into a labelled card when the space it is given is narrower than 44rem; the label of each value comes from the cell's `data-label`. The switch is a container query, so it follows the table's own width rather than the screen, which keeps it correct when the sidebar is open.
 
+
