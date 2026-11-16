@@ -79,3 +79,15 @@ The bucket, distribution and domain are set once in the `environment` block of t
 ## Limit
 
 `changeset` compares with the previous build. **Build Now** with no new commit skips every stage. To force a deploy, push a commit that touches the folder.
+
+## Result
+
+A one-line change in `frontend/README.md` ran only **Frontend: Build and Deploy**; the live site switched from the old build (calls to `d38vn1o0eqiqa8.cloudfront.net`) to the new one (calls to `wallet.almotawaj.com`). Login stays after a refresh.
+
+Check which address the live frontend calls:
+
+```bash
+curl -s https://wallet.almotawaj.com/ | grep -o 'assets/[^"]*\.js' | while read f; do curl -s "https://wallet.almotawaj.com/$f" | grep -o 'https://\(wallet\.almotawaj\.com\|d38vn1o0eqiqa8\.cloudfront\.net\)'; done | sort -u
+```
+
+**Lesson:** with the old build, login seemed to work but every next request returned 401 and a refresh logged out: the cookie was set on the CloudFront address, a different site from the page, so the browser dropped it.
