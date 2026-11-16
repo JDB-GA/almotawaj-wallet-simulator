@@ -17,12 +17,6 @@ public final class LogMessages {
     public static final String SEED_COMPLETED = "Basic database seeding completed";
     public static final String SEED_DATA_CLEANED = "Removed {} seeded accounts and their dependent data";
     public static final String SEED_TOKEN_REJECTED = "Rejected seed request with an invalid token";
-    public static final String VOUCHER_CREATED = "Merchant {} created voucher {} with {} units";
-    public static final String VOUCHER_UPDATED = "Merchant {} updated voucher {} to version {}";
-    public static final String VOUCHER_EDIT_CONFLICT = "Rejected stale edit of voucher {} by merchant {}: sent version {}, current {}";
-    public static final String VOUCHER_PURCHASED = "Buyer {} bought voucher {} as purchase {}; {} left";
-    public static final String VOUCHER_SOLD_OUT = "Buyer {} lost the race for voucher {}: sold out";
-    public static final String PAYOUT_BATCH_CREATED = "Merchant {} created payout batch {} with {} items";
 
     public static final String EVENT_PUBLISHED = "Published to {} key={}";
     public static final String EVENT_PUBLISH_FAILED = "Failed to publish to {}: {}";

@@ -86,7 +86,7 @@ Step-by-step notes: [`deployment/aws`](../deployment/aws/index.md).
 
 - [ ] Architecture diagram
 - [ ] Deployment guide: build, run, Kafka, AWS, verify
-- [ ] Remove dead code, debug logs, hard-coded values
+- [x] Remove dead code, debug logs, hard-coded values
 - [ ] Architecture doc: services, communication, data, infrastructure, CI/CD
 - [ ] API docs updated, Kafka events documented separately
 - [ ] README: overview, architecture, services, Kafka, Docker, CI/CD, AWS, env vars, testing, challenges, unsolved,

@@ -1,6 +1,5 @@
 package com.almotawaj.wallet.config.constants;
 
-
 public final class SecurityConstants {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String ROLE_PREFIX = "ROLE_";
@@ -19,7 +18,6 @@ public final class SecurityConstants {
     public static final String AUTHORITIES_CLAIM = "authorities";
 
     public static final String AUTH_COOKIE_NAME = "access_token";
-
 
     public static final String CONTENT_SECURITY_POLICY = "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
     public static final String DOCS_CONTENT_SECURITY_POLICY = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";

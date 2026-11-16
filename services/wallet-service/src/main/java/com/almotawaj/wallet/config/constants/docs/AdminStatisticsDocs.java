@@ -4,8 +4,6 @@ public final class AdminStatisticsDocs {
     public static final String TAG = "Admin Statistics";
     public static final String TAG_DESCRIPTION = "System totals and every wallet transaction (requires STATISTICS_VIEW)";
 
-    public static final String USERS = "Get user statistics";
-
     public static final String TRANSACTIONS = "Get transaction statistics";
     public static final String TRANSACTIONS_DESCRIPTION = "Number of ledger entries and the credited and debited totals that match the filters.";
     public static final String TRANSACTIONS_OK = "Transaction statistics";

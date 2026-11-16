@@ -1,8 +1,6 @@
 package com.almotawaj.wallet.config.constants.docs;
 
 public final class SystemDocs {
-    public static final String AUDIT_TAG = "Audit Log";
-
     public static final String SEED_TAG = "Seeding";
     public static final String SEED_TAG_DESCRIPTION = "Demo data for development and grading";
     public static final String SEED = "Seed demo data";

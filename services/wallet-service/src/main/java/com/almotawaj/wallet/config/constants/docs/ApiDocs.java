@@ -10,7 +10,6 @@ public final class ApiDocs {
     public static final String FORBIDDEN = "403";
     public static final String NOT_FOUND = "404";
     public static final String CONFLICT = "409";
-    public static final String CONTENT_TOO_LARGE = "413";
     public static final String UNPROCESSABLE = "422";
     public static final String TOO_MANY_REQUESTS = "429";
     public static final String SERVER_ERROR = "500";

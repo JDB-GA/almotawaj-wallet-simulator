@@ -2,13 +2,6 @@ package com.almotawaj.wallet.config.constants;
 
 public final class ApiPaths {
     public static final String HEALTH = "/actuator/health/**";
-    public static final String REGISTER = "/register";
-    public static final String LOGIN = "/login";
-    public static final String LOGOUT = "/logout";
-    public static final String ME = "/me";
-    public static final String VERIFY_EMAIL = "/verify-email";
-    public static final String KYC = "/api/kyc";
-    public static final String KYC_APPLICATION = "/{applicationId}";
     public static final String ADMIN_USERS = "/api/admin/users";
     public static final String ADMIN_STATISTICS = "/api/admin/statistics";
     public static final String ADMIN_TRANSACTIONS = "/api/admin/transactions";

@@ -32,13 +32,6 @@ public final class ApiPaths {
     public static final String ADMIN_SEED_DATA = "/api/admin/seed-data";
     public static final String ADMIN_STATISTICS = "/api/admin/statistics";
     public static final String SEED = "/api/seed";
-    public static final String TRANSACTIONS = "/transactions";
-    public static final String TOP_UP_OPTIONS = "/top-ups/options";
-    public static final String PAYMENT_REQUESTS = "/requests";
-    public static final String MERCHANT_API_KEYS = "/api/merchant/api-keys";
-    public static final String CHECKOUT_SESSION = "/{sessionId}";
-    public static final String VOUCHERS = "/api/vouchers";
-    public static final String VOUCHER_PURCHASES = "/purchases";
     public static final String PROFILE = "/api/profile";
     public static final String PROFILE_PICTURE = "/picture";
     public static final String USER_BY_ID = "/{userId}";

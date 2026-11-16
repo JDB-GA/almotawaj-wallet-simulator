@@ -21,7 +21,6 @@ public final class DocExamples {
     public static final String CPR_EXPIRY = "2029-06-30";
     public static final String PASSPORT_EXPIRY = "2031-03-31";
     public static final String BUSINESS_NAME = "Almotawaj Coffee";
-    public static final String ORDER_REFERENCE = "ORDER-1042";
 
     private DocExamples() {
     }

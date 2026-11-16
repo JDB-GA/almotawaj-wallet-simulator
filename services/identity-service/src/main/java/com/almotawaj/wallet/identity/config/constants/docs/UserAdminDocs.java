@@ -31,11 +31,6 @@ public final class UserAdminDocs {
     public static final String CLOSE_NO_CONTENT = "Account closed";
     public static final String STATUS_UNPROCESSABLE = "Invalid transition (INVALID_STATUS_TRANSITION), closed account (USER_CLOSED) or own account (CANNOT_MANAGE_SELF)";
 
-    public static final String TRANSACTIONS = "List a user's transactions";
-    public static final String TRANSACTIONS_DESCRIPTION = "Ledger entries of the user's wallet with the same filters as the wallet history. Paged and sortable (default createdAt,desc).";
-    public static final String TRANSACTIONS_OK = "Page of transactions";
-    public static final String TRANSACTIONS_BAD_REQUEST = "Invalid filter, page or sort parameter";
-
     public static final String PERMISSIONS_TAG = "Permissions";
     public static final String PERMISSIONS_TAG_DESCRIPTION = "Granting and revoking permissions (super admin only)";
     public static final String GRANT = "Grant a permission";

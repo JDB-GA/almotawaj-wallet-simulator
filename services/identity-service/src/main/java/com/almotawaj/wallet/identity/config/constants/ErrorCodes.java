@@ -37,33 +37,8 @@ public final class ErrorCodes {
     public static final String PASSWORD_REUSED = "PASSWORD_REUSED";
     public static final String ROLE_NOT_ASSIGNABLE = "ROLE_NOT_ASSIGNABLE";
     public static final String SEED_PASSWORD_MISSING = "SEED_PASSWORD_MISSING";
-    public static final String WALLET_KYC_REQUIRED = "WALLET_KYC_REQUIRED";
-    public static final String DAILY_TOP_UP_LIMIT_EXCEEDED = "DAILY_TOP_UP_LIMIT_EXCEEDED";
-    public static final String DAILY_TRANSFER_LIMIT_EXCEEDED = "DAILY_TRANSFER_LIMIT_EXCEEDED";
-    public static final String INSUFFICIENT_BALANCE = "INSUFFICIENT_BALANCE";
-    public static final String SELF_TRANSFER_NOT_ALLOWED = "SELF_TRANSFER_NOT_ALLOWED";
-    public static final String RECIPIENT_NOT_FOUND = "RECIPIENT_NOT_FOUND";
-    public static final String RECIPIENT_UNAVAILABLE = "RECIPIENT_UNAVAILABLE";
-    public static final String TRANSACTION_NOT_FOUND = "TRANSACTION_NOT_FOUND";
-    public static final String PAYMENT_REQUEST_NOT_FOUND = "PAYMENT_REQUEST_NOT_FOUND";
-    public static final String PAYMENT_REQUEST_NOT_PENDING = "PAYMENT_REQUEST_NOT_PENDING";
     public static final String PROFILE_PICTURE_NOT_FOUND = "PROFILE_PICTURE_NOT_FOUND";
-    public static final String CHECKOUT_NOT_FOUND = "CHECKOUT_NOT_FOUND";
-    public static final String CHECKOUT_NOT_PENDING = "CHECKOUT_NOT_PENDING";
-    public static final String CHECKOUT_EXPIRED = "CHECKOUT_EXPIRED";
-    public static final String MERCHANT_UNAVAILABLE = "MERCHANT_UNAVAILABLE";
-    public static final String DAILY_CHECKOUT_LIMIT_EXCEEDED = "DAILY_CHECKOUT_LIMIT_EXCEEDED";
-    public static final String VOUCHER_NOT_FOUND = "VOUCHER_NOT_FOUND";
-    public static final String VOUCHER_SOLD_OUT = "VOUCHER_SOLD_OUT";
-    public static final String VOUCHER_UNAVAILABLE = "VOUCHER_UNAVAILABLE";
-    public static final String VOUCHER_LIMIT_REACHED = "VOUCHER_LIMIT_REACHED";
     public static final String VOUCHER_EDIT_CONFLICT = "VOUCHER_EDIT_CONFLICT";
-    public static final String VOUCHER_PRICE_ABOVE_FACE_VALUE = "VOUCHER_PRICE_ABOVE_FACE_VALUE";
-    public static final String VOUCHER_EXPIRY_BEFORE_SALE_END = "VOUCHER_EXPIRY_BEFORE_SALE_END";
-    public static final String VOUCHER_NOT_USABLE = "VOUCHER_NOT_USABLE";
-    public static final String PAYOUT_BATCH_NOT_FOUND = "PAYOUT_BATCH_NOT_FOUND";
-    public static final String PAYOUT_RECIPIENT_DUPLICATE = "PAYOUT_RECIPIENT_DUPLICATE";
-    public static final String IDEMPOTENCY_KEY_REUSED = "IDEMPOTENCY_KEY_REUSED";
 
     private ErrorCodes() {
     }

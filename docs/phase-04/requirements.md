@@ -15,7 +15,7 @@ Source: [Project 04](https://github.com/Java-FT-01-Bahrain/JDB-Info/tree/main/Pr
 | 3  | Independent Spring Boot apps   | ✅ | Own app, `pom.xml`, config and [`Dockerfile`](../../services/wallet-service/Dockerfile) per service |
 | 4  | Service data ownership         | ✅      | [`services.md`](services.md), [`AccountHolder`][holder] (read-only `users`) |
 | 7  | Configuration and env vars     | ✅      | [`.env.example`](../../.env.example), each `application.properties`         |
-| 24 | Code quality and refactoring   | 🟡 | `config/constants/` per service; final cleanup on Day 6 |
+| 24 | Code quality and refactoring   | ✅ | No debug prints, TODOs or secrets in code; 12 leftover docs/constants classes and about 175 unused constants from the monolith split removed; each Swagger tag list holds only its own service |
 
 ## Docker and Kafka (Day 3)
 
