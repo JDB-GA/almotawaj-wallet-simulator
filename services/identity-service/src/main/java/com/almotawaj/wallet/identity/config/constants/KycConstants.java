@@ -14,6 +14,8 @@ public final class KycConstants {
     public static final List<KycApplicationStatus> CPR_BLOCKING_STATUSES =
             List.of(KycApplicationStatus.PENDING, KycApplicationStatus.APPROVED);
     public static final String STORAGE_ROOT_PROPERTY = "${storage-root}";
+    public static final String STORAGE_BUCKET_PROPERTY = "${storage-bucket}";
+    public static final String STORAGE_REGION_PROPERTY = "${storage-region}";
 
     private KycConstants() {
     }

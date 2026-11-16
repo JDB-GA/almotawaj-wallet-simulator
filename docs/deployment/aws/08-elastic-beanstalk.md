@@ -124,7 +124,7 @@ Elastic Beanstalk → Create application.
 | `MAIL_FROM` | `Almotawaj Digital Wallet <no-reply@notify.almotawaj.com>` |
 | `MAIL_LOGO_URL` | `https://almotawaj.com/logo/logo.png` |
 | `APP_URL` | `http://localhost:5173` (until the custom domain, Step 14) |
-| `STORAGE_ROOT` | `/tmp/uploads` (lost on restart until Step 16) |
+| `STORAGE_ROOT` | `/tmp/uploads` (only used when `STORAGE_BUCKET` is empty, Step 16) |
 
 ### Environment properties (SSM Parameter Store)
 

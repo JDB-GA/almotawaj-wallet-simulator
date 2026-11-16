@@ -26,12 +26,19 @@
         <jjwt.version>0.12.6</jjwt.version>
         <bucket4j.version>8.14.0</bucket4j.version>
         <openpdf.version>2.0.3</openpdf.version>
+        <aws.sdk.version>2.31.0</aws.sdk.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws.sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

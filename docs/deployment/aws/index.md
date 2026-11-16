@@ -49,7 +49,7 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 13 | Upgrade the AWS account to the Paid plan | [13-upgrade-account.md](13-upgrade-account.md) | ✅ |
 | 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | [14-custom-domain.md](14-custom-domain.md) | ✅ |
 | 15 | Jenkins deploys the frontend; frontend and backend separate | [15-jenkins-frontend.md](15-jenkins-frontend.md) | 🟡 |
-| 16 | KYC uploads to S3 (code change in identity) | | ⬜ |
+| 16 | KYC uploads to S3 | [16-kyc-s3.md](16-kyc-s3.md) | 🟡 |
 | 17 | AWS architecture diagram | [17-architecture.md](17-architecture.md) | 🟡 |
 
 ## How each step page is written
