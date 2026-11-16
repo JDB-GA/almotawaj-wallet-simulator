@@ -46,9 +46,9 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 10 | Jenkins deploys automatically               | [10-jenkins-deploy.md](10-jenkins-deploy.md)       | ✅     |
 | 11 | Verify end to end                           | [11-verify.md](11-verify.md)                       | ✅     |
 | 12 | Frontend on S3 + CloudFront (HTTPS) | [12-frontend-cloudfront.md](12-frontend-cloudfront.md) | ✅ |
-| 13 | Upgrade the AWS account to the Paid plan | | ⬜ |
-| 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | | ⬜ |
-| 15 | Jenkins deploys the frontend (S3 + CloudFront refresh) | | ⬜ |
+| 13 | Upgrade the AWS account to the Paid plan | [13-upgrade-account.md](13-upgrade-account.md) | ✅ |
+| 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | [14-custom-domain.md](14-custom-domain.md) | ✅ |
+| 15 | Jenkins deploys the frontend; frontend and backend separate | [15-jenkins-frontend.md](15-jenkins-frontend.md) | 🟡 |
 | 16 | KYC uploads to S3 (code change in identity) | | ⬜ |
 | 17 | AWS architecture diagram | [17-architecture.md](17-architecture.md) | 🟡 |
 

@@ -5,10 +5,14 @@ pipeline {
         AWS_REGION = 'eu-north-1'
         COMPOSE_PROJECT_NAME = 'almotawaj'
         DOCKER_DEFAULT_PLATFORM = 'linux/amd64'
+        FRONTEND_URL = 'https://wallet.almotawaj.com'
+        FRONTEND_BUCKET = 'almotawaj-frontend-481374029689'
+        CLOUDFRONT_ID = 'E1PQXMBPMZPI7D'
     }
 
     stages {
-        stage('Build and Test') {
+        stage('Backend: Build and Test') {
+            when { changeset 'services/**' }
             parallel {
                 stage('identity') { steps { dir('services/identity-service') { sh './mvnw -B verify' } } }
                 stage('wallet') { steps { dir('services/wallet-service') { sh './mvnw -B verify' } } }
@@ -18,14 +22,16 @@ pipeline {
             }
         }
 
-        stage('Build Images') {
+        stage('Backend: Build Images') {
+            when { changeset 'services/**' }
             steps {
                 sh 'touch .env'
                 sh 'docker compose build'
             }
         }
 
-        stage('Push to ECR') {
+        stage('Backend: Push to ECR') {
+            when { changeset 'services/**' }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
                         usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -45,7 +51,13 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Backend: Deploy') {
+            when {
+                anyOf {
+                    changeset 'services/**'
+                    changeset 'deploy/**'
+                }
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
                         usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -60,6 +72,23 @@ pipeline {
                             --version-label $VERSION --source-bundle S3Bucket=$BUCKET,S3Key=almotawaj/$VERSION.zip
                         aws elasticbeanstalk update-environment --environment-name almotawaj-prod --version-label $VERSION
                     '''
+                }
+            }
+        }
+
+        stage('Frontend: Build and Deploy') {
+            when { changeset 'frontend/**' }
+            steps {
+                dir('frontend') {
+                    withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
+                            usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh '''
+                            pnpm install --frozen-lockfile
+                            VITE_API_URL=$FRONTEND_URL pnpm build
+                            aws s3 sync dist s3://$FRONTEND_BUCKET --delete
+                            aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths "/*"
+                        '''
+                    }
                 }
             }
         }

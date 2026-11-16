@@ -59,19 +59,19 @@ Jenkins runs locally, so GitHub cannot call it. Jenkins checks GitHub instead.
 - AWS CLI and the `aws-jenkins` credential: [AWS Step 4](aws/04-jenkins-ecr.md)
 - Push to ECR stage: [AWS Step 4d](aws/04-jenkins-ecr.md#4d-push-to-ecr-stage)
 - Images built for amd64: [AWS Step 8a](aws/08-elastic-beanstalk.md#8a-images-built-for-amd64)
+- Deploy to Beanstalk: [AWS Step 10](aws/10-jenkins-deploy.md)
+- Node.js and pnpm, frontend deploy, separate frontend and backend: [AWS Step 15](aws/15-jenkins-frontend.md)
 
 ## What the pipeline does
 
 ```text
-Pull code → Build and Test (5 services in parallel) → Build Images
-                       ↓ a test fails
-                     stop (red)
+services/** changed → Backend: Build and Test (5 in parallel) → Build Images → Push to ECR → Deploy (Beanstalk)
+deploy/**   changed → Backend: Deploy
+frontend/** changed → Frontend: Build and Deploy (S3 + CloudFront refresh)
+a test fails        → stop (red); nothing is pushed or deployed
 ```
 
-| Stage | Command | Purpose |
-| --- | --- | --- |
-| Build and Test | `./mvnw -B verify` per service | Compile and run all tests, including Cucumber |
-| Build Images | `docker compose build` | Build the 5 Docker images |
+Details: [AWS Step 10](aws/10-jenkins-deploy.md) (backend) and [AWS Step 15](aws/15-jenkins-frontend.md) (frontend).
 
 ## Useful commands
 
