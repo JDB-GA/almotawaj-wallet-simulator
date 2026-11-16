@@ -54,3 +54,4 @@ Every text comes from a typed namespace in `src/i18n/locales/en` and `src/i18n/l
 The wallet screens use lists instead of tables: each transaction or payment request is one item with an icon, the counterparty, the date, the reference and the amount, and it reflows to any width. The wallet home is a balance card with quick actions followed by the most recent transactions.
 
 Administrative screens keep tables, and tables never hide columns. A table with the `stacked-table` class (see `src/styles/tables.css`) turns each row into a labelled card when the space it is given is narrower than 44rem; the label of each value comes from the cell's `data-label`. The switch is a container query, so it follows the table's own width rather than the screen, which keeps it correct when the sidebar is open.
+
