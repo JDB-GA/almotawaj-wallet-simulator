@@ -18,6 +18,18 @@ Elastic Beanstalk: api-gateway, identity, wallet, notification, audit
 RDS PostgreSQL    Kafka on EC2  private subnet
 ```
 
+## What runs where
+
+Each EC2 instance runs its programs as Docker containers side by side.
+
+| EC2 instance | Type | Runs |
+| --- | --- | --- |
+| `almotawaj-prod` (created and managed by Elastic Beanstalk) | `c7i-flex.large` | 5 microservices: identity, wallet, notification, audit, api-gateway |
+| `almotawaj-kafka` | `t3.small` | Kafka |
+| `almotawaj-tools` | `t3.medium` | Jenkins, pgAdmin |
+
+The database runs on RDS (`almotawaj-db`), which AWS manages; it does not appear under EC2. The frontend is files in S3 served by CloudFront, with no server.
+
 ## Services used
 
 | Need             | AWS service                                  |
@@ -50,7 +62,8 @@ RDS PostgreSQL    Kafka on EC2  private subnet
 | 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | [14-custom-domain.md](14-custom-domain.md) | ✅ |
 | 15 | Jenkins deploys the frontend; frontend and backend separate | [15-jenkins-frontend.md](15-jenkins-frontend.md) | ✅ |
 | 16 | KYC uploads to S3 | [16-kyc-s3.md](16-kyc-s3.md) | ✅ |
-| 17 | AWS architecture diagram | [17-architecture.md](17-architecture.md) | 🟡 |
+| 17 | Jenkins and pgAdmin on EC2 (HTTPS domains, private RDS) | [17-tools-ec2.md](17-tools-ec2.md) | 🟡 |
+| 18 | AWS architecture diagram | [18-architecture.md](18-architecture.md) | 🟡 |
 
 ## How each step page is written
 

@@ -1,10 +1,10 @@
-# Step 17: AWS Architecture Diagram
+# Step 18: AWS Architecture Diagram
 
 [← Back to AWS](index.md)
 
 **Goal:** one picture of the whole AWS setup for the README and the presentation.
 
-**When:** after Steps 12 to 16, so the diagram shows the final setup.
+**When:** after Steps 12 to 17, so the diagram shows the final setup.
 
 ## Plan
 

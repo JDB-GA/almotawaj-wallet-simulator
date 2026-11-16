@@ -33,21 +33,18 @@ pipeline {
         stage('Backend: Push to ECR') {
             when { changeset 'services/**' }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                        ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-                        REGISTRY=$ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
-                        aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY
+                sh '''
+                    ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+                    REGISTRY=$ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
+                    aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY
 
-                        for SERVICE in identity-service wallet-service notification-service audit-service api-gateway; do
-                            docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
-                            docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:latest
-                            docker push $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
-                            docker push $REGISTRY/almotawaj/$SERVICE:latest
-                        done
-                    '''
-                }
+                    for SERVICE in identity-service wallet-service notification-service audit-service api-gateway; do
+                        docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
+                        docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:latest
+                        docker push $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
+                        docker push $REGISTRY/almotawaj/$SERVICE:latest
+                    done
+                '''
             }
         }
 
@@ -59,20 +56,17 @@ pipeline {
                 }
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
-                        usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    sh '''
-                        ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
-                        BUCKET=elasticbeanstalk-$AWS_REGION-$ACCOUNT
-                        VERSION=build-$BUILD_NUMBER
+                sh '''
+                    ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
+                    BUCKET=elasticbeanstalk-$AWS_REGION-$ACCOUNT
+                    VERSION=build-$BUILD_NUMBER
 
-                        cd deploy && jar -cfM ../$VERSION.zip docker-compose.yml && cd ..
-                        aws s3 cp $VERSION.zip s3://$BUCKET/almotawaj/$VERSION.zip
-                        aws elasticbeanstalk create-application-version --application-name almotawaj \
-                            --version-label $VERSION --source-bundle S3Bucket=$BUCKET,S3Key=almotawaj/$VERSION.zip
-                        aws elasticbeanstalk update-environment --environment-name almotawaj-prod --version-label $VERSION
-                    '''
-                }
+                    cd deploy && jar -cfM ../$VERSION.zip docker-compose.yml && cd ..
+                    aws s3 cp $VERSION.zip s3://$BUCKET/almotawaj/$VERSION.zip
+                    aws elasticbeanstalk create-application-version --application-name almotawaj \
+                        --version-label $VERSION --source-bundle S3Bucket=$BUCKET,S3Key=almotawaj/$VERSION.zip
+                    aws elasticbeanstalk update-environment --environment-name almotawaj-prod --version-label $VERSION
+                '''
             }
         }
 
@@ -80,15 +74,12 @@ pipeline {
             when { changeset 'frontend/**' }
             steps {
                 dir('frontend') {
-                    withCredentials([usernamePassword(credentialsId: 'aws-jenkins',
-                            usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh '''
-                            pnpm install --frozen-lockfile
-                            VITE_API_URL=$FRONTEND_URL pnpm build
-                            aws s3 sync dist s3://$FRONTEND_BUCKET --delete
-                            aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths "/*"
-                        '''
-                    }
+                    sh '''
+                        pnpm install --frozen-lockfile
+                        VITE_API_URL=$FRONTEND_URL pnpm build
+                        aws s3 sync dist s3://$FRONTEND_BUCKET --delete
+                        aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths "/*"
+                    '''
                 }
             }
         }
