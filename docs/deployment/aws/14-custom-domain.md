@@ -101,9 +101,26 @@ Built for the custom domain, not the CloudFront address: the page and the API mu
 
 `api.almotawaj.com` (in the local `frontend/.env`) is the old Google Cloud backend and is not used on AWS.
 
+### Correction: CORS still on the default
+
+After the first apply, the gateway still allowed only `http://localhost:5173` (preflight from `https://wallet.almotawaj.com` returned 403). `CORS_ALLOWED_ORIGINS` had not reached the environment; it was re-entered with the exact name and value (no trailing `/`) and applied until **Ready**.
+
+Check:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" -X OPTIONS https://wallet.almotawaj.com/auth/users/login -H "Origin: https://wallet.almotawaj.com" -H "Access-Control-Request-Method: POST"
+```
+
+200 means allowed; 403 means the origin is not in the list.
+
 ## Result
 
 | Request | Result |
 | --- | --- |
 | `https://wallet.almotawaj.com/` | ✅ 200 |
 | `https://wallet.almotawaj.com/api/vouchers` | ✅ 401 (backend through CloudFront) |
+| Login in the browser | ✅ Works |
+
+Backend endpoint for everything (frontend, Postman): `https://wallet.almotawaj.com` (`/auth/...`, `/api/...`).
+
+The old Google Cloud project `almotawaj-wallet` (Cloud Run `wallet-api`) was deleted, and the Cloudflare `api` record removed.
