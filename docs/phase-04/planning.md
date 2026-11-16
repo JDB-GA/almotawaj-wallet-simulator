@@ -79,7 +79,7 @@ Step-by-step notes: [`deployment/aws`](../deployment/aws/index.md).
 - [ ] Jenkins deploys the frontend: build, upload to S3, refresh CloudFront
 - [ ] KYC uploads to S3 instead of the container disk
 - [ ] Kafka TLS and per-service topic permissions; `email-events` kept 1 hour only
-- [ ] 2 wallet instances, voucher race still correct
+- [x] Concurrency kept on AWS (voucher race, Concurrency Lab); locks live in PostgreSQL, so consistency holds across instances. Multi-instance demo skipped (optional: "where appropriate")
 - **Done when:** the app works end to end on the custom domain
 
 ## Day 6: Docs and cleanup (Req 18, 19, 24 + deliverables)
