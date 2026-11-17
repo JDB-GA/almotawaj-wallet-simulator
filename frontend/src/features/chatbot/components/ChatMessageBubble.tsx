@@ -1,6 +1,7 @@
 import { FileTextIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import { ChatMarkdown } from './ChatMarkdown'
 import type { ChatMessage } from '../types/chatbot.types'
 
 interface ChatMessageBubbleProps {
@@ -16,13 +17,14 @@ export function ChatMessageBubble({ message }: ChatMessageBubbleProps) {
       <div
         dir="auto"
         className={cn(
-          'max-w-[85%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap',
+          'max-w-[85%] min-w-0 rounded-2xl px-3 py-2 text-sm break-words',
+          isUser && 'whitespace-pre-wrap',
           isUser && 'rounded-ee-sm bg-primary text-primary-foreground',
           !isUser && !message.failed && 'rounded-es-sm bg-muted',
           message.failed && 'rounded-es-sm bg-destructive/10 text-destructive',
         )}
       >
-        {message.text}
+        {isUser || message.failed ? message.text : <ChatMarkdown text={message.text} />}
       </div>
       {message.sources.length > 0 && (
         <div className="flex max-w-[85%] flex-wrap items-center gap-1 text-xs text-muted-foreground">

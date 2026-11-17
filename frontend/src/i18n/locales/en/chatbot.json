@@ -16,5 +16,7 @@
     "topUp": "How do I top up my wallet?",
     "transfer": "How do I send money to someone?",
     "kyc": "Why do I need to verify my identity?"
-  }
+  },
+  "expand": "Expand",
+  "collapse": "Collapse"
 }
