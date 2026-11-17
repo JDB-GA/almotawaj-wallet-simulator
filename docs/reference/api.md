@@ -2,7 +2,7 @@
 
 [← Back to the README](../../README.md)
 
-Base URL: `https://api.almotawaj.com` (local: `http://localhost:8080`). Full schemas: `/swagger-ui.html`.
+Base URL: `https://wallet.almotawaj.com` through CloudFront and the API gateway (local: `http://localhost:8080`, the gateway). Kafka events are documented separately in the [README](../../README.md#kafka) and [`services.md`](../phase-04/services.md).
 
 | Method | Endpoint                                                | Functionality                        | Access                | Sample body                                                                                                                                                                     |
 |--------|---------------------------------------------------------|--------------------------------------|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

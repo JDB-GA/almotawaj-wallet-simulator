@@ -38,3 +38,20 @@ https://github.com/IBM/plex
 | MDN: Server-sent events | https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events | Live stock and payout progress events |
 | IETF draft: The Idempotency-Key HTTP Header | https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/ | Header name and replay behaviour for safe retries |
 
+
+## Phase 04 resources
+
+| Resource | Link | Used for |
+| --- | --- | --- |
+| Spring Cloud Gateway (Server MVC) | https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway-server-webmvc.html | The API gateway routes |
+| Spring for Apache Kafka | https://docs.spring.io/spring-kafka/reference/ | Producers, listeners, retries and dead-letter topics |
+| Apache Kafka documentation | https://kafka.apache.org/documentation/ | KRaft mode and listener settings |
+| Docker: multi-stage builds | https://docs.docker.com/build/building/multi-stage/ | Service images |
+| Docker: multi-platform builds | https://docs.docker.com/build/building/multi-platform/ | `$BUILDPLATFORM` for amd64 images on an Apple chip |
+| Jenkins Pipeline syntax | https://www.jenkins.io/doc/book/pipeline/syntax/ | `Jenkinsfile`, `when { changeset }` |
+| AWS Elastic Beanstalk: Docker Compose | https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker.html | Running the services |
+| AWS Elastic Beanstalk: environment secrets | https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/AWSHowTo.secrets.html | Parameter Store secrets |
+| Amazon CloudFront: origins and behaviors | https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html | One domain for frontend and API |
+| AWS Certificate Manager: CAA | https://docs.aws.amazon.com/acm/latest/userguide/setup-caa.html | Fixing the certificate CAA error |
+| Cucumber JVM | https://cucumber.io/docs/installation/java/ | Feature files and step definitions |
+| Diagrams (mingrammer) | https://diagrams.mingrammer.com | Architecture diagrams with AWS icons |

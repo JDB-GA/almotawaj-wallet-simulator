@@ -148,7 +148,7 @@ Table kyc_documents {
   application_id  uuid               [not null, ref: > kyc_applications.id]
   type            kyc_document_type  [not null]
   expiry_date     date               [note: 'Required for CPR and PASSPORT']
-  storage_key     varchar(255)       [not null, unique, note: 'Random file name on the storage volume']
+  storage_key     varchar(255)       [not null, unique, note: 'Random file name in the S3 bucket']
   content_type    varchar(50)        [not null]
   size_bytes      bigint             [not null]
   created_at      timestamptz        [not null]
@@ -160,7 +160,9 @@ Table kyc_documents {
 
 Table audit_logs {
   id           uuid          [pk]
-  actor_id     uuid          [ref: > users.id, note: 'Who performed the action; null for the system']
+  event_id     uuid          [not null, unique, note: 'Kafka event id; stops duplicates']
+  actor_id     uuid          [note: 'Who performed the action; null for the system']
+  actor_email  varchar(254)
   action       varchar(40)   [not null, note: 'AuditAction enum name']
   target_type  varchar(40)   [not null, note: 'USER, KYC_APPLICATION, PAYMENT_REQUEST, WALLET_TRANSACTION, API_KEY or CHECKOUT_SESSION']
   target_id    uuid          [not null]
@@ -266,8 +268,6 @@ Table checkout_sessions {
     (status, expires_at)
   }
 }
-
-// Project 3
 
 Enum voucher_status {
   ACTIVE
