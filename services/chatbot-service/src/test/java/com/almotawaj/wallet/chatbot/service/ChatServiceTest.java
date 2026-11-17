@@ -10,10 +10,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,6 +57,51 @@ class ChatServiceTest {
         when(geminiClient.ask("Hi")).thenReturn(new GeminiResponse(List.of()));
 
         assertThatThrownBy(() -> chatService.ask("Hi")).isInstanceOf(ChatbotUnavailableException.class);
+    }
+
+    @Test
+    void streamsDeltasThenSources() {
+        doAnswer(invocation -> {
+            Consumer<GeminiResponse> onChunk = invocation.getArgument(1);
+            onChunk.accept(new GeminiResponse(List.of(new GeminiResponse.Candidate(
+                    new GeminiResponse.Content(List.of(new GeminiResponse.Part("Open "))), null))));
+            onChunk.accept(new GeminiResponse(List.of(new GeminiResponse.Candidate(
+                    new GeminiResponse.Content(List.of(new GeminiResponse.Part("Request."))),
+                    new GeminiResponse.GroundingMetadata(List.of(chunk("api.md"), chunk("api.md")))))));
+            return null;
+        }).when(geminiClient).stream(eq("Hi"), any());
+        List<String> deltas = new ArrayList<>();
+        List<List<String>> done = new ArrayList<>();
+
+        chatService.stream(" Hi ", new ChatStreamListener() {
+            @Override
+            public void onDelta(String text) {
+                deltas.add(text);
+            }
+
+            @Override
+            public void onDone(List<String> sources) {
+                done.add(sources);
+            }
+        });
+
+        assertThat(deltas).containsExactly("Open ", "Request.");
+        assertThat(done).containsExactly(List.of("api.md"));
+    }
+
+    @Test
+    void streamFailsWhenNothingAnswered() {
+        ChatStreamListener listener = new ChatStreamListener() {
+            @Override
+            public void onDelta(String text) {
+            }
+
+            @Override
+            public void onDone(List<String> sources) {
+            }
+        };
+
+        assertThatThrownBy(() -> chatService.stream("Hi", listener)).isInstanceOf(ChatbotUnavailableException.class);
     }
 
     private static GeminiResponse.GroundingChunk chunk(String title) {

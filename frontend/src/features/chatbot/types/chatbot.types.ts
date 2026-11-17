@@ -12,3 +12,13 @@ export interface ChatMessage {
   sources: readonly string[]
   failed?: boolean
 }
+
+export interface ChatStreamHandlers {
+  onDelta: (text: string) => void
+  onDone: (sources: string[]) => void
+}
+
+export interface ServerSentEvent {
+  event: string
+  data: string
+}

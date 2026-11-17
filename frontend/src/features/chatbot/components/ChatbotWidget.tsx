@@ -9,7 +9,7 @@ import { ChatWelcome } from './ChatWelcome'
 
 export function ChatbotWidget() {
   const { t } = useTranslation('chatbot')
-  const { messages, ask, isThinking, reset } = useChatbot()
+  const { messages, ask, isStreaming, reset } = useChatbot()
 
   return (
     <Sheet>
@@ -32,10 +32,10 @@ export function ChatbotWidget() {
           <SheetDescription>{t('description')}</SheetDescription>
         </SheetHeader>
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4">
-          {messages.length === 0 ? <ChatWelcome onAsk={ask} /> : <ChatMessageList messages={messages} isThinking={isThinking} />}
+          {messages.length === 0 ? <ChatWelcome onAsk={ask} /> : <ChatMessageList messages={messages} isStreaming={isStreaming} />}
         </div>
         <div className="border-t p-4">
-          <ChatInput disabled={isThinking} onAsk={ask} />
+          <ChatInput disabled={isStreaming} onAsk={ask} />
         </div>
       </SheetContent>
     </Sheet>

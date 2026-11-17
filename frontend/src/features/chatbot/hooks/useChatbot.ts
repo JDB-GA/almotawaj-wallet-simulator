@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { chatbotApi } from '../api/chatbot.api'
 import type { ChatMessage } from '../types/chatbot.types'
@@ -9,17 +8,54 @@ const createMessage = (message: Omit<ChatMessage, 'id'>): ChatMessage => ({ id: 
 export function useChatbot() {
   const { t } = useTranslation('chatbot')
   const [messages, setMessages] = useState<ChatMessage[]>([])
-  const mutation = useMutation({ mutationFn: chatbotApi.ask })
+  const [isStreaming, setIsStreaming] = useState(false)
+  const abortRef = useRef<AbortController | null>(null)
 
-  const ask = (question: string) => {
-    const text = question.trim()
-    if (!text || mutation.isPending) return
-    setMessages((current) => [...current, createMessage({ role: 'user', text, sources: [] })])
-    mutation.mutate(text, {
-      onSuccess: ({ answer, sources }) => { setMessages((current) => [...current, createMessage({ role: 'assistant', text: answer, sources })]); },
-      onError: () => { setMessages((current) => [...current, createMessage({ role: 'assistant', text: t('error'), sources: [], failed: true })]); },
-    })
+  const updateMessage = (id: string, update: (message: ChatMessage) => ChatMessage) => {
+    setMessages((current) => current.map((message) => (message.id === id ? update(message) : message)))
   }
 
-  return { messages, ask, isThinking: mutation.isPending, reset: () => { setMessages([]); } }
+  const ask = async (question: string) => {
+    const text = question.trim()
+    if (!text || isStreaming) return
+    const answer = createMessage({ role: 'assistant', text: '', sources: [] })
+    setMessages((current) => [...current, createMessage({ role: 'user', text, sources: [] }), answer])
+    setIsStreaming(true)
+    const controller = new AbortController()
+    abortRef.current = controller
+    try {
+      await chatbotApi.stream(
+        text,
+        {
+          onDelta: (delta) => {
+            updateMessage(answer.id, (message) => ({ ...message, text: message.text + delta }))
+          },
+          onDone: (sources) => {
+            updateMessage(answer.id, (message) => ({ ...message, sources }))
+          },
+        },
+        controller.signal,
+      )
+    } catch {
+      if (!controller.signal.aborted) {
+        updateMessage(answer.id, (message) => ({ ...message, text: message.text || t('error'), failed: !message.text }))
+      }
+    } finally {
+      setIsStreaming(false)
+    }
+  }
+
+  const reset = () => {
+    abortRef.current?.abort()
+    setMessages([])
+  }
+
+  return {
+    messages,
+    ask: (question: string) => {
+      void ask(question)
+    },
+    isStreaming,
+    reset,
+  }
 }

@@ -8,8 +8,10 @@ import com.almotawaj.wallet.chatbot.model.response.ChatResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +25,37 @@ public class ChatService {
         return new ChatResponse(answer(candidate), sources(candidate));
     }
 
+    public void stream(String question, ChatStreamListener listener) {
+        Set<String> sources = new LinkedHashSet<>();
+        boolean[] answered = {false};
+        geminiClient.stream(question.strip(), chunk -> {
+            if (chunk == null || chunk.candidates() == null || chunk.candidates().isEmpty()) {
+                return;
+            }
+            GeminiResponse.Candidate candidate = chunk.candidates().get(0);
+            String text = text(candidate);
+            if (!text.isEmpty()) {
+                answered[0] = true;
+                listener.onDelta(text);
+            }
+            sources.addAll(sources(candidate));
+        });
+        if (!answered[0]) {
+            throw new ChatbotUnavailableException();
+        }
+        listener.onDone(sources.stream().limit(ChatbotConstants.SOURCES_MAX).toList());
+    }
+
+    private static String text(GeminiResponse.Candidate candidate) {
+        if (candidate.content() == null || candidate.content().parts() == null) {
+            return "";
+        }
+        return candidate.content().parts().stream()
+                .map(GeminiResponse.Part::text)
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining());
+    }
+
     private static GeminiResponse.Candidate firstCandidate(GeminiResponse response) {
         if (response == null || response.candidates() == null || response.candidates().isEmpty()) {
             throw new ChatbotUnavailableException();
@@ -31,13 +64,7 @@ public class ChatService {
     }
 
     private static String answer(GeminiResponse.Candidate candidate) {
-        if (candidate.content() == null || candidate.content().parts() == null) {
-            throw new ChatbotUnavailableException();
-        }
-        String text = candidate.content().parts().stream()
-                .map(GeminiResponse.Part::text)
-                .filter(Objects::nonNull)
-                .collect(Collectors.joining());
+        String text = text(candidate);
         if (text.isBlank()) {
             throw new ChatbotUnavailableException();
         }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public final class ChatbotConstants {
     public static final String CHAT_PATH = "/api/chat";
+    public static final String STREAM_PATH = "/stream";
     public static final String DOCUMENTS_PATH = "/api/admin/chat/documents";
     public static final String DOCUMENT_ID_PATH = "/{documentId}";
     public static final String HAS_ROLE_SUPER_ADMIN = "hasRole('SUPER_ADMIN')";
@@ -21,6 +22,12 @@ public final class ChatbotConstants {
     public static final String USER_ROLE = "user";
     public static final String STORES_PATH = "/v1beta/fileSearchStores";
     public static final String STORE_DISPLAY_NAME = "almotawaj-docs";
+    public static final String STREAM_CONTENT_PATH = "/v1beta/models/{model}:streamGenerateContent?alt=sse";
+    public static final String SSE_DATA_PREFIX = "data:";
+    public static final String DELTA_EVENT = "delta";
+    public static final String DONE_EVENT = "done";
+    public static final String ERROR_EVENT = "error";
+    public static final long STREAM_TIMEOUT_MS = 60_000;
     public static final String LIST_DOCUMENTS_PATH = "/v1beta/%s/documents?pageSize={pageSize}";
     public static final String DOCUMENT_PATH = "/v1beta/%s/documents/{documentId}?force=true";
     public static final String UPLOAD_PATH = "/upload/v1beta/%s:uploadToFileSearchStore";
