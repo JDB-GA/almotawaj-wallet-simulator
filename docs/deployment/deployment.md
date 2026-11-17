@@ -2,7 +2,7 @@
 
 [← Back to the README](../../README.md)
 
-![Deployment architecture](../images/deployment-architecture.jpg)
+![Deployment architecture](../images/phase-03/deployment-architecture.jpg)
 
 ## Server Deployment: Google Cloud Run
 

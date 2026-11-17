@@ -73,11 +73,11 @@ Step-by-step notes: [`deployment/aws`](../deployment/aws/index.md).
 - [x] Logs in CloudWatch: app, container, Kafka activity
 - [x] Pipeline deploys automatically
 - [x] End-to-end check on AWS: seed, register, email, verify
-- [ ] Upgrade the AWS account to the Paid plan (removes the free-plan limits; credits stay)
-- [ ] Certificate in N. Virginia and custom domain `wallet.almotawaj.com` on CloudFront (DNS in Vercel)
-- [ ] `CORS_ALLOWED_ORIGINS` and `APP_URL` set to the custom domain; frontend rebuilt and uploaded
-- [ ] Jenkins deploys the frontend: build, upload to S3, refresh CloudFront
-- [ ] KYC uploads to S3 instead of the container disk
+- [x] Upgrade the AWS account to the Paid plan (removes the free-plan limits; credits stay)
+- [x] Certificate in N. Virginia and custom domain `wallet.almotawaj.com` on CloudFront (DNS in Cloudflare)
+- [x] `CORS_ALLOWED_ORIGINS` and `APP_URL` set to the custom domain; frontend rebuilt and uploaded
+- [x] Jenkins deploys the frontend: build, upload to S3, refresh CloudFront
+- [x] KYC uploads to S3 instead of the container disk
 - [ ] Kafka TLS and per-service topic permissions; `email-events` kept 1 hour only
 - [x] Concurrency kept on AWS (voucher race, Concurrency Lab); locks live in PostgreSQL, so consistency holds across instances. Multi-instance demo skipped (optional: "where appropriate")
 - [x] Jenkins and pgAdmin on one EC2 (`almotawaj-tools`), reached through SSM; pgAdmin reads the private RDS ([Step 17](../deployment/aws/17-tools-ec2.md))

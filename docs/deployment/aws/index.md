@@ -10,7 +10,7 @@ Budget: $100 credits. Delete everything after the presentation (see [Cleanup](#c
 
 Full diagrams: [Step 18](18-architecture.md).
 
-![Overview](../../images/architecture/01-overview.png)
+![Overview](../../images/phase-04/architecture/01-overview.png)
 
 ```text
 Internet

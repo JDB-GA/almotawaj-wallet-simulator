@@ -18,7 +18,7 @@ from diagrams.onprem.vcs import Github
 from diagrams.programming.framework import React, Spring
 from diagrams.saas.cdn import Cloudflare
 
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "images" / "architecture"
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "images" / "phase-04" / "architecture"
 ICONS_DIR = Path(diagrams.__file__).resolve().parent.parent / "resources" / "aws"
 AWS_ICON = ICONS_DIR / "aws.png"
 VPC_ICON = ICONS_DIR / "network" / "vpc.png"

@@ -118,12 +118,12 @@ moment. The plan and progress are in [`docs/phase-03/planning.md`](docs/phase-03
 
 | Flow                                         | Diagram                                                                                          |
 |----------------------------------------------|--------------------------------------------------------------------------------------------------|
-| The last voucher race                        | [`docs/images/phase-03-voucher-race-flow.png`](docs/images/phase-03-voucher-race-flow.png)       |
-| Bulk payout on a thread pool                 | [`docs/images/phase-03-bulk-payout-flow.png`](docs/images/phase-03-bulk-payout-flow.png)         |
-| Charged once with an Idempotency-Key         | [`docs/images/phase-03-idempotency-flow.png`](docs/images/phase-03-idempotency-flow.png)         |
-| Wallet deadlock and the smaller-ID-first fix | [`docs/images/phase-03-wallet-deadlock-flow.png`](docs/images/phase-03-wallet-deadlock-flow.png) |
+| The last voucher race                        | [`docs/images/phase-03/voucher-race-flow.png`](docs/images/phase-03/voucher-race-flow.png)       |
+| Bulk payout on a thread pool                 | [`docs/images/phase-03/bulk-payout-flow.png`](docs/images/phase-03/bulk-payout-flow.png)         |
+| Charged once with an Idempotency-Key         | [`docs/images/phase-03/idempotency-flow.png`](docs/images/phase-03/idempotency-flow.png)         |
+| Wallet deadlock and the smaller-ID-first fix | [`docs/images/phase-03/wallet-deadlock-flow.png`](docs/images/phase-03/wallet-deadlock-flow.png) |
 
-![The last voucher race](docs/images/phase-03-voucher-race-flow.png)
+![The last voucher race](docs/images/phase-03/voucher-race-flow.png)
 
 ### Concurrency Explanation
 
