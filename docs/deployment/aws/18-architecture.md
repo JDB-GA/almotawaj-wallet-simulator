@@ -2,13 +2,13 @@
 
 [← Back to AWS](index.md)
 
-Seven diagrams: one overview, then one per question. All run in `eu-north-1` (Stockholm); only the CloudFront certificates live in `us-east-1`, as AWS requires.
+Eight diagrams: one overview, then one per question. All run in `eu-north-1` (Stockholm); only the CloudFront certificates live in `us-east-1`, as AWS requires.
 
 ## 1. Overview
 
 ![Overview](../../images/phase-04/architecture/01-overview.png)
 
-Users reach `wallet.almotawaj.com` through Cloudflare DNS and CloudFront. CloudFront serves the React app from S3 and sends API calls to Elastic Beanstalk, where the five microservices run. Data stays private: RDS, Kafka and the KYC bucket. Jenkins builds from GitHub and publishes images to ECR; Parameter Store holds the secrets and CloudWatch the logs.
+Users reach `wallet.almotawaj.com` through Cloudflare DNS and CloudFront. CloudFront serves the React app from S3 and sends API calls to Elastic Beanstalk, where the six microservices run. Data stays private: RDS, Kafka and the KYC bucket. Jenkins builds from GitHub and publishes images to ECR; Parameter Store holds the secrets and CloudWatch the logs.
 
 ## 2. How a request reaches the app
 
@@ -70,3 +70,9 @@ python3 -m venv .venv && .venv/bin/pip install diagrams
 ```
 
 Images are written to `docs/images/phase-04/architecture/`.
+
+## 8. RAG chatbot
+
+![RAG chatbot](../../images/phase-04/architecture/08-rag-chatbot.png)
+
+A super admin uploads docs; `chatbot-service` sends them to a Gemini File Search store, which splits and embeds them. When a user asks, the service sends the question to Gemini with the file search tool. Gemini finds the matching chunks and answers from them, returning the file names as sources. The API key and store name come from Parameter Store.

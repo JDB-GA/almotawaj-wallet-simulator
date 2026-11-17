@@ -68,6 +68,15 @@ Guide: [`deployment/aws`](../deployment/aws/index.md)
 - [x] ERD updated: [`erd.dbml`](../reference/erd.dbml)
 - [ ] Presentation
 
+## Day 7: RAG chatbot
+
+- [x] Gemini API key in `.env` and Parameter Store
+- [x] `chatbot-service`: chat API with Gemini File Search
+- [x] Admin page to upload, list and delete the docs
+- [x] Chat widget for signed-in users (English and Arabic)
+- [x] Gateway route, Docker Compose, Jenkins and ECR
+- [x] Diagram: [Step 18](../deployment/aws/18-architecture.md)
+
 ## Optional bonuses
 
 - [x] API gateway

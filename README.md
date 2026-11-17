@@ -39,6 +39,7 @@ More diagrams: [`docs/deployment/aws/18-architecture.md`](docs/deployment/aws/18
 | `wallet-service`       | 8084 | Wallets, transfers, vouchers, payouts, PDFs |
 | `notification-service` | 8082 | Sends emails                                |
 | `audit-service`        | 8083 | Saves the audit log                         |
+| `chatbot-service`      | 8085 | RAG assistant that answers from the docs    |
 
 - All services share one database; each writes only its own tables.
 - Details: [`docs/phase-04/services.md`](docs/phase-04/services.md)
@@ -50,7 +51,20 @@ More diagrams: [`docs/deployment/aws/18-architecture.md`](docs/deployment/aws/18
 - **Data:** PostgreSQL, Apache Kafka, Amazon S3
 - **DevOps:** Docker, Docker Compose, Jenkins
 - **AWS:** Elastic Beanstalk, EC2, RDS, S3, CloudFront, ECR, IAM, Parameter Store, CloudWatch
+- **AI:** Google Gemini API with File Search (RAG)
 - **Tests:** JUnit 5, Cucumber
+
+## RAG chatbot
+
+![RAG chatbot](docs/images/phase-04/architecture/08-rag-chatbot.png)
+
+1. A super admin uploads `.md` or `.txt` files on **Assistant files**.
+2. Gemini splits them into chunks and stores their embeddings in a File Search store.
+3. A user asks in the chat widget; `chatbot-service` sends the question to Gemini with the file search tool.
+4. Gemini finds the matching chunks and answers from them only, with the file names as sources.
+
+- The store is created on the first upload; save its name as `GEMINI_FILE_SEARCH_STORE`.
+- Secrets: `GEMINI_API_KEY` and `GEMINI_FILE_SEARCH_STORE` in `.env` locally, Parameter Store on AWS.
 
 ## Kafka
 
@@ -115,7 +129,7 @@ Template: [`.env.example`](.env.example). On AWS, secrets come from Parameter St
 
 ## Testing
 
-- **167 tests:** identity 21, wallet 141, notification 3, audit 2
+- **173 tests:** identity 21, wallet 141, notification 3, audit 2, chatbot 6
 - **Cucumber:** send money, pay a payment request, bulk payout
 - **Concurrency:** 20 buyers race for 1 voucher; exactly 1 wins, every time
 - **On AWS:** register, email, KYC upload and login checked end to end

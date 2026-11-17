@@ -9,6 +9,8 @@ from diagrams.aws.management import Cloudwatch, SystemsManagerParameterStore
 from diagrams.aws.network import CloudFront
 from diagrams.aws.security import WAF
 from diagrams.aws.storage import SimpleStorageServiceS3Bucket
+from diagrams.gcp.ml import VertexAI
+from diagrams.gcp.storage import GCS
 from diagrams.onprem.ci import Jenkins
 from diagrams.onprem.client import User, Users
 from diagrams.onprem.database import Postgresql
@@ -253,6 +255,35 @@ def admin_tools():
         pgadmin >> Edge(label="5432") >> database
 
 
+def rag_chatbot():
+    with diagram("08-rag-chatbot", "RAG chatbot: upload docs, then ask"):
+        admin = User("Super admin")
+        user = User("User")
+
+        with Cluster("React app"):
+            files_page = React("Assistant files\npage")
+            widget = React("Chat widget")
+
+        with Cluster(group(AWS_ICON, "AWS: Elastic Beanstalk"), graph_attr=AWS_CLOUD):
+            gateway = Spring("api-gateway")
+            chatbot = Spring("chatbot-service")
+            secrets = SystemsManagerParameterStore("Parameter Store\nGemini key + store")
+
+        with Cluster("Google Gemini API", graph_attr=GROUP):
+            model = VertexAI("gemini-3.5-flash-lite")
+            store = GCS("File Search store\nchunks + embeddings")
+
+        admin >> Edge(label="1. upload .md / .txt", color="#7aa116", style="bold") >> files_page
+        files_page >> Edge(label="/api/admin/chat/documents", color="#7aa116") >> gateway
+        user >> Edge(label="A. ask a question", color="#147eba", style="bold") >> widget
+        widget >> Edge(label="/api/chat + JWT", color="#147eba") >> gateway
+        gateway >> chatbot
+        secrets >> Edge(label="at start", style="dashed") >> chatbot
+        chatbot >> Edge(label="2. split + embed", color="#7aa116") >> store
+        chatbot >> Edge(label="B. question / D. answer + sources", color="#147eba", dir="both") >> model
+        model >> Edge(label="C. find chunks", color="#e7157b", style="dashed") >> store
+
+
 if __name__ == "__main__":
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     overview()
@@ -262,3 +293,4 @@ if __name__ == "__main__":
     network_security()
     cicd()
     admin_tools()
+    rag_chatbot()

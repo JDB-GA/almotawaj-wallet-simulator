@@ -20,7 +20,8 @@
 | Kafka (async) | identity → wallet | `account-events`: create the wallet |
 | Kafka (async) | identity → notification | `email-events`: send an email |
 | Kafka (async) | identity, wallet → audit | `audit-events`: save an audit entry |
-| JWT | identity → wallet, audit | Token signed once, checked by each service |
+| JWT | identity → wallet, audit, chatbot | Token signed once, checked by each service |
+| HTTPS (sync) | chatbot → Gemini API | Answer questions, manage the docs |
 
 - Internal REST needs the `X-Internal-Token` header.
 - The gateway never routes `/internal/**`.
@@ -73,6 +74,13 @@ identity does not wait for steps 2 to 4.
 - **APIs:** `GET /api/admin/audit-logs` (super admin).
 - **Data:** audit entries.
 - **Talks:** checks the JWT; reads `audit-events` (async).
+
+## chatbot-service (8085)
+
+- **Does:** the RAG assistant; answers only from the uploaded docs, in the user's language.
+- **APIs:** `POST /api/chat` (any signed-in user); `GET`, `POST`, `DELETE /api/admin/chat/documents` (super admin).
+- **Data:** none; files and embeddings live in the Gemini File Search store.
+- **Talks:** checks the JWT; calls the Gemini API (sync).
 
 ## JWT example
 
