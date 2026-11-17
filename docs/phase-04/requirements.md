@@ -52,7 +52,7 @@ Source: [Project 04](https://github.com/Java-FT-01-Bahrain/JDB-Info/tree/main/Pr
 
 | #  | Requirement              | Status | Where |
 |----|--------------------------|--------|-------|
-| 18 | Deployment architecture  | 🟡 | Plan in [Step 18](../deployment/aws/18-architecture.md) |
+| 18 | Deployment architecture  | ✅ | 7 diagrams with AWS icons ([Step 18](../deployment/aws/18-architecture.md)) |
 | 19 | Deployment documentation | ✅ | [`deployment/aws`](../deployment/aws/index.md), [`jenkins.md`](../deployment/jenkins.md) |
 
 [holder]: ../../services/wallet-service/src/main/java/com/almotawaj/wallet/account/model/AccountHolder.java

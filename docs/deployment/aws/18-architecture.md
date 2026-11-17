@@ -1,20 +1,72 @@
-# Step 18: AWS Architecture Diagram
+# Step 18: AWS Architecture
 
 [← Back to AWS](index.md)
 
-**Goal:** one picture of the whole AWS setup for the README and the presentation.
+Seven diagrams: one overview, then one per question. All run in `eu-north-1` (Stockholm); only the CloudFront certificates live in `us-east-1`, as AWS requires.
 
-**When:** after Steps 12 to 17, so the diagram shows the final setup.
+## 1. Overview
 
-## Plan
+![Overview](../../images/architecture/01-overview.png)
 
-1. Draw the final setup (draw.io or the AWS architecture icons).
-2. Show every resource with its real name:
-   - Jenkins (developer Mac) → ECR, S3 versions
-   - CloudFront (HTTPS) → S3 frontend and Elastic Beanstalk
-   - Elastic Beanstalk `almotawaj-prod`: the five services
-   - RDS `almotawaj-db`, Kafka EC2 `almotawaj-kafka`
-   - Parameter Store, CloudWatch, Resend
-3. Mark public versus private, and the security groups between them.
-4. Show the request path (browser → gateway → services → RDS) and the event path (Kafka → consumers).
-5. Export as PNG to `docs/images/` and link it here and in the README.
+Users reach `wallet.almotawaj.com` through Cloudflare DNS and CloudFront. CloudFront serves the React app from S3 and sends API calls to Elastic Beanstalk, where the five microservices run. Data stays private: RDS, Kafka and the KYC bucket. Jenkins builds from GitHub and publishes images to ECR; Parameter Store holds the secrets and CloudWatch the logs.
+
+## 2. How a request reaches the app
+
+![Request flow](../../images/architecture/02-request-flow.png)
+
+One address serves both sides. CloudFront routes by path: static files go to S3, `/api/*` and `/auth/*` go to the gateway with caching off. Same address means the login cookie works and no CORS is needed between them.
+
+## 3. Inside Elastic Beanstalk
+
+![Inside Beanstalk](../../images/architecture/03-inside-beanstalk.png)
+
+One EC2 instance runs five Docker containers. The gateway routes each path to its service. Services share one PostgreSQL database, each writing only its own tables; identity and wallet also call each other over internal REST (protected by `X-Internal-Token`), and both publish events to Kafka.
+
+## 4. Kafka events
+
+![Kafka events](../../images/architecture/04-kafka-events.png)
+
+| Topic | Producer | Consumer | Result |
+| --- | --- | --- | --- |
+| `account-events` | identity | wallet | Wallet created |
+| `email-events` | identity | notification | Email sent through Resend |
+| `audit-events` | identity, wallet | audit | Audit entry saved |
+
+A message that fails 3 times (2 seconds apart) moves to `<topic>-dlt`. Duplicate events are ignored.
+
+## 5. Network and security
+
+![Network and security](../../images/architecture/05-network-security.png)
+
+| Resource | Who can reach it |
+| --- | --- |
+| Microservices | Anyone on port 80, through CloudFront for the domain |
+| Jenkins, pgAdmin | CloudFront only (ports 5050-8080), WAF rate limiting in front |
+| RDS | Microservices and tools only, port 5432; no public access |
+| Kafka | Microservices only, port 9092 |
+
+Secrets come from Parameter Store at start; each EC2 instance uses an IAM role, so no access keys are stored anywhere.
+
+## 6. CI/CD
+
+![CI/CD](../../images/architecture/06-cicd.png)
+
+Jenkins on EC2 checks GitHub every 5 minutes and runs only the side that changed: the backend (test, image, ECR, Beanstalk) or the frontend (build, S3, CloudFront refresh). A failing test stops everything.
+
+## 7. Admin tools
+
+![Admin tools](../../images/architecture/07-admin-tools.png)
+
+`jenkins.almotawaj.com` and `pgadmin.almotawaj.com` each have their own CloudFront and HTTPS, and both reach one EC2 instance through its Elastic IP. pgAdmin sits inside the VPC, so it is the only way in to the private database.
+
+## Regenerate
+
+The diagrams are code: [`docs/architecture/aws_architecture.py`](../../architecture/aws_architecture.py), using the [`diagrams`](https://diagrams.mingrammer.com) library with official AWS icons. It needs Graphviz:
+
+```bash
+brew install graphviz
+python3 -m venv .venv && .venv/bin/pip install diagrams
+.venv/bin/python docs/architecture/aws_architecture.py
+```
+
+Images are written to `docs/images/architecture/`.

@@ -80,12 +80,12 @@ Step-by-step notes: [`deployment/aws`](../deployment/aws/index.md).
 - [ ] KYC uploads to S3 instead of the container disk
 - [ ] Kafka TLS and per-service topic permissions; `email-events` kept 1 hour only
 - [x] Concurrency kept on AWS (voucher race, Concurrency Lab); locks live in PostgreSQL, so consistency holds across instances. Multi-instance demo skipped (optional: "where appropriate")
-- [ ] Jenkins and pgAdmin on one EC2 (`almotawaj-tools`), reached through SSM; pgAdmin reads the private RDS ([Step 17](../deployment/aws/17-tools-ec2.md))
+- [x] Jenkins and pgAdmin on one EC2 (`almotawaj-tools`), reached through SSM; pgAdmin reads the private RDS ([Step 17](../deployment/aws/17-tools-ec2.md))
 - **Done when:** the app works end to end on the custom domain
 
 ## Day 6: Docs and cleanup (Req 18, 19, 24 + deliverables)
 
-- [ ] Architecture diagram
+- [x] Architecture diagram ([Step 18](../deployment/aws/18-architecture.md))
 - [ ] Deployment guide: build, run, Kafka, AWS, verify
 - [x] Remove dead code, debug logs, hard-coded values
 - [ ] Architecture doc: services, communication, data, infrastructure, CI/CD

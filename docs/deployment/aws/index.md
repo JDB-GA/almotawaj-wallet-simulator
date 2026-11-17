@@ -8,6 +8,10 @@ Budget: $100 credits. Delete everything after the presentation (see [Cleanup](#c
 
 ## Architecture
 
+Full diagrams: [Step 18](18-architecture.md).
+
+![Overview](../../images/architecture/01-overview.png)
+
 ```text
 Internet
    |
@@ -62,8 +66,8 @@ The database runs on RDS (`almotawaj-db`), which AWS manages; it does not appear
 | 14 | Custom domain `wallet.almotawaj.com`, CORS and `APP_URL` | [14-custom-domain.md](14-custom-domain.md) | ✅ |
 | 15 | Jenkins deploys the frontend; frontend and backend separate | [15-jenkins-frontend.md](15-jenkins-frontend.md) | ✅ |
 | 16 | KYC uploads to S3 | [16-kyc-s3.md](16-kyc-s3.md) | ✅ |
-| 17 | Jenkins and pgAdmin on EC2 (HTTPS domains, private RDS) | [17-tools-ec2.md](17-tools-ec2.md) | 🟡 |
-| 18 | AWS architecture diagram | [18-architecture.md](18-architecture.md) | 🟡 |
+| 17 | Jenkins and pgAdmin on EC2 (HTTPS domains, private RDS) | [17-tools-ec2.md](17-tools-ec2.md) | ✅ |
+| 18 | AWS architecture diagrams | [18-architecture.md](18-architecture.md) | ✅ |
 
 ## How each step page is written
 

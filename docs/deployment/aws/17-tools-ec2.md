@@ -161,3 +161,7 @@ Job `almotawaj-wallet`: Pipeline script from SCM, Git `https://github.com/JDB-GA
 The [`Jenkinsfile`](../../../Jenkinsfile) no longer wraps AWS commands in `withCredentials('aws-jenkins')`: on EC2 the `aws` CLI uses the instance role `almotawaj-tools-role`, so no access keys are stored in Jenkins.
 
 The local Jenkins on the Mac is stopped (`docker stop jenkins`), so only one Jenkins deploys each push. The `jenkins-deployer` access key is no longer used and can be deactivated (IAM → Users → `jenkins-deployer` → Security credentials).
+
+## Result
+
+The "Redesign Login Page" push ran only **Frontend: Build and Deploy** on the EC2 Jenkins, with the instance role and no access keys, and the new login page went live on `wallet.almotawaj.com`.
