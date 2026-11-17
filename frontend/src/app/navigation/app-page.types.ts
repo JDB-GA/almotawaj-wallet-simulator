@@ -20,6 +20,7 @@ type AppPageId =
   | 'userCreate'
   | 'auditLog'
   | 'simulation'
+  | 'chatbotDocuments'
   | 'changePassword'
   | 'profile'
   | 'paymentRequests'

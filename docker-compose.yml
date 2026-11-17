@@ -78,6 +78,12 @@ services:
       - postgres
     restart: unless-stopped
 
+  chatbot-service:
+    build: ./services/chatbot-service
+    container_name: chatbot-service
+    env_file: .env
+    restart: unless-stopped
+
   api-gateway:
     build: ./services/api-gateway
     container_name: api-gateway
@@ -86,12 +92,14 @@ services:
       IDENTITY_URL: http://identity-service:8081
       WALLET_URL: http://wallet-service:8084
       AUDIT_URL: http://audit-service:8083
+      CHATBOT_URL: http://chatbot-service:8085
     ports:
       - "8080:8080"
     depends_on:
       - identity-service
       - wallet-service
       - audit-service
+      - chatbot-service
     restart: unless-stopped
 
 volumes:

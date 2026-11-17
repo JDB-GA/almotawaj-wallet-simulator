@@ -1,0 +1,20 @@
+{
+  "open": "Open assistant",
+  "title": "Wallet assistant",
+  "description": "Answers come from the wallet documentation.",
+  "reset": "Start a new chat",
+  "placeholder": "Ask a question...",
+  "send": "Send",
+  "thinking": "Thinking",
+  "sources": "Sources:",
+  "error": "Sorry, I could not answer right now. Please try again.",
+  "welcome": {
+    "title": "How can I help?",
+    "description": "Ask anything about using the wallet."
+  },
+  "suggestions": {
+    "topUp": "How do I top up my wallet?",
+    "transfer": "How do I send money to someone?",
+    "kyc": "Why do I need to verify my identity?"
+  }
+}

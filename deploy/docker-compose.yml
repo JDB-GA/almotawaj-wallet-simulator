@@ -29,6 +29,12 @@ services:
     environment:
       JAVA_TOOL_OPTIONS: -Xmx192m
 
+  chatbot-service:
+    <<: *service
+    image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/chatbot-service:latest
+    environment:
+      JAVA_TOOL_OPTIONS: -Xmx160m
+
   api-gateway:
     <<: *service
     image: 481374029689.dkr.ecr.eu-north-1.amazonaws.com/almotawaj/api-gateway:latest
@@ -36,6 +42,7 @@ services:
       IDENTITY_URL: http://identity-service:8081
       WALLET_URL: http://wallet-service:8084
       AUDIT_URL: http://audit-service:8083
+      CHATBOT_URL: http://chatbot-service:8085
       JAVA_TOOL_OPTIONS: -Xmx192m
     ports:
       - "80:8080"
@@ -43,3 +50,4 @@ services:
       - identity-service
       - wallet-service
       - audit-service
+      - chatbot-service

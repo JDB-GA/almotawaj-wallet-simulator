@@ -75,6 +75,10 @@
       "title": "إنشاء مستخدم",
       "heading": "إنشاء مستخدم"
     },
+    "chatbotDocuments": {
+      "title": "ملفات المساعد",
+      "heading": "ملفات المساعد"
+    },
     "auditLog": {
       "title": "سجل التدقيق",
       "heading": "سجل التدقيق"

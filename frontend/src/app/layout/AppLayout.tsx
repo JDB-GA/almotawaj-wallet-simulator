@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router'
+import { ChatbotWidget } from '@/features/chatbot/components/ChatbotWidget'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppHeader } from './AppHeader'
 import { AppSidebar } from './AppSidebar'
@@ -13,6 +14,7 @@ export function AppLayout() {
           <Outlet />
         </div>
       </SidebarInset>
+      <ChatbotWidget />
     </SidebarProvider>
   )
 }

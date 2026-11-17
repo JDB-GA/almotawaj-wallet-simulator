@@ -1,0 +1,35 @@
+{
+  "description": "الملفات التي يقرأها المساعد للإجابة عن الأسئلة. ارفع ملفات .md أو .txt حتى 5 ميغابايت.",
+  "upload": {
+    "action": "رفع ملف",
+    "pending": "جارٍ الرفع...",
+    "success": "تم رفع {{name}}. سيكون جاهزاً خلال ثوانٍ.",
+    "failure": "تعذر رفع الملف."
+  },
+  "delete": {
+    "action": "حذف",
+    "cancel": "إلغاء",
+    "confirmTitle": "حذف هذا الملف؟",
+    "confirmDescription": "سيتوقف المساعد عن استخدام {{name}}.",
+    "success": "تم حذف الملف.",
+    "failure": "تعذر حذف الملف."
+  },
+  "table": {
+    "name": "الاسم",
+    "size": "الحجم",
+    "sizeValue": "{{size}} كيلوبايت",
+    "state": "الحالة",
+    "uploaded": "تاريخ الرفع"
+  },
+  "states": {
+    "STATE_UNSPECIFIED": "غير معروف",
+    "STATE_PENDING": "قيد المعالجة",
+    "STATE_ACTIVE": "جاهز",
+    "STATE_FAILED": "فشل"
+  },
+  "empty": {
+    "title": "لا توجد ملفات بعد",
+    "description": "ارفع ملفاً ليتمكن المساعد من الإجابة منه."
+  },
+  "loadError": "تعذر تحميل الملفات."
+}

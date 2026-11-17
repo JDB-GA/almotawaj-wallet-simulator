@@ -1,4 +1,4 @@
-import { ActivityIcon, ClipboardCheckIcon, HistoryIcon, LayoutDashboardIcon, ReceiptTextIcon, UsersIcon } from 'lucide-react'
+import { ActivityIcon, BotIcon, ClipboardCheckIcon, HistoryIcon, LayoutDashboardIcon, ReceiptTextIcon, UsersIcon } from 'lucide-react'
 import { ROUTES } from '@/config/routes'
 import type { AppPage } from './app-page.types'
 
@@ -84,5 +84,13 @@ export const ADMIN_PAGES: readonly AppPage[] = [
     roles: ['SUPER_ADMIN'],
     showInSidebar: true,
     lazy: async () => ({ Component: (await import('@/features/simulation/pages/SimulationPage')).SimulationPage }),
+  },
+  {
+    id: 'chatbotDocuments',
+    path: ROUTES.chatbotDocuments,
+    icon: BotIcon,
+    roles: ['SUPER_ADMIN'],
+    showInSidebar: true,
+    lazy: async () => ({ Component: (await import('@/features/chatbot-documents/pages/ChatbotDocumentsPage')).ChatbotDocumentsPage }),
   },
 ]

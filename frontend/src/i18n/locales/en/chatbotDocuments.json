@@ -1,0 +1,35 @@
+{
+  "description": "Files the assistant reads to answer questions. Upload .md or .txt files up to 5 MB.",
+  "upload": {
+    "action": "Upload file",
+    "pending": "Uploading...",
+    "success": "{{name}} uploaded. It is ready in a few seconds.",
+    "failure": "Could not upload the file."
+  },
+  "delete": {
+    "action": "Delete",
+    "cancel": "Cancel",
+    "confirmTitle": "Delete this file?",
+    "confirmDescription": "The assistant will stop using {{name}}.",
+    "success": "File deleted.",
+    "failure": "Could not delete the file."
+  },
+  "table": {
+    "name": "Name",
+    "size": "Size",
+    "sizeValue": "{{size}} KB",
+    "state": "Status",
+    "uploaded": "Uploaded"
+  },
+  "states": {
+    "STATE_UNSPECIFIED": "Unknown",
+    "STATE_PENDING": "Processing",
+    "STATE_ACTIVE": "Ready",
+    "STATE_FAILED": "Failed"
+  },
+  "empty": {
+    "title": "No files yet",
+    "description": "Upload a file so the assistant can answer from it."
+  },
+  "loadError": "Could not load the files."
+}

@@ -32,6 +32,12 @@ spring:
               predicates:
                 - Path=/api/admin/audit-logs,/api/admin/audit-logs/**
 
+            - id: chatbot
+              uri: ${CHATBOT_URL:http://localhost:8085}
+              order: 1
+              predicates:
+                - Path=/api/chat,/api/admin/chat/documents,/api/admin/chat/documents/**
+
 server:
   port: ${PORT:8080}
   error:

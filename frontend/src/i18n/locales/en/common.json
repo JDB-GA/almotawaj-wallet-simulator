@@ -75,6 +75,10 @@
       "title": "Create User",
       "heading": "Create user"
     },
+    "chatbotDocuments": {
+      "title": "Assistant Files",
+      "heading": "Assistant files"
+    },
     "auditLog": {
       "title": "Audit Log",
       "heading": "Audit log"

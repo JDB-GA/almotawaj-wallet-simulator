@@ -18,6 +18,7 @@ pipeline {
                 stage('wallet') { steps { dir('services/wallet-service') { sh './mvnw -B verify' } } }
                 stage('notification') { steps { dir('services/notification-service') { sh './mvnw -B verify' } } }
                 stage('audit') { steps { dir('services/audit-service') { sh './mvnw -B verify' } } }
+                stage('chatbot') { steps { dir('services/chatbot-service') { sh './mvnw -B verify' } } }
                 stage('gateway') { steps { dir('services/api-gateway') { sh './mvnw -B verify' } } }
             }
         }
@@ -38,7 +39,7 @@ pipeline {
                     REGISTRY=$ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
                     aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY
 
-                    for SERVICE in identity-service wallet-service notification-service audit-service api-gateway; do
+                    for SERVICE in identity-service wallet-service notification-service audit-service chatbot-service api-gateway; do
                         docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
                         docker tag almotawaj-$SERVICE $REGISTRY/almotawaj/$SERVICE:latest
                         docker push $REGISTRY/almotawaj/$SERVICE:$BUILD_NUMBER
