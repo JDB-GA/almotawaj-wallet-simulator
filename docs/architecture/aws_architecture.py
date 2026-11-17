@@ -1,5 +1,7 @@
+from html import escape
 from pathlib import Path
 
+import diagrams
 from diagrams import Cluster, Diagram, Edge
 from diagrams.aws.compute import EC2, EC2ContainerRegistry, EC2ElasticIpAddress, ElasticBeanstalk
 from diagrams.aws.database import RDS
@@ -17,6 +19,10 @@ from diagrams.programming.framework import React, Spring
 from diagrams.saas.cdn import Cloudflare
 
 OUTPUT_DIR = Path(__file__).resolve().parent.parent / "images" / "architecture"
+ICONS_DIR = Path(diagrams.__file__).resolve().parent.parent / "resources" / "aws"
+AWS_ICON = ICONS_DIR / "aws.png"
+VPC_ICON = ICONS_DIR / "network" / "vpc.png"
+SECURITY_GROUP_ICON = ICONS_DIR / "general" / "ssl-padlock.png"
 
 GRAPH = {"fontsize": "22", "fontname": "Helvetica", "pad": "0.6", "nodesep": "0.8", "ranksep": "1.2", "bgcolor": "white", "splines": "spline", "ordering": "out"}
 NODE = {"fontsize": "13", "fontname": "Helvetica"}
@@ -31,6 +37,16 @@ SECURITY_GROUP = {"bgcolor": "#fff8f0", "pencolor": "#dd344c", "fontsize": "13",
 HTTPS = Edge(label="HTTPS", color="#147eba", style="bold", tailport="e", headport="w")
 EVENT = Edge(color="#e7157b", style="dashed", tailport="e", headport="w")
 DEPLOY = Edge(color="#7aa116", style="bold", tailport="e", headport="w")
+
+
+def group(icon, title):
+    lines = "<BR ALIGN=\"LEFT\"/>".join(escape(line) for line in title.split("\n"))
+    return (
+        f'<<TABLE BORDER="0" CELLSPACING="4"><TR>'
+        f'<TD FIXEDSIZE="TRUE" WIDTH="24" HEIGHT="24"><IMG SRC="{icon}" SCALE="TRUE"/></TD>'
+        f'<TD ALIGN="LEFT">{lines}<BR ALIGN="LEFT"/></TD>'
+        f"</TR></TABLE>>"
+    )
 
 
 def diagram(name, title):
@@ -51,14 +67,14 @@ def overview():
         dns = Cloudflare("Cloudflare DNS")
         github = Github("GitHub")
 
-        with Cluster("AWS  |  eu-north-1 (Stockholm)", graph_attr=AWS_CLOUD):
+        with Cluster(group(AWS_ICON, "AWS  |  eu-north-1 (Stockholm)"), graph_attr=AWS_CLOUD):
             cdn = CloudFront("CloudFront\nwallet.almotawaj.com")
 
             with Cluster("Application", graph_attr=GROUP):
                 backend = ElasticBeanstalk("Elastic Beanstalk\n5 microservices")
                 frontend = SimpleStorageServiceS3Bucket("S3\nReact frontend")
 
-            with Cluster("Data  |  private", graph_attr=VPC):
+            with Cluster(group(SECURITY_GROUP_ICON, "Data  |  private"), graph_attr=VPC):
                 kyc = SimpleStorageServiceS3Bucket("S3\nKYC files")
                 kafka = Kafka("Kafka\non EC2")
                 database = RDS("RDS\nPostgreSQL")
@@ -85,7 +101,7 @@ def request_flow():
             user = User("Browser")
             dns = Cloudflare("Cloudflare DNS")
 
-        with Cluster("AWS", graph_attr=AWS_CLOUD):
+        with Cluster(group(AWS_ICON, "AWS"), graph_attr=AWS_CLOUD):
             cdn = CloudFront("CloudFront + ACM\nwallet.almotawaj.com")
 
             with Cluster("Elastic Beanstalk", graph_attr=GROUP):
@@ -110,7 +126,7 @@ def inside_beanstalk():
             audit = Spring("audit-service :8083\nreads audit-events")
             notification = Spring("notification-service :8082\nreads email-events")
 
-        with Cluster("Data, messaging and email", graph_attr=VPC):
+        with Cluster("Data, messaging and email", graph_attr=GROUP):
             kafka = Kafka("Kafka")
             kyc = SimpleStorageServiceS3Bucket("S3 KYC files")
             database = RDS("RDS PostgreSQL\none database")
@@ -146,7 +162,7 @@ def kafka_events():
             notification = Spring("notification-service\nsends the email")
             audit = Spring("audit-service\nsaves the entry")
 
-        with Cluster("Dead-letter topics", graph_attr=SECURITY_GROUP):
+        with Cluster(group(SECURITY_GROUP_ICON, "Dead-letter topics"), graph_attr=SECURITY_GROUP):
             dead_letters = Kafka("<topic>-dlt\nafter 3 retries")
 
         identity >> EVENT >> accounts >> EVENT >> wallet_consumer
@@ -160,22 +176,22 @@ def network_security():
     with diagram("05-network-security", "Network and security"):
         internet = Users("Internet")
 
-        with Cluster("AWS", graph_attr=AWS_CLOUD):
+        with Cluster(group(AWS_ICON, "AWS"), graph_attr=AWS_CLOUD):
             firewall = WAF("WAF\nrate limiting")
             tools_cdn = CloudFront("CloudFront\njenkins, pgadmin")
             cdn = CloudFront("CloudFront\nwallet")
 
-            with Cluster("Default VPC", graph_attr=VPC):
-                with Cluster("almotawaj-app-sg  |  80 open (Beanstalk)\nIAM role: almotawaj-eb-ec2-role", graph_attr=SECURITY_GROUP):
+            with Cluster(group(VPC_ICON, "Default VPC"), graph_attr=VPC):
+                with Cluster(group(SECURITY_GROUP_ICON, "almotawaj-app-sg  |  80 open (Beanstalk)\nIAM role: almotawaj-eb-ec2-role"), graph_attr=SECURITY_GROUP):
                     backend = ElasticBeanstalk("Microservices")
 
-                with Cluster("almotawaj-tools-sg  |  5050-8080 from CloudFront only\nIAM role: almotawaj-tools-role", graph_attr=SECURITY_GROUP):
+                with Cluster(group(SECURITY_GROUP_ICON, "almotawaj-tools-sg  |  5050-8080 from CloudFront only\nIAM role: almotawaj-tools-role"), graph_attr=SECURITY_GROUP):
                     tools = EC2("Jenkins + pgAdmin")
 
-                with Cluster("almotawaj-db-sg  |  5432 from app + tools", graph_attr=SECURITY_GROUP):
+                with Cluster(group(SECURITY_GROUP_ICON, "almotawaj-db-sg  |  5432 from app + tools"), graph_attr=SECURITY_GROUP):
                     database = RDS("RDS\nno public access")
 
-                with Cluster("almotawaj-kafka-sg  |  9092 from app", graph_attr=SECURITY_GROUP):
+                with Cluster(group(SECURITY_GROUP_ICON, "almotawaj-kafka-sg  |  9092 from app"), graph_attr=SECURITY_GROUP):
                     kafka = Kafka("Kafka")
 
             secrets = SystemsManagerParameterStore("Parameter Store\n7 SecureString")
@@ -216,11 +232,11 @@ def admin_tools():
         admin = User("Admin")
         dns = Cloudflare("Cloudflare DNS")
 
-        with Cluster("AWS", graph_attr=AWS_CLOUD):
+        with Cluster(group(AWS_ICON, "AWS"), graph_attr=AWS_CLOUD):
             jenkins_cdn = CloudFront("CloudFront\njenkins")
             pgadmin_cdn = CloudFront("CloudFront\npgadmin")
 
-            with Cluster("Default VPC", graph_attr=VPC):
+            with Cluster(group(VPC_ICON, "Default VPC"), graph_attr=VPC):
                 address = EC2ElasticIpAddress("Elastic IP\n13.62.29.44")
                 with Cluster("almotawaj-tools  |  t3.medium", graph_attr=GROUP):
                     pgadmin = Postgresql("pgAdmin :5050")
