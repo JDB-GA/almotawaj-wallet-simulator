@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { ROUTES } from '@/config/routes'
 import { FieldGroup } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { AUTH_FIELD_CLASS, AUTH_FIELD_GROUP_CLASS, AUTH_SUBMIT_CLASS } from '../constants/auth.constants'
 import { useLoginForm } from '../hooks/useLoginForm'
 import { FormErrorMessage } from '@/components/form/FormErrorMessage'
 import { FormField } from '@/components/form/FormField'
@@ -18,17 +19,32 @@ export function LoginForm() {
       <FieldGroup>
         <FormField control={form.control} name="identifier" label={t('fields.identifier')}>
           {(props) => (
-            <Input {...props} type="text" dir="ltr" autoComplete="username" placeholder={t('fields.identifierPlaceholder')} />
+            <Input
+              {...props}
+              type="text"
+              dir="ltr"
+              autoComplete="username"
+              placeholder={t('fields.identifierPlaceholder')}
+              className={AUTH_FIELD_CLASS}
+            />
           )}
         </FormField>
         <FormField control={form.control} name="password" label={t('fields.password')}>
-          {(props) => <PasswordInput {...props} autoComplete="current-password" placeholder={t('fields.passwordPlaceholder')} />}
+          {(props) => (
+            <PasswordInput
+              {...props}
+              autoComplete="current-password"
+              placeholder={t('fields.passwordPlaceholder')}
+              groupClassName={AUTH_FIELD_GROUP_CLASS}
+              className="px-4 md:text-base"
+            />
+          )}
         </FormField>
         <Link to={ROUTES.forgotPassword} className="-mt-3 self-end text-sm underline-offset-4 hover:underline">
           {t('forgot.link')}
         </Link>
         <FormErrorMessage errorKey={errorKey} />
-        <SubmitButton isPending={isPending}>{t('login.submit')}</SubmitButton>
+        <SubmitButton isPending={isPending} className={AUTH_SUBMIT_CLASS}>{t('login.submit')}</SubmitButton>
       </FieldGroup>
     </form>
   )

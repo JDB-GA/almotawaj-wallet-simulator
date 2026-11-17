@@ -4,14 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group'
 import { usePasswordVisibility } from '../hooks/usePasswordVisibility'
 
-type PasswordInputProps = Omit<ComponentProps<typeof InputGroupInput>, 'type'>
+type PasswordInputProps = Omit<ComponentProps<typeof InputGroupInput>, 'type'> & {
+  groupClassName?: string
+}
 
-export function PasswordInput(props: PasswordInputProps) {
+export function PasswordInput({ groupClassName, ...props }: PasswordInputProps) {
   const { t } = useTranslation('auth')
   const { isVisible, toggleVisibility } = usePasswordVisibility()
 
   return (
-    <InputGroup>
+    <InputGroup className={groupClassName}>
       <InputGroupInput type={isVisible ? 'text' : 'password'} dir="ltr" {...props} />
       <InputGroupAddon align="inline-end">
         <InputGroupButton

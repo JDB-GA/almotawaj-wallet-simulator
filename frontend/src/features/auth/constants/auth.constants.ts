@@ -25,3 +25,8 @@ export const OTP_LENGTH = 6
 export const OTP_PATTERN = /^\d{6}$/
 export const RESEND_COOLDOWN_SECONDS = 60
 
+export const SHOWCASE_TAGLINE_KEYS = ['manage', 'send', 'secure'] as const
+export const SHOWCASE_ROTATE_MS = 4000
+export const AUTH_FIELD_CLASS = 'h-12 rounded-xl px-4 md:text-base'
+export const AUTH_FIELD_GROUP_CLASS = 'h-12 rounded-xl'
+export const AUTH_SUBMIT_CLASS = 'h-12 rounded-xl text-base'
