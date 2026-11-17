@@ -90,4 +90,13 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            sh '''
+                docker image prune -af --filter "until=48h" || true
+                docker builder prune -af --filter "until=48h" || true
+            '''
+        }
+    }
 }
