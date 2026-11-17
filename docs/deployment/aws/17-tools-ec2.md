@@ -156,7 +156,7 @@ Cloudflare (DNS only): `jenkins` → `d2xafh8ol15p58.cloudfront.net`, `pgadmin` 
 
 ### 17i. Job and no access keys
 
-Job `almotawaj-wallet`: Pipeline script from SCM, Git `https://github.com/JDB-GA/almotawaj-wallet-simulator.git`, branch `*/master`, Script Path `Jenkinsfile`, Poll SCM `H/5 * * * *`.
+Job `almotawaj-wallet`: Pipeline script from SCM, Git `https://github.com/JDB-GA/almotawaj-wallet-simulator.git`, branch `*/master`, Script Path `Jenkinsfile`, Poll SCM `H/2 * * * *`.
 
 The [`Jenkinsfile`](../../../Jenkinsfile) no longer wraps AWS commands in `withCredentials('aws-jenkins')`: on EC2 the `aws` CLI uses the instance role `almotawaj-tools-role`, so no access keys are stored in Jenkins.
 

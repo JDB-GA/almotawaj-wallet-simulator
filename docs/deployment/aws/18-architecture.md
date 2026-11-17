@@ -51,7 +51,7 @@ Secrets come from Parameter Store at start; each EC2 instance uses an IAM role, 
 
 ![CI/CD](../../images/architecture/06-cicd.png)
 
-Jenkins on EC2 checks GitHub every 5 minutes and runs only the side that changed: the backend (test, image, ECR, Beanstalk) or the frontend (build, S3, CloudFront refresh). A failing test stops everything.
+Jenkins on EC2 checks GitHub every 2 minutes and runs only the side that changed: the backend (test, image, ECR, Beanstalk) or the frontend (build, S3, CloudFront refresh). A failing test stops everything.
 
 ## 7. Admin tools
 

@@ -51,7 +51,7 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 Jenkins runs locally, so GitHub cannot call it. Jenkins checks GitHub instead.
 
 1. Job → **Configure** → **Triggers** → tick **Poll SCM**.
-2. Schedule: `H/5 * * * *` (check every 5 minutes; build only if there is a new commit).
+2. Schedule: `H/2 * * * *` (check every 2 minutes; build only if there is a new commit).
 3. **Save**.
 
 ## 6. AWS additions

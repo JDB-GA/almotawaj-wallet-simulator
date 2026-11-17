@@ -208,7 +208,7 @@ def cicd():
     with diagram("06-cicd", "CI/CD: from git push to production"):
         github = Github("GitHub\nmaster")
 
-        with Cluster("Jenkins on EC2  |  Poll SCM every 5 min\nIAM role, no access keys", graph_attr=GROUP):
+        with Cluster("Jenkins on EC2  |  Poll SCM every 2 min\nIAM role, no access keys", graph_attr=GROUP):
             jenkins = Jenkins("Jenkinsfile")
 
         with Cluster("services/** changed", graph_attr=GROUP):
