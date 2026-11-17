@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        disableConcurrentBuilds()
+    }
+
     environment {
         AWS_REGION = 'eu-north-1'
         COMPOSE_PROJECT_NAME = 'almotawaj'
