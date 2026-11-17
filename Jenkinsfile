@@ -54,13 +54,14 @@ pipeline {
                 anyOf {
                     changeset 'services/**'
                     changeset 'deploy/**'
+                    changeset 'Jenkinsfile'
                 }
             }
             steps {
                 sh '''
                     ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
                     BUCKET=elasticbeanstalk-$AWS_REGION-$ACCOUNT
-                    VERSION=build-$BUILD_NUMBER
+                    VERSION=build-$BUILD_NUMBER-$(date +%Y%m%d%H%M%S)
 
                     cd deploy && jar -cfM ../$VERSION.zip docker-compose.yml && cd ..
                     aws s3 cp $VERSION.zip s3://$BUCKET/almotawaj/$VERSION.zip
