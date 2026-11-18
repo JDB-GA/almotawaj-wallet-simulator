@@ -59,18 +59,6 @@ Jenkins on EC2 checks GitHub every 2 minutes and runs only the side that changed
 
 `jenkins.almotawaj.com` and `pgadmin.almotawaj.com` each have their own CloudFront and HTTPS, and both reach one EC2 instance through its Elastic IP. pgAdmin sits inside the VPC, so it is the only way in to the private database.
 
-## Regenerate
-
-The diagrams are code: [`docs/architecture/aws_architecture.py`](../../architecture/aws_architecture.py), using the [`diagrams`](https://diagrams.mingrammer.com) library with official AWS icons. It needs Graphviz:
-
-```bash
-brew install graphviz
-python3 -m venv .venv && .venv/bin/pip install diagrams
-.venv/bin/python docs/architecture/aws_architecture.py
-```
-
-Images are written to `docs/images/phase-04/architecture/`.
-
 ## 8. RAG chatbot
 
 ![RAG chatbot](../../images/phase-04/architecture/08-rag-chatbot.png)
