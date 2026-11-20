@@ -11,7 +11,7 @@ pipeline {
         DOCKER_DEFAULT_PLATFORM = 'linux/amd64'
         FRONTEND_URL = 'https://wallet.almotawaj.com'
         FRONTEND_BUCKET = 'almotawaj-frontend-481374029689'
-        CLOUDFRONT_ID = 'E1PQXMBPMZPI7D'
+        CLOUDFRONT_ID = 'E2EK3O3BABCTQG'
     }
 
     stages {
